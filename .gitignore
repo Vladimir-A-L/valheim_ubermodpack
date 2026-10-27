@@ -19,6 +19,8 @@
 *.dmp
 runtime/
 artifacts/
+/tools/**/bin/
+/tools/**/obj/
 
 __pycache__/
 *.py[codz]

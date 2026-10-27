@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-27T23:14:30.450287+00:00",
+  "status": "experimental-partial-adaptation-not-for-deployment",
+  "source_lock": "legacy-content-probe-20261028.lock.json",
+  "server_build_id": "25909431",
+  "client_build_id": "25909357",
+  "game_version": "l-1.0.20",
+  "network_version": 41,
+  "server_game_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+  "server_utils_sha256": "110bca79b8c31908b5ab7c74a7867dad5a9ba44bd6942a390775c65b3d6a9591",
+  "client_game_sha256": "94998885b103d6e5f5480123eaee0a093e82af2ddeeee37536c15bf555f24f3a",
+  "toolchain": {
+    "dotnet_sdk": "8.0.408",
+    "mono_cecil": "0.11.6",
+    "patcher_source_sha256": "21e4bd1f51ee11a1456f807a6af0af932138aa9e8cc33f944ed752c298a9d1cd"
+  },
+  "packages": [
+    {
+      "package": "Therzie-WarfareFireAndIce-2.0.8",
+      "archive_sha256": "768fb3b2eede395339754a20a5ba29c19563e5aa617cda72e15deb95dd225d5d",
+      "source_dll_sha256": "71d458a05a7b45aef21aaffd91ba41174f0eb1ac5f20b4354bb133668d746dcd",
+      "patched_dll_sha256": "4caa3c89e1371c5ac7ee4edf9ee347afebf097c3b1c19c70b3de023f2b09060d",
+      "embedded_resource_count": 8,
+      "embedded_resources_unchanged": true,
+      "unresolved_game_references_before": 5,
+      "unresolved_game_references_after": 4,
+      "server_result": "ready-and-saved",
+      "client_result": "menu-observed",
+      "gameplay_accepted": false
+    },
+    {
+      "package": "Therzie-MonstrumDeepNorth-2.0.6",
+      "archive_sha256": "5d65eeca17b3978c78efbfc655d112e5bf8450e7ac79be4097287d77cc69006f",
+      "source_dll_sha256": "6007db1ebf45c7bd44d4786dfaaa262f245e68ff3d70893bf2787de86d810834",
+      "patched_dll_sha256": "ab73af649897cb56eb68d9c59665871ea090fc7bb8b7f16b9f1bb5f3cf254bcd",
+      "embedded_resource_count": 8,
+      "embedded_resources_unchanged": true,
+      "unresolved_game_references_before": 5,
+      "unresolved_game_references_after": 3,
+      "server_result": "ready-and-saved",
+      "client_result": "menu-observed",
+      "gameplay_accepted": false
+    },
+    {
+      "package": "Therzie-MonstrumAshlands-1.1.8",
+      "archive_sha256": "de2b0012f64e7744836cff770baf940fd289118ea48e18a03cb449dd64dccd5d",
+      "source_dll_sha256": "090f60dfcc2239f45035cbb33b053e6a016c1e8d0cb84a647b6486b3cc9f9c6b",
+      "patched_dll_sha256": "96af89ced74e98f495c42f35ec3b77d22adcd70cbbcb7bbac4e5bfda5698f2ae",
+      "embedded_resource_count": 15,
+      "embedded_resources_unchanged": true,
+      "unresolved_game_references_before": 10,
+      "unresolved_game_references_after": 8,
+      "server_result": "item-registration-failed",
+      "client_result": "menu-with-repeated-exceptions",
+      "gameplay_accepted": false
+    }
+  ],
+  "full_core_candidate_tested": false,
+  "client_server_connection_tested": false,
+  "permanent_client_unchanged": true,
+  "permanent_client_files_checked": {
+    "config": 65,
+    "saves": 6,
+    "plugins": 16
+  },
+  "test_processes_stopped": true,
+  "estimated_remaining_hours": {
+    "minimum": 8,
+    "maximum": 16,
+    "may_increase": true
+  },
+  "report": "../docs/reports/2026-10-28-legacy-adaptation.md"
+}
