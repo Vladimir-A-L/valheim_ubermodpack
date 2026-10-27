@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "valheim": "l-1.0.20",
+  "player_prefs": {
+    "Screenmanager Resolution Width": 1280,
+    "Screenmanager Resolution Height": 720,
+    "Screenmanager Resolution Window Width": 1280,
+    "Screenmanager Resolution Window Height": 720,
+    "Screenmanager Resolution Use Native": 0,
+    "Screenmanager Fullscreen mode": 3,
+    "SkipIntroCinematic": 1,
+    "AutoBackups": 4,
+    "ReduceBackgroundUsage": 1,
+    "GraphicsQualityMode": 100,
+    "Target3DResolutionVertical": 2147483647,
+    "FPSLimit": 60,
+    "VSync": 0,
+    "ClutterQuality": 2,
+    "LodBias": 2,
+    "Lights": 1,
+    "ShadowQuality": 1,
+    "PointLights": 1,
+    "PointLightShadows": 1,
+    "SSAO_2": 1,
+    "ClothQuality": 2,
+    "SimulationDistance": 2,
+    "Bloom": 0,
+    "DOF": 0,
+    "MotionBlur": 0,
+    "ChromaticAberration": 0,
+    "AntiAliasing": 1
+  }
+}
