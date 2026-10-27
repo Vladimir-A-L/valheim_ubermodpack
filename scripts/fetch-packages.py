@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Загрузить закреплённые пакеты и сверить основные DLL с исходной инвентаризацией."""
+"""Закрепить явные версии пакетов либо сверить архивы и основные DLL по существующему lock."""
 
 import argparse
 from concurrent.futures import ThreadPoolExecutor
@@ -49,8 +49,8 @@ def inspect_archive(path, record):
         item = candidates[0]
         with archive.open(item) as stream:
             digest = hashlib.file_digest(stream, "sha256").hexdigest()
-        if item.file_size != expected["bytes"] or digest != expected["sha256"]:
-            raise ValueError(f"DLL не совпадает с пользовательским SHA256/размером: {record['package']}")
+        if "sha256" in expected and (item.file_size != expected["bytes"] or digest != expected["sha256"]):
+            raise ValueError(f"DLL не совпадает с закреплённым SHA256/размером: {record['package']}")
         return metadata.get("dependencies", []), item.filename
 
 
@@ -90,10 +90,18 @@ def fetch(record, cache, prior):
     digest = file_hash(destination)
     if prior and digest != prior["archive_sha256"]:
         raise ValueError(f"Архив отличается от закреплённого SHA256: {package}")
+    if prior and dependencies != prior["dependencies"]:
+        raise ValueError(f"Зависимости отличаются от lock: {package}")
+    with zipfile.ZipFile(destination) as archive:
+        item = archive.getinfo(entry)
+        with archive.open(item) as stream:
+            dll_hash = hashlib.file_digest(stream, "sha256").hexdigest()
     return {
         "package": package, "download_url": url, "archive_sha256": digest,
         "archive_bytes": destination.stat().st_size, "dependencies": dependencies,
-        "verified_file": {**record["representative_file"], "archive_path": entry},
+        "verification_source": (prior or record).get("verification_source", "user-inventory"),
+        "verified_file": {"name": record["representative_file"]["name"], "bytes": item.file_size,
+                          "sha256": dll_hash, "archive_path": entry},
     }
 
 
@@ -103,17 +111,29 @@ def main():
     parser.add_argument("--selection", type=Path, default=Path("manifests/core-candidate.json"))
     parser.add_argument("--cache", type=Path, default=Path(".local/packages"))
     parser.add_argument("--lock", type=Path, required=True, help="Новый lock либо существующий для проверки")
+    parser.add_argument("--observe-releases", action="store_true",
+                        help="Создать новый lock из явных версий; хеши наблюдаются, не сверяются с инвентаризацией")
     args = parser.parse_args()
-    source = json.loads(args.baseline.read_text())
-    selection = json.loads(args.selection.read_text())["packages"]
-    catalog = {row["package"]: row for row in source["packages"]}
-    if len(selection) != len(set(selection)) or any(p not in catalog for p in selection):
-        raise ValueError("Выборка повторяется или содержит пакет без исходного SHA256")
+    selected = json.loads(args.selection.read_text())
+    selection = selected["packages"]
+    if len(selection) != len(set(selection)):
+        raise ValueError("Выборка содержит повторяющийся пакет")
     prior = {}
     if args.lock.exists():
         prior = {row["package"]: row for row in json.loads(args.lock.read_text())["packages"]}
         if set(prior) != set(selection):
             raise ValueError("Для другого состава создайте отдельный lock")
+        catalog = {key: {"package": key, "representative_file": row["verified_file"]}
+                   for key, row in prior.items()}
+    elif args.observe_releases:
+        catalog = {key: {"package": key, "verification_source": "release-archive-observation",
+                         "representative_file": {"name": selected["representative_files"][key]}}
+                   for key in selection}
+    else:
+        source = json.loads(args.baseline.read_text())
+        catalog = {row["package"]: row for row in source["packages"]}
+        if any(p not in catalog for p in selection):
+            raise ValueError("Пакет без исходного SHA256: используйте явный режим --observe-releases")
     args.cache.mkdir(parents=True, exist_ok=True)
     with ThreadPoolExecutor(max_workers=3) as pool:
         records = list(pool.map(lambda p: fetch(catalog[p], args.cache, prior.get(p)), selection))
@@ -126,7 +146,8 @@ def main():
                 "status": "archives-verified-not-gameplay-tested", "packages": records,
             }, stream, ensure_ascii=False, indent=2)
             stream.write("\n")
-    print(f"Сверены архивы, основные DLL и зависимости: {len(records)} пакетов. Lock: {args.lock}")
+    verb = "Закреплены" if args.observe_releases and not prior else "Сверены"
+    print(f"{verb} архивы, основные DLL и зависимости: {len(records)} пакетов. Lock: {args.lock}")
 
 
 if __name__ == "__main__":

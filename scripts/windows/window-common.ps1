@@ -17,6 +17,8 @@ public static class ValheimWindow {
     [DllImport("user32.dll")] public static extern bool IsIconic(IntPtr window);
     [DllImport("user32.dll")] public static extern bool IsWindowVisible(IntPtr window);
     [DllImport("user32.dll")] public static extern uint GetWindowThreadProcessId(IntPtr window, out uint pid);
+    [DllImport("user32.dll", CharSet=CharSet.Unicode)] public static extern int GetClassName(
+        IntPtr window, System.Text.StringBuilder name, int capacity);
     [DllImport("kernel32.dll")] public static extern uint WTSGetActiveConsoleSessionId();
 }
 '@
@@ -31,6 +33,9 @@ function Get-Target {
     if ($candidates.Count -ne 1) { throw 'single_valheim_window_required' }
     $game = $candidates[0]
     $window = $game.MainWindowHandle
+    $className = New-Object Text.StringBuilder 256
+    [void][ValheimWindow]::GetClassName($window, $className, $className.Capacity)
+    if ($className.ToString() -ne 'UnityWndClass') { throw 'not_game_window' }
     if ([ValheimWindow]::IsIconic($window) -or -not [ValheimWindow]::IsWindowVisible($window)) {
         throw 'window_not_visible'
     }

@@ -17,6 +17,8 @@ spec.loader.exec_module(packages)
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--lock", type=Path, default=Path("manifests/core-candidate.lock.json"))
+    parser.add_argument("--selection", type=Path, default=Path("manifests/core-candidate.json"))
+    parser.add_argument("--config-root", type=Path, default=Path("configs/core"))
     parser.add_argument("--cache", type=Path, default=Path(".local/packages"))
     parser.add_argument("--output", type=Path, required=True, help="Новый каталог overlay")
     parser.add_argument("--profile", choices=("foundation", "core"), default="foundation")
@@ -24,9 +26,14 @@ def main():
     args = parser.parse_args()
     baseline = json.loads(Path("manifests/baseline-reported.json").read_text())
     locked = {row["package"]: row for row in json.loads(args.lock.read_text())["packages"]}
-    wanted = {row["package"]: row for row in baseline["packages"]
-              if row["stage"] == "foundation" or (args.profile == "core" and row["package"] in locked)}
-    selection = json.loads(Path("manifests/core-candidate.json").read_text())
+    selection = json.loads(args.selection.read_text())
+    foundation = {packages.package_parts(row["package"])[:2] for row in baseline["packages"]
+                  if row["stage"] == "foundation"}
+    if set(selection["packages"]) != set(locked):
+        raise ValueError("Выборка не совпадает с lock")
+    wanted = {key: {"package": key, "representative_file": locked[key]["verified_file"]}
+              for key in selection["packages"]
+              if args.profile == "core" or packages.package_parts(key)[:2] in foundation}
     if args.target == "server":
         for identity in selection.get("client_only", []):
             wanted.pop(identity, None)
@@ -39,7 +46,9 @@ def main():
         archive_path = args.cache / f"{identity}.zip"
         if packages.file_hash(archive_path) != locked[identity]["archive_sha256"]:
             raise ValueError(f"Изменён архив: {identity}")
-        packages.inspect_archive(archive_path, record)
+        dependencies, _ = packages.inspect_archive(archive_path, record)
+        if dependencies != locked[identity]["dependencies"]:
+            raise ValueError(f"Зависимости отличаются от lock: {identity}")
         owner, name, _ = packages.package_parts(identity)
         with zipfile.ZipFile(archive_path) as archive:
             for item in archive.infolist():
@@ -74,9 +83,11 @@ def main():
         with zipfile.ZipFile(archive_path) as archive, archive.open(entry) as source, destination.open("xb") as output:
             shutil.copyfileobj(source, output)
     if args.profile == "core":
-        config_root = Path("configs/core")
+        config_root = args.config_root
         for source in config_root.rglob("*"):
             if source.is_file():
+                if args.target == "server" and source.name == "advize.PlantEasily.cfg":
+                    continue
                 destination = args.output / source.relative_to(config_root)
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, destination)

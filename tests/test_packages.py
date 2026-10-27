@@ -2,6 +2,8 @@ import hashlib
 import importlib.util
 import json
 from pathlib import Path
+import subprocess
+import sys
 import tempfile
 import unittest
 import zipfile
@@ -74,6 +76,56 @@ class PackageVerificationTests(unittest.TestCase):
                 {"package": "Author-Mod-1.0.0", "dependencies": []},
                 {"package": "Author-Mod-2.0.0", "dependencies": []},
             ])
+
+    def test_updated_release_can_be_verified_and_staged_without_original_inventory(self):
+        self.write_archive()
+        root = Path(self.directory.name)
+        cache = root / "cache"
+        cache.mkdir()
+        archive = cache / "Author-Mod-1.2.3.zip"
+        self.archive.rename(archive)
+        selection = root / "selection.json"
+        selection.write_text(json.dumps({"packages": [self.record["package"]]}))
+        lock = root / "lock.json"
+        lock.write_text(json.dumps({"packages": [{
+            "package": self.record["package"], "dependencies": [],
+            "archive_sha256": packages.file_hash(archive),
+            "verified_file": self.record["representative_file"],
+        }]}))
+        scripts = Path(__file__).parents[1] / "scripts"
+        result = subprocess.run([
+            sys.executable, str(scripts / "fetch-packages.py"), "--lock", str(lock),
+            "--selection", str(selection), "--cache", str(cache), "--baseline", str(root / "absent.json"),
+        ], capture_output=True, text=True)
+        self.assertEqual(0, result.returncode, result.stderr)
+        output = root / "overlay"
+        result = subprocess.run([
+            sys.executable, str(scripts / "stage-foundation.py"), "--lock", str(lock),
+            "--selection", str(selection), "--cache", str(cache), "--profile", "core",
+            "--output", str(output), "--config-root", str(root / "no-config"),
+        ], capture_output=True, text=True)
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertEqual(b"dll", (output / "BepInEx/plugins/Author-Mod/Mod.dll").read_bytes())
+
+    def test_new_release_observation_records_actual_hash(self):
+        self.write_archive()
+        root = Path(self.directory.name)
+        self.archive.rename(root / "Author-Mod-1.2.3.zip")
+        record = {"package": self.record["package"], "representative_file": {"name": "Mod.dll"},
+                  "verification_source": "release-archive-observation"}
+        actual = packages.fetch(record, root, None)
+        self.assertEqual("release-archive-observation", actual["verification_source"])
+        self.assertEqual(self.record["representative_file"]["sha256"], actual["verified_file"]["sha256"])
+
+    def test_changed_locked_dependencies_are_rejected(self):
+        self.write_archive()
+        root = Path(self.directory.name)
+        archive = root / "Author-Mod-1.2.3.zip"
+        self.archive.rename(archive)
+        with self.assertRaisesRegex(ValueError, "Зависимости"):
+            packages.fetch(self.record, root, {
+                "archive_sha256": packages.file_hash(archive), "dependencies": ["Unknown-Library-1.0.0"],
+            })
 
 
 if __name__ == "__main__":

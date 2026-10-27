@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-27T17:15:03.427638+00:00",
+  "status": "archives-verified-not-gameplay-tested",
+  "packages": [
+    {
+      "package": "denikson-BepInExPack_Valheim-5.4.2351",
+      "download_url": "https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.2351/",
+      "archive_sha256": "bce631497976a93977ceb08e166712e6c31d15244956f89f17df092a9b62e29f",
+      "archive_bytes": 702924,
+      "dependencies": [],
+      "verified_file": {
+        "name": "BepInEx.dll",
+        "sha256": "36bdb9af2b8f2eda4c911d2a49c2a05a4f643637ad724b876d292a9a5fcd8ae6",
+        "bytes": 132096,
+        "archive_path": "BepInExPack_Valheim/BepInEx/core/BepInEx.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-Jotunn-2.30.2",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/Jotunn/2.30.2/",
+      "archive_sha256": "8aae92da2be0eb6820cd4cf57e2f6c1d6ad0d738d4915966e7c3d7a94e9a9b0f",
+      "archive_bytes": 835193,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333"
+      ],
+      "verified_file": {
+        "name": "Jotunn.dll",
+        "sha256": "9509221046842a70f94b98bab4cb41005dee026823a7a79345829ed46a30f796",
+        "bytes": 526336,
+        "archive_path": "plugins\\Jotunn.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-JsonDotNET-13.0.4",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/JsonDotNET/13.0.4/",
+      "archive_sha256": "a221c7be7163ab9739274b962fbd1f63abde65b1418839a62f02aca210868147",
+      "archive_bytes": 308392,
+      "dependencies": [],
+      "verified_file": {
+        "name": "Newtonsoft.Json.dll",
+        "sha256": "d134937ec381729074694490e81983b08ec7991b31550eabafb9202e5b404f89",
+        "bytes": 711952,
+        "archive_path": "plugins/Newtonsoft.Json.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-YamlDotNet-16.3.1",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/YamlDotNet/16.3.1/",
+      "archive_sha256": "2280480d2add7d6a7a17b882f9b755145160c852e89a14794d1493d08495d2ac",
+      "archive_bytes": 130222,
+      "dependencies": [],
+      "verified_file": {
+        "name": "YamlDotNet.dll",
+        "sha256": "9172f0758ed76963e0ede3b5ca9a1fb5b82f64c7e7a92cb3a6de39efa933a668",
+        "bytes": 291840,
+        "archive_path": "plugins/YamlDotNet.dll"
+      }
+    },
+    {
+      "package": "shudnal-ConditionalConfigSync-1.0.5",
+      "download_url": "https://thunderstore.io/package/download/shudnal/ConditionalConfigSync/1.0.5/",
+      "archive_sha256": "ef0fb4f2d37e36224be619afc9f311863e364111112f64d75a776f66656a3b5e",
+      "archive_bytes": 240699,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350"
+      ],
+      "verified_file": {
+        "name": "ConditionalConfigSync.dll",
+        "sha256": "d2291ed869892552ec497916b2750def42cbdc37d61b922c1b4253361b2a3ab1",
+        "bytes": 232448,
+        "archive_path": "ConditionalConfigSync.dll"
+      }
+    },
+    {
+      "package": "Therzie-Warfare-1.9.4",
+      "download_url": "https://thunderstore.io/package/download/Therzie/Warfare/1.9.4/",
+      "archive_sha256": "2aed973693b5aa654bd88682925714e48fc33170a8b733817a5bb9c7ea8b10f5",
+      "archive_bytes": 182194145,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202"
+      ],
+      "verified_file": {
+        "name": "Warfare.dll",
+        "sha256": "7e001761d3d20382b271a22b9535c1b557056db005a7ea0e9913565e6d70280e",
+        "bytes": 182304256,
+        "archive_path": "Warfare.dll"
+      }
+    },
+    {
+      "package": "Therzie-Armory-1.4.2",
+      "download_url": "https://thunderstore.io/package/download/Therzie/Armory/1.4.2/",
+      "archive_sha256": "812cbcfdae7909708f8955297ac7c23665e28f5783a5d3bdc3fdd0f28660331d",
+      "archive_bytes": 45941985,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Warfare-1.9.3"
+      ],
+      "verified_file": {
+        "name": "Armory.dll",
+        "sha256": "37f31edcfdf44250b9819be998322794eb2b82d00d14e5bbc18b41483181dc2b",
+        "bytes": 46128640,
+        "archive_path": "Armory.dll"
+      }
+    },
+    {
+      "package": "Therzie-Monstrum-1.6.0",
+      "download_url": "https://thunderstore.io/package/download/Therzie/Monstrum/1.6.0/",
+      "archive_sha256": "02e222e74109f67d4c6d89b8ef9db0e5c345d1414daeb976f3d164792a62a5f1",
+      "archive_bytes": 122064578,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Warfare-1.9.3"
+      ],
+      "verified_file": {
+        "name": "Monstrum.dll",
+        "sha256": "a61aae35daf247afe1e161ea44849568e695497d647be0a4857ebb1971f8edd2",
+        "bytes": 122228736,
+        "archive_path": "Monstrum.dll"
+      }
+    },
+    {
+      "package": "RandyKnapp-EpicLoot-0.14.13",
+      "download_url": "https://thunderstore.io/package/download/RandyKnapp/EpicLoot/0.14.13/",
+      "archive_sha256": "8fd19132c46527471092ac732b71651e11862f2c0b784fc907b387b6ace3bb4f",
+      "archive_bytes": 32706066,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333",
+        "ValheimModding-JsonDotNET-13.0.4",
+        "ValheimModding-Jotunn-2.29.2"
+      ],
+      "verified_file": {
+        "name": "EpicLoot.dll",
+        "sha256": "802790e0cbd8a6f951627619a488b84e6a406e8770e2687b2fff8b63d2adf9ea",
+        "bytes": 39085568,
+        "archive_path": "plugins/EpicLoot.dll"
+      }
+    },
+    {
+      "package": "Allifreyr-Forever_Build_2-2.1.4",
+      "download_url": "https://thunderstore.io/package/download/Allifreyr/Forever_Build_2/2.1.4/",
+      "archive_sha256": "11bf58ec12279f9980f391d37a200efb8c840e10d0209b407aa536af0dbf1ae8",
+      "archive_bytes": 15641,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350",
+        "shudnal-ConditionalConfigSync-1.0.5"
+      ],
+      "verified_file": {
+        "name": "ForeverBuild2.dll",
+        "sha256": "814b2d942b8ce6a3aea51c83ce8f5ad6746e9877a637d1bfd4ed6ab6df26afd0",
+        "bytes": 18432,
+        "archive_path": "plugins\\ForeverBuild2.dll"
+      }
+    },
+    {
+      "package": "Vapok-AdventureBackpacks-2.2.2",
+      "download_url": "https://thunderstore.io/package/download/Vapok/AdventureBackpacks/2.2.2/",
+      "archive_sha256": "47e72c5c7937b704a08030cd434fa1e3d96445c3510ffe1011c5fc02a2be30b6",
+      "archive_bytes": 48739407,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350",
+        "ValheimModding-Jotunn-2.30.2",
+        "ValheimModding-YamlDotNet-16.3.1"
+      ],
+      "verified_file": {
+        "name": "AdventureBackpacks.dll",
+        "sha256": "456f452bfb481aa31fe0dc270a3f28cac38ce6ec6d5341dc32bdecd67ecc29ad",
+        "bytes": 48914944,
+        "archive_path": "plugins/AdventureBackpacks.dll"
+      }
+    },
+    {
+      "package": "Advize-PlantEasily-2.2.2",
+      "download_url": "https://thunderstore.io/package/download/Advize/PlantEasily/2.2.2/",
+      "archive_sha256": "415c6bab9abd622f05b44d3eb431e00a62602f3e455586fc310484bcf1770a3f",
+      "archive_bytes": 189968,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350"
+      ],
+      "verified_file": {
+        "name": "Advize_PlantEasily.dll",
+        "sha256": "8e48c43bb36c4e299037001734607fadd0635803d60e8ab84023a3bc7ffc6a58",
+        "bytes": 75776,
+        "archive_path": "Advize_PlantEasily.dll"
+      }
+    },
+    {
+      "package": "Advize-PlantEverything-1.21.3",
+      "download_url": "https://thunderstore.io/package/download/Advize/PlantEverything/1.21.3/",
+      "archive_sha256": "a731227548d4bb0c669da8faf3b4d17f02ea2696b6fac85fcee9cfc3cfd32446",
+      "archive_bytes": 292475,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2351"
+      ],
+      "verified_file": {
+        "name": "Advize_PlantEverything.dll",
+        "sha256": "313d57d5d9df2a27bff04ab184487d544a0749bbbe2c10cb1c41a0ae964cac62",
+        "bytes": 260096,
+        "archive_path": "Advize_PlantEverything.dll"
+      }
+    },
+    {
+      "package": "RustyMods-UsefulPaths-1.1.1",
+      "download_url": "https://thunderstore.io/package/download/RustyMods/UsefulPaths/1.1.1/",
+      "archive_sha256": "45fdab60c67347da524cd436e7c1ff4a51e5593ed9277907afd7c98412253938",
+      "archive_bytes": 81524,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333"
+      ],
+      "verified_file": {
+        "name": "UsefulPaths.dll",
+        "sha256": "bfba84d4aea9860f48265321c9be07b2602f8c735caaa57eb60b662a511efce3",
+        "bytes": 69632,
+        "archive_path": "UsefulPaths.dll"
+      }
+    }
+  ]
+}

@@ -1,29 +1,43 @@
 {
   "schema_version": 1,
-  "status": "candidate-not-gameplay-tested",
+  "status": "smoke-tested-with-warnings",
   "packages": [
     "denikson-BepInExPack_Valheim-5.4.2351",
     "ValheimModding-Jotunn-2.30.2",
     "ValheimModding-JsonDotNET-13.0.4",
     "ValheimModding-YamlDotNet-16.3.1",
-    "shudnal-ConditionalConfigSync-1.0.5",
-    "Therzie-Warfare-1.9.4",
-    "Therzie-Armory-1.4.2",
-    "Therzie-Monstrum-1.6.0",
-    "RandyKnapp-EpicLoot-0.14.13",
+    "shudnal-ConditionalConfigSync-1.0.11",
+    "Therzie-Warfare-1.9.6",
+    "Therzie-Armory-1.4.3",
+    "Therzie-Monstrum-1.6.1",
+    "RandyKnapp-EpicLoot-0.15.3",
     "Allifreyr-Forever_Build_2-2.1.4",
-    "Vapok-AdventureBackpacks-2.2.2",
-    "Advize-PlantEasily-2.2.2",
-    "Advize-PlantEverything-1.21.3",
-    "RustyMods-UsefulPaths-1.1.1"
+    "Vapok-AdventureBackpacks-2.4.6",
+    "Advize-PlantEasily-2.3.1",
+    "Advize-PlantEverything-1.21.4",
+    "Muindor-TidyChests-1.5.0"
+  ],
+  "representative_files": {
+    "denikson-BepInExPack_Valheim-5.4.2351": "BepInEx.dll",
+    "ValheimModding-Jotunn-2.30.2": "Jotunn.dll",
+    "ValheimModding-JsonDotNET-13.0.4": "Newtonsoft.Json.dll",
+    "ValheimModding-YamlDotNet-16.3.1": "YamlDotNet.dll",
+    "shudnal-ConditionalConfigSync-1.0.11": "ConditionalConfigSync.dll",
+    "Therzie-Warfare-1.9.6": "Warfare.dll",
+    "Therzie-Armory-1.4.3": "Armory.dll",
+    "Therzie-Monstrum-1.6.1": "Monstrum.dll",
+    "RandyKnapp-EpicLoot-0.15.3": "EpicLoot.dll",
+    "Allifreyr-Forever_Build_2-2.1.4": "ForeverBuild2.dll",
+    "Vapok-AdventureBackpacks-2.4.6": "AdventureBackpacks.dll",
+    "Advize-PlantEasily-2.3.1": "Advize_PlantEasily.dll",
+    "Advize-PlantEverything-1.21.4": "Advize_PlantEverything.dll",
+    "Muindor-TidyChests-1.5.0": "TidyChests.dll"
+  },
+  "client_only": [
+    "Advize-PlantEasily-2.3.1"
   ],
   "required_before_release": [
-    "Баланс новой сборки при обычном дропе x3",
-    "Добавление и игровая проверка TidyChests",
-    "Проверка спавнов Monstrum и отсутствия акул",
-    "Игровые проверки клиента и сервера"
-  ],
-  "client_only": [
-    "Advize-PlantEasily-2.2.2"
+    "Предварительная проверка обновлённого клиента и сервера без неразобранных предупреждений",
+    "Два клиента, предметные сценарии и перенос на постоянную машину"
   ]
 }
