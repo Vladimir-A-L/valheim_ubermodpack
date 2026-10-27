@@ -50,5 +50,5 @@ esac
 exec ./valheim_server.x86_64 -nographics -batchmode \
     -name "$server_name" -world "$world_name" -port "$port" -password "$password" \
     -public 0 -savedir "$state_dir" -logFile "$state_dir/server.log" \
-    -modifier combat hard -modifier resources most \
+    -modifier resources most \
     -saveinterval 300 -backups 4 -backupshort 600 -backuplong 3600
