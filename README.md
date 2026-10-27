@@ -10,6 +10,7 @@
 - [Правила для агентов](AGENTS.md)
 - [Игровые решения и этапы](docs/design.md)
 - [Подготовка стенда, проверки и перенос](docs/runbook.md)
+- [Визуальное тестирование клиента](docs/visual-testing.md)
 - [Сведения о прежних пакетах](manifests/baseline-reported.json)
 - [Кандидат основного набора](manifests/core-candidate.json)
 
