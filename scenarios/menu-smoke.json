@@ -1,0 +1,112 @@
+{
+  "context": {
+    "geometry": [
+      1280,
+      720,
+      96
+    ],
+    "language": "eng",
+    "ocr_version": "tesseract 5.5.0",
+    "valheim": "l-1.0.20",
+    "network_protocol": 41,
+    "lock_sha256": "b1e68ae7aed109d5588a2507855465bab10a7d8a2363201ae720a993e9c6b461"
+  },
+  "steps": [
+    {
+      "name": "Возврат к тестовому персонажу",
+      "before": [
+        {
+          "text": "Manage saves",
+          "region": [
+            554,
+            140,
+            729,
+            179
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "action": {
+        "kind": "click",
+        "x": 524,
+        "y": 555
+      },
+      "after": [
+        {
+          "text": "Select Character",
+          "region": [
+            542,
+            42,
+            737,
+            86
+          ],
+          "minimum_confidence": 70
+        }
+      ]
+    },
+    {
+      "name": "Открытие списка сохранений",
+      "before": [
+        {
+          "text": "Select Character",
+          "region": [
+            542,
+            42,
+            737,
+            86
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "action": {
+        "kind": "click",
+        "x": 468,
+        "y": 692
+      },
+      "after": [
+        {
+          "text": "Manage saves",
+          "region": [
+            554,
+            140,
+            729,
+            179
+          ],
+          "minimum_confidence": 70
+        }
+      ]
+    },
+    {
+      "name": "Повторный возврат",
+      "before": [
+        {
+          "text": "Manage saves",
+          "region": [
+            554,
+            140,
+            729,
+            179
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "action": {
+        "kind": "click",
+        "x": 524,
+        "y": 555
+      },
+      "after": [
+        {
+          "text": "Select Character",
+          "region": [
+            542,
+            42,
+            737,
+            86
+          ],
+          "minimum_confidence": 70
+        }
+      ]
+    }
+  ]
+}

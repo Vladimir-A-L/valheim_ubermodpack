@@ -1,0 +1,215 @@
+{
+  "context": {
+    "geometry": [
+      1280,
+      720,
+      96
+    ],
+    "language": "eng",
+    "ocr_version": "tesseract 5.5.0",
+    "valheim": "l-1.0.20",
+    "network_protocol": 41,
+    "lock_sha256": "b1e68ae7aed109d5588a2507855465bab10a7d8a2363201ae720a993e9c6b461"
+  },
+  "steps": [
+    {
+      "name": "Выбор единственного тестового сервера",
+      "before": [
+        {
+          "text": "Select Server",
+          "region": [
+            247,
+            171,
+            409,
+            202
+          ],
+          "minimum_confidence": 70
+        },
+        {
+          "text_file": "../.local/server-endpoint",
+          "region": [
+            150,
+            228,
+            245,
+            246
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "action": {
+        "kind": "click",
+        "x": 250,
+        "y": 237
+      },
+      "after": [
+        {
+          "text": "Select Server",
+          "region": [
+            247,
+            171,
+            409,
+            202
+          ],
+          "minimum_confidence": 70
+        },
+        {
+          "text_file": "../.local/server-endpoint",
+          "region": [
+            150,
+            228,
+            245,
+            246
+          ],
+          "minimum_confidence": 70
+        }
+      ]
+    },
+    {
+      "name": "Подключение к выбранному тестовому серверу",
+      "before": [
+        {
+          "text": "Select Server",
+          "region": [
+            247,
+            171,
+            409,
+            202
+          ],
+          "minimum_confidence": 70
+        },
+        {
+          "text_file": "../.local/server-endpoint",
+          "region": [
+            150,
+            228,
+            245,
+            246
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "action": {
+        "kind": "key",
+        "keys": [
+          13
+        ]
+      },
+      "after": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ],
+      "timeout_seconds": 60
+    },
+    {
+      "name": "Фокус поля пароля",
+      "before": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ],
+      "action": {
+        "kind": "click",
+        "x": 640,
+        "y": 374
+      },
+      "after": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ]
+    },
+    {
+      "name": "Ввод пароля из приватного файла",
+      "before": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ],
+      "action": {
+        "kind": "text",
+        "text_file": "../.local/server-password"
+      },
+      "after": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ]
+    },
+    {
+      "name": "Вход в тестовый мир",
+      "before": [
+        {
+          "text": "Enter Password",
+          "region": [
+            565,
+            317,
+            719,
+            348
+          ],
+          "minimum_confidence": 70,
+          "preprocessing": "gold_text_v1"
+        }
+      ],
+      "action": {
+        "kind": "key",
+        "keys": [
+          13
+        ]
+      },
+      "after": [
+        {
+          "text": "Meadows",
+          "region": [
+            1197,
+            30,
+            1250,
+            47
+          ],
+          "minimum_confidence": 70
+        }
+      ],
+      "timeout_seconds": 60
+    }
+  ]
+}

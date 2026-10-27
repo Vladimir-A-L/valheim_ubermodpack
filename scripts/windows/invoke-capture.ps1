@@ -38,8 +38,10 @@ try {
     }
     $result | ConvertTo-Json -Depth 6 -Compress
 } finally {
-    if ($registered) {
+    if ($registered -and (Test-Path -LiteralPath $resultPath)) {
         Stop-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
         Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
     }
+    # При неизвестном результате не убивать исполнителя между key-down и finally/key-up.
+    # Задание ограничено по времени; после обрыва его состояние проверяет оператор.
 }
