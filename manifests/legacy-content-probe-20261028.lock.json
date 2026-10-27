@@ -1,0 +1,151 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-27T22:27:07.676383+00:00",
+  "status": "archives-verified-not-gameplay-tested",
+  "packages": [
+    {
+      "package": "denikson-BepInExPack_Valheim-5.4.2351",
+      "download_url": "https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.2351/",
+      "archive_sha256": "bce631497976a93977ceb08e166712e6c31d15244956f89f17df092a9b62e29f",
+      "archive_bytes": 702924,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "BepInEx.dll",
+        "bytes": 132096,
+        "sha256": "36bdb9af2b8f2eda4c911d2a49c2a05a4f643637ad724b876d292a9a5fcd8ae6",
+        "archive_path": "BepInExPack_Valheim/BepInEx/core/BepInEx.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-Jotunn-2.30.2",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/Jotunn/2.30.2/",
+      "archive_sha256": "8aae92da2be0eb6820cd4cf57e2f6c1d6ad0d738d4915966e7c3d7a94e9a9b0f",
+      "archive_bytes": 835193,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Jotunn.dll",
+        "bytes": 526336,
+        "sha256": "9509221046842a70f94b98bab4cb41005dee026823a7a79345829ed46a30f796",
+        "archive_path": "plugins\\Jotunn.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-JsonDotNET-13.0.4",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/JsonDotNET/13.0.4/",
+      "archive_sha256": "a221c7be7163ab9739274b962fbd1f63abde65b1418839a62f02aca210868147",
+      "archive_bytes": 308392,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Newtonsoft.Json.dll",
+        "bytes": 711952,
+        "sha256": "d134937ec381729074694490e81983b08ec7991b31550eabafb9202e5b404f89",
+        "archive_path": "plugins/Newtonsoft.Json.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-YamlDotNet-16.3.1",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/YamlDotNet/16.3.1/",
+      "archive_sha256": "2280480d2add7d6a7a17b882f9b755145160c852e89a14794d1493d08495d2ac",
+      "archive_bytes": 130222,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "YamlDotNet.dll",
+        "bytes": 291840,
+        "sha256": "9172f0758ed76963e0ede3b5ca9a1fb5b82f64c7e7a92cb3a6de39efa933a668",
+        "archive_path": "plugins/YamlDotNet.dll"
+      }
+    },
+    {
+      "package": "Therzie-Warfare-1.9.6",
+      "download_url": "https://thunderstore.io/package/download/Therzie/Warfare/1.9.6/",
+      "archive_sha256": "e9d3f58379aee81a1680d9161c740ea31d8bc9921f94a29440b74a39b0db5045",
+      "archive_bytes": 182189745,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Warfare.dll",
+        "bytes": 182316032,
+        "sha256": "8d9699efa0aa4de118caab250845543eaa66d8b3ae7fff5107775cf9e5aa1984",
+        "archive_path": "Warfare.dll"
+      }
+    },
+    {
+      "package": "Therzie-Monstrum-1.6.1",
+      "download_url": "https://thunderstore.io/package/download/Therzie/Monstrum/1.6.1/",
+      "archive_sha256": "b0fa3ea82f127987f824926c8ff6386ec37c7f279b8ff8e2209cb606f885900a",
+      "archive_bytes": 122060699,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Warfare-1.9.5"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Monstrum.dll",
+        "bytes": 122234880,
+        "sha256": "d3ae4a24cb6f89966cd6dcecc7fbafa7a7856e9d932ee25d92a137fdc2332f3c",
+        "archive_path": "Monstrum.dll"
+      }
+    },
+    {
+      "package": "Therzie-WarfareFireAndIce-2.0.8",
+      "download_url": "https://thunderstore.io/package/download/Therzie/WarfareFireAndIce/2.0.8/",
+      "archive_sha256": "768fb3b2eede395339754a20a5ba29c19563e5aa617cda72e15deb95dd225d5d",
+      "archive_bytes": 207981254,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Warfare-1.8.9"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "WarfareFireAndIce.dll",
+        "bytes": 208756736,
+        "sha256": "71d458a05a7b45aef21aaffd91ba41174f0eb1ac5f20b4354bb133668d746dcd",
+        "archive_path": "WarfareFireAndIce.dll"
+      }
+    },
+    {
+      "package": "Therzie-MonstrumDeepNorth-2.0.6",
+      "download_url": "https://thunderstore.io/package/download/Therzie/MonstrumDeepNorth/2.0.6/",
+      "archive_sha256": "5d65eeca17b3978c78efbfc655d112e5bf8450e7ac79be4097287d77cc69006f",
+      "archive_bytes": 424014356,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Monstrum-1.5.1",
+        "Therzie-WarfareFireAndIce-2.0.8"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "MonstrumDeepNorth.dll",
+        "bytes": 424171008,
+        "sha256": "6007db1ebf45c7bd44d4786dfaaa262f245e68ff3d70893bf2787de86d810834",
+        "archive_path": "MonstrumDeepNorth.dll"
+      }
+    },
+    {
+      "package": "Therzie-MonstrumAshlands-1.1.8",
+      "download_url": "https://thunderstore.io/package/download/Therzie/MonstrumAshlands/1.1.8/",
+      "archive_sha256": "de2b0012f64e7744836cff770baf940fd289118ea48e18a03cb449dd64dccd5d",
+      "archive_bytes": 204367775,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2202",
+        "Therzie-Monstrum-1.3.8",
+        "Therzie-WarfareFireAndIce-1.1.7"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "MonstrumAshlands.dll",
+        "bytes": 204703744,
+        "sha256": "090f60dfcc2239f45035cbb33b053e6a016c1e8d0cb84a647b6486b3cc9f9c6b",
+        "archive_path": "MonstrumAshlands.dll"
+      }
+    }
+  ]
+}

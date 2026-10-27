@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "status": "technical-check-failed-not-for-deployment",
+  "packages": [
+    "denikson-BepInExPack_Valheim-5.4.2351",
+    "ValheimModding-Jotunn-2.30.2",
+    "ValheimModding-JsonDotNET-13.0.4",
+    "ValheimModding-YamlDotNet-16.3.1",
+    "Therzie-Warfare-1.9.6",
+    "Therzie-Monstrum-1.6.1",
+    "Therzie-WarfareFireAndIce-2.0.8",
+    "Therzie-MonstrumDeepNorth-2.0.6",
+    "Therzie-MonstrumAshlands-1.1.8"
+  ],
+  "representative_files": {
+    "denikson-BepInExPack_Valheim-5.4.2351": "BepInEx.dll",
+    "ValheimModding-Jotunn-2.30.2": "Jotunn.dll",
+    "ValheimModding-JsonDotNET-13.0.4": "Newtonsoft.Json.dll",
+    "ValheimModding-YamlDotNet-16.3.1": "YamlDotNet.dll",
+    "Therzie-Warfare-1.9.6": "Warfare.dll",
+    "Therzie-Monstrum-1.6.1": "Monstrum.dll",
+    "Therzie-WarfareFireAndIce-2.0.8": "WarfareFireAndIce.dll",
+    "Therzie-MonstrumDeepNorth-2.0.6": "MonstrumDeepNorth.dll",
+    "Therzie-MonstrumAshlands-1.1.8": "MonstrumAshlands.dll"
+  },
+  "required_before_release": [
+    "Совместимость с Valheim l-1.0.20 и зависимостями без отказов загрузки",
+    "Клиент, спавны, рецепты, сохранение и восстановление; сборка не предназначена для основного мира"
+  ]
+}
