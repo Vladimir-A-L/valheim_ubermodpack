@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "status": "candidate-not-gameplay-tested",
+  "packages": [
+    "denikson-BepInExPack_Valheim-5.4.2351",
+    "ValheimModding-Jotunn-2.30.2",
+    "ValheimModding-JsonDotNET-13.0.4",
+    "ValheimModding-YamlDotNet-16.3.1",
+    "shudnal-ConditionalConfigSync-1.0.5",
+    "Therzie-Warfare-1.9.4",
+    "Therzie-Armory-1.4.2",
+    "Therzie-Monstrum-1.6.0",
+    "RandyKnapp-EpicLoot-0.14.13",
+    "Allifreyr-Forever_Build_2-2.1.4",
+    "Vapok-AdventureBackpacks-2.2.2",
+    "Advize-PlantEasily-2.2.2",
+    "Advize-PlantEverything-1.21.3",
+    "RustyMods-UsefulPaths-1.1.1"
+  ],
+  "required_before_release": [
+    "Баланс новой сборки при обычном дропе x3",
+    "Добавление и игровая проверка TidyChests",
+    "Проверка спавнов Monstrum и отсутствия акул",
+    "Игровые проверки клиента и сервера"
+  ],
+  "client_only": [
+    "Advize-PlantEasily-2.2.2"
+  ]
+}

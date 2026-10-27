@@ -1,0 +1,135 @@
+# Подготовка и проверка поставки
+
+## Локальные данные
+
+Использовать Linux x86-64, Python 3.11+, curl, unzip, tar, OpenSSH и пользовательский systemd.
+Для SteamCMD нужны 32-битные библиотеки; для сервера — библиотеки из
+[официального руководства](https://www.valheimgame.com/support/a-guide-to-dedicated-servers/).
+Выполнять из корня checkout. Все примеры предполагают отдельный тестовый мир.
+
+```bash
+mkdir -p .local/evidence .local/downloads .local/steamcmd
+chmod 700 .local
+sudo apt-get install --no-install-recommends lib32gcc-s1 lib32stdc++6 libatomic1 libpulse0 libpulse-dev
+```
+
+SSH-доступы хранить в `~/.ssh/config`, например под алиасами `valheim-client` и `valheim-server`.
+Пароли и ключи не переносить в checkout. На Windows для администратора используется
+`%ProgramData%/ssh/administrators_authorized_keys` с ACL для SYSTEM и Administrators:
+[инструкция Microsoft](https://learn.microsoft.com/en-us/windows-server/administration/openssh/openssh_keymanagement).
+Существующие ключи сохранять. Проверять доступ отдельным соединением с `BatchMode=yes`.
+
+Сборщик инвентаризации только читает клиент. Результат может содержать идентификаторы Steam и приватные
+настройки, поэтому не публикуется. Исходный modded-клиент для новой конфигурации больше не требуется.
+
+```bash
+python3 scripts/collect-client.py --host valheim-client --output .local/evidence/client-new.json
+```
+
+## Получение игры и модов
+
+SteamCMD загружать с официального адреса, фиксировать SHA256 bootstrap-архива локально:
+
+```bash
+curl -fL -o .local/downloads/steamcmd_linux.tar.gz https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz
+sha256sum .local/downloads/steamcmd_linux.tar.gz
+tar -xzf .local/downloads/steamcmd_linux.tar.gz -C .local/steamcmd
+bash scripts/install-server.sh .local/steamcmd/steamcmd.sh .local/server-new
+```
+
+Установщик требует новый каталог. SteamCMD получает текущую public-ветку, а не исторический build по номеру.
+После скачивания сверить `steamapps/appmanifest_896660.acf` с `manifests/server-build.json`;
+другая версия — новый кандидат и новый цикл испытаний. Номер build клиента и сервера может различаться:
+это разные приложения Steam. Сверять также версию игры и сетевой протокол.
+
+```bash
+python3 scripts/fetch-packages.py --lock manifests/core-candidate.lock.json
+python3 scripts/stage-foundation.py --output .local/foundation-new
+python3 scripts/stage-foundation.py --profile core --output .local/core-new
+python3 scripts/stage-foundation.py --profile core --target client --output .local/core-client-new
+```
+
+Загрузчик проверяет основные DLL по данным пользователя, архивы — по закреплённому SHA256,
+а зависимости — по опубликованным manifests. Никакие недостающие зависимости автоматически не выбираются.
+Для нового состава создаётся отдельный lock. Совпадение DLL не подтверждает настройки и игровую совместимость.
+
+Overlay создаётся только в новом каталоге. Для runtime копировать чистую установку игры в отдельный каталог,
+затем накладывать нужный overlay. Не копировать поверх работающего процесса или прежнего постоянного мира.
+Исходные архивы с лицензиями сохраняются локально. Общие инструкции BepInEx:
+[публикация сопровождающих пакет](https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/).
+
+Серверный профиль исключает PlantEasily; клиентский сохраняет его. Для core накладываются начальные настройки
+из `configs/core`: отключение Bloodgill и устойчивость Forever Build 2 ×3. Это небольшие исходные конфиги,
+которые при запуске дополняются самим BepInEx. Не заменять ими уже настроенный runtime без сравнения изменений.
+
+## Запуск стенда
+
+Создать приватный файл пароля с правами `0600`, минимум пять символов. Не выводить его в отчёт.
+Переменные ниже являются параметрами запуска, а не командами установки.
+
+```bash
+export VALHEIM_SERVER_DIR="$PWD/.local/server-new"
+export VALHEIM_STATE_DIR="$PWD/.local/state-new"
+export VALHEIM_PASSWORD_FILE="$PWD/.local/server-password"
+export VALHEIM_WORLD_NAME=Development
+export VALHEIM_MODE=vanilla
+export VALHEIM_UNIT=valheim-dev
+bash scripts/start-dev.sh
+```
+
+После добавления overlay использовать `VALHEIM_MODE=bepinex`. Игра запускается с обычной добычей ×3
+(`-modifier resources most`), Steam backend и `-public 0`. Это скрывает сервер из списка,
+но не является сетевым firewall. Используются UDP 2456–2457; crossplay для локальной проверки не включён.
+`start-dev.sh` ограничивает процесс 4 ГиБ памяти, 200% CPU и десятью минутами работы.
+Лимиты меняются через `VALHEIM_MEMORY_MAX`, `VALHEIM_CPU_QUOTA`, `VALHEIM_RUNTIME_MAX`; для ручного длительного
+теста допустимо `VALHEIM_RUNTIME_MAX=infinity` после проверки ресурсов. Нагрузочную ёмкость это не доказывает.
+
+```bash
+systemctl --user show valheim-dev -p ActiveState -p MemoryPeak -p CPUUsageNSec
+systemctl --user stop valheim-dev
+```
+
+Остановка передаёт SIGINT игре, затем ждёт до 120 секунд. Сервис временный: для нового запуска снова вызвать
+`start-dev.sh`. Журналы — в каталоге состояния и `BepInEx/LogOutput.log`. Скопировать их в приватный отчёт
+до следующего старта. `Game server connected` подтверждает запуск, а не подключение реального игрока.
+
+## Backup, перезапуск и восстановление
+
+После штатной остановки убедиться в завершённом `World save (5/5) done`, отсутствии процесса и свободных
+портах. Скопировать **весь каталог состояния** и все внешние данные модов. Формат 1.0.20 включает каталоги
+миров с `.db2`, `.fwl2`, `.chunk`, `.chunks`, `.ok`; копии только старых `.db/.fwl` недостаточно.
+
+```bash
+mkdir -p .local/backups
+tar -czf .local/backups/state-new.tar.gz -C .local state-new
+sha256sum .local/backups/state-new.tar.gz
+```
+
+Для нового backup использовать уникальное имя. Проверка восстановления: распаковать в отдельный каталог,
+запустить **ту же поставку** с новым `VALHEIM_STATE_DIR`, дождаться подключения сервера и загрузки мира,
+проверить объекты и награды реальными клиентами. Сохранять backup до проверки, не восстанавливать поверх
+работающего сервера. Откат версии модов может требовать одновременно отката мира и внешних данных модов.
+
+## Перенос на целевую машину
+
+До переноса завершить [игровую приёмку](design.md#игровая-приёмка), закрепить конфиги и разделение
+client/server. Подготовить полный manifest файлов поставки с SHA256 и архив с контрольной суммой;
+`server-build.json` содержит только идентичность build и несколько контрольных файлов, этого для релиза мало.
+
+План размещения: `/srv/valheim/releases/<release-id>` для поставок, отдельные `state`, `backups` и `secrets`.
+Runtime изолировать Docker-контейнером с явными лимитами ресурсов и штатной остановкой SIGINT.
+Начальные 16 ГиБ на целевой машине — бюджет для оценки, не подтверждённая потребность.
+Контейнерную поставку ещё нужно реализовать и проверить; локальный стенд использует systemd напрямую.
+
+Переносить проверенный архив, сверять полный SHA256, иметь предыдущую поставку и согласованный backup.
+Не выполнять обновления Steam/модов при старте и не использовать `git pull` для замены файлов работающего
+сервера. До переключения проверять порты, свободную память, диск и влияние соседних служб.
+Внешняя доступность и проброс на маршрутизаторе проверяются отдельно от LAN-доступа.
+
+## Проверка инструментов
+
+```bash
+make check
+```
+
+Это проверки загрузчика архивов, Python-синтаксиса, shellcheck и whitespace. Они не заменяют игровые тесты.

@@ -1,4 +1,25 @@
 # Byte-compiled / optimized / DLL files
+# Локальные доступы, инвентаризация, игровые данные и артефакты поставки.
+.local/
+.env.*
+!.env.example
+*.pem
+*.key
+*.dll
+*.exe
+*.zip
+*.tar.gz
+*.db
+*.db2
+*.fwl
+*.fwl2
+*.fch
+*.chunk
+*.chunks
+*.dmp
+runtime/
+artifacts/
+
 __pycache__/
 *.py[codz]
 *$py.class

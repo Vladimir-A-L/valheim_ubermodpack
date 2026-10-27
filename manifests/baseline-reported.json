@@ -1,0 +1,272 @@
+{
+  "schema_version": 1,
+  "status": "user-reported-not-independently-verified",
+  "scope": "Выборка основных DLL из пользовательской инвентаризации; это не полный lock файлов",
+  "packages": [
+    {
+      "package": "denikson-BepInExPack_Valheim-5.4.2351",
+      "stage": "foundation",
+      "source_url": "https://thunderstore.io/c/valheim/p/denikson/BepInExPack_Valheim/",
+      "representative_file": {
+        "name": "BepInEx.dll",
+        "sha256": "36bdb9af2b8f2eda4c911d2a49c2a05a4f643637ad724b876d292a9a5fcd8ae6",
+        "bytes": 132096
+      }
+    },
+    {
+      "package": "ValheimModding-Jotunn-2.30.2",
+      "stage": "foundation",
+      "source_url": "https://thunderstore.io/c/valheim/p/ValheimModding/Jotunn/",
+      "representative_file": {
+        "name": "Jotunn.dll",
+        "sha256": "9509221046842a70f94b98bab4cb41005dee026823a7a79345829ed46a30f796",
+        "bytes": 526336
+      }
+    },
+    {
+      "package": "ValheimModding-JsonDotNET-13.0.4",
+      "stage": "foundation",
+      "source_url": "https://thunderstore.io/c/valheim/p/ValheimModding/JsonDotNET/",
+      "representative_file": {
+        "name": "Newtonsoft.Json.dll",
+        "sha256": "d134937ec381729074694490e81983b08ec7991b31550eabafb9202e5b404f89",
+        "bytes": 711952
+      }
+    },
+    {
+      "package": "ValheimModding-YamlDotNet-16.3.1",
+      "stage": "foundation",
+      "source_url": "https://thunderstore.io/c/valheim/p/ValheimModding/YamlDotNet/",
+      "representative_file": {
+        "name": "YamlDotNet.dll",
+        "sha256": "9172f0758ed76963e0ede3b5ca9a1fb5b82f64c7e7a92cb3a6de39efa933a668",
+        "bytes": 291840
+      }
+    },
+    {
+      "package": "Therzie-Warfare-1.9.4",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Therzie/Warfare/",
+      "representative_file": {
+        "name": "Warfare.dll",
+        "sha256": "7e001761d3d20382b271a22b9535c1b557056db005a7ea0e9913565e6d70280e",
+        "bytes": 182304256
+      }
+    },
+    {
+      "package": "Therzie-Armory-1.4.2",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Therzie/Armory/",
+      "representative_file": {
+        "name": "Armory.dll",
+        "sha256": "37f31edcfdf44250b9819be998322794eb2b82d00d14e5bbc18b41483181dc2b",
+        "bytes": 46128640
+      }
+    },
+    {
+      "package": "Therzie-Monstrum-1.6.0",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Therzie/Monstrum/",
+      "representative_file": {
+        "name": "Monstrum.dll",
+        "sha256": "a61aae35daf247afe1e161ea44849568e695497d647be0a4857ebb1971f8edd2",
+        "bytes": 122228736
+      }
+    },
+    {
+      "package": "RandyKnapp-EpicLoot-0.14.13",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/RandyKnapp/EpicLoot/",
+      "representative_file": {
+        "name": "EpicLoot.dll",
+        "sha256": "802790e0cbd8a6f951627619a488b84e6a406e8770e2687b2fff8b63d2adf9ea",
+        "bytes": 39085568
+      }
+    },
+    {
+      "package": "Allifreyr-Forever_Build_2-2.1.4",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Allifreyr/Forever_Build_2/",
+      "representative_file": {
+        "name": "ForeverBuild2.dll",
+        "sha256": "814b2d942b8ce6a3aea51c83ce8f5ad6746e9877a637d1bfd4ed6ab6df26afd0",
+        "bytes": 18432
+      }
+    },
+    {
+      "package": "Vapok-AdventureBackpacks-2.2.2",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Vapok/AdventureBackpacks/",
+      "representative_file": {
+        "name": "AdventureBackpacks.dll",
+        "sha256": "456f452bfb481aa31fe0dc270a3f28cac38ce6ec6d5341dc32bdecd67ecc29ad",
+        "bytes": 48914944
+      }
+    },
+    {
+      "package": "Advize-PlantEasily-2.2.2",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Advize/PlantEasily/",
+      "representative_file": {
+        "name": "Advize_PlantEasily.dll",
+        "sha256": "8e48c43bb36c4e299037001734607fadd0635803d60e8ab84023a3bc7ffc6a58",
+        "bytes": 75776
+      }
+    },
+    {
+      "package": "Advize-PlantEverything-1.21.3",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/Advize/PlantEverything/",
+      "representative_file": {
+        "name": "Advize_PlantEverything.dll",
+        "sha256": "313d57d5d9df2a27bff04ab184487d544a0749bbbe2c10cb1c41a0ae964cac62",
+        "bytes": 260096
+      }
+    },
+    {
+      "package": "RustyMods-UsefulPaths-1.1.1",
+      "stage": "core",
+      "source_url": "https://thunderstore.io/c/valheim/p/RustyMods/UsefulPaths/",
+      "representative_file": {
+        "name": "UsefulPaths.dll",
+        "sha256": "bfba84d4aea9860f48265321c9be07b2602f8c735caaa57eb60b662a511efce3",
+        "bytes": 69632
+      }
+    },
+    {
+      "package": "RustyMods-Almanac-3.8.0",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/RustyMods/Almanac/",
+      "representative_file": {
+        "name": "Almanac.dll",
+        "sha256": "292c7ad040a55889e04b9a7e07ad47e7024353acf8bf090e0a7b5b0215d5f13f",
+        "bytes": 1073664
+      }
+    },
+    {
+      "package": "RustyMods-Seasonality-3.8.3",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/RustyMods/Seasonality/",
+      "representative_file": {
+        "name": "Seasonality.dll",
+        "sha256": "acdc9139546509ab477d847d9eb3a3751ca39c55ceeacf0b42bffa2c65027500",
+        "bytes": 985088
+      }
+    },
+    {
+      "package": "Marlthon-SeaAnimals-0.3.8",
+      "stage": "review-disable-sharks",
+      "source_url": "https://thunderstore.io/c/valheim/p/Marlthon/SeaAnimals/",
+      "representative_file": {
+        "name": "SeaAnimals.dll",
+        "sha256": "0909bf4f3af06f4b1a236329ed25cd0027dcaa92fb237dba9b1ec65131364561",
+        "bytes": 27877376
+      }
+    },
+    {
+      "package": "AWLGaming-BoneAppetit-3.3.18",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/AWLGaming/BoneAppetit/",
+      "representative_file": {
+        "name": "BoneAppetit.dll",
+        "sha256": "aed040cff6c0fb3362aa3192cf69543f24d428b110171138422a6db2ed440d01",
+        "bytes": 16432128
+      }
+    },
+    {
+      "package": "Frenvius-Valharvest-3.4.2",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/Frenvius/Valharvest/",
+      "representative_file": {
+        "name": "Valharvest.dll",
+        "sha256": "f4d4361164fb9822f1baf59c91614e766ddff4740e79a6c3c5e0a8bb5c4f66b8",
+        "bytes": 31801856
+      }
+    },
+    {
+      "package": "OdinPlus-OdinHorse-1.7.5",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/OdinPlus/OdinHorse/",
+      "representative_file": {
+        "name": "OdinHorse.dll",
+        "sha256": "da54029e9b4c14a3bbaf8d26934557711279699a41cdaa680e44eabe071768f8",
+        "bytes": 11578880
+      }
+    },
+    {
+      "package": "StonedParadise-AnimalFeedingTrough-1.0.5",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/StonedParadise/AnimalFeedingTrough/",
+      "representative_file": {
+        "name": "AnimalFeedingTrough.dll",
+        "sha256": "864b13bfc2ed4e2657fc547b69d699ce7148fc71ccbccd5c6dc32af203a72d0d",
+        "bytes": 11772928
+      }
+    },
+    {
+      "package": "blacks7ar-OdinsHares-1.3.4",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/blacks7ar/OdinsHares/",
+      "representative_file": {
+        "name": "OdinsHares.dll",
+        "sha256": "3c5721b3faff63b406fc9c976b7f589b774566d7b2690f3827468abc0df30ce1",
+        "bytes": 7129088
+      }
+    },
+    {
+      "package": "shudnal-ConditionalConfigSync-1.0.5",
+      "stage": "foundation",
+      "source_url": "https://thunderstore.io/c/valheim/p/shudnal/ConditionalConfigSync/",
+      "representative_file": {
+        "name": "ConditionalConfigSync.dll",
+        "sha256": "d2291ed869892552ec497916b2750def42cbdc37d61b922c1b4253361b2a3ab1",
+        "bytes": 232448
+      }
+    },
+    {
+      "package": "warpalicious-More_World_Locations_AIO-5.1.7",
+      "stage": "review",
+      "source_url": "https://thunderstore.io/c/valheim/p/warpalicious/More_World_Locations_AIO/",
+      "representative_file": {
+        "name": "More_World_Locations_AIO.dll",
+        "sha256": "5aad6c697f43e944cf61c154a8957d5c3836eb26a16973803903c86857911ae4",
+        "bytes": 60850688
+      }
+    },
+    {
+      "package": "Ketanol-DreadRifts-0.1.23",
+      "stage": "experimental",
+      "source_url": "https://thunderstore.io/c/valheim/p/Ketanol/DreadRifts/",
+      "representative_file": {
+        "name": "DreadRifts.dll",
+        "sha256": "753898f46ff1c8e3c7e666924df1a79d4ee1bed4ff7260babead7d004e79f036",
+        "bytes": 12518912
+      }
+    },
+    {
+      "package": "Digitalroot-Max_Dungeon_Rooms-2.0.40",
+      "stage": "deferred",
+      "source_url": "https://thunderstore.io/c/valheim/p/Digitalroot/Max_Dungeon_Rooms/",
+      "representative_file": {
+        "name": "Digitalroot.Valheim.MaxDungeonRooms.dll",
+        "sha256": "a4d7ce6ed74ab4cbd7385eb735fa216e70b8904933a68946e47a51b984e1399f",
+        "bytes": 26112
+      }
+    },
+    {
+      "package": "zolantris-ValheimRAFT-5.0.7",
+      "stage": "exclude",
+      "source_url": "https://thunderstore.io/c/valheim/p/zolantris/ValheimRAFT/",
+      "representative_file": {
+        "name": "ValheimVehicles.dll",
+        "sha256": "432b674c5cddb69fbc763372507e3e687b733480f0abee218dedde8872b91e29",
+        "bytes": 39899136
+      }
+    }
+  ],
+  "missing": [
+    "Версия и файлы TidyChests",
+    "Полная актуальная инвентаризация плагинов"
+  ],
+  "config_policy": "Исходные конфиги не нужны: дроп x3, остальные настройки разрабатываются заново"
+}

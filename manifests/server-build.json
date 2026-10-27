@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "platform": "linux-x86_64",
+  "app_id": 896660,
+  "build_id": "25909431",
+  "game_version": "l-1.0.20",
+  "network_version": 41,
+  "depots": {
+    "1006": "4559160656493359681",
+    "896661": "4001404753685205688"
+  },
+  "files": {
+    "valheim_server.x86_64": {
+      "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+      "bytes": 15160
+    },
+    "UnityPlayer.so": {
+      "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+      "bytes": 37123576
+    },
+    "steamapps/appmanifest_896660.acf": {
+      "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+      "bytes": 801
+    }
+  },
+  "scope": "Build identity and representative files; not a complete server file lock"
+}
