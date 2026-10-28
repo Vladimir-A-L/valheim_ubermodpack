@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T16:37:54.845071+00:00",
+  "scope": "Проверка автоматизации и площадки настоящим клиентом; не полная приёмка модпака",
+  "status": "passed",
+  "real_clients": 1,
+  "prototype_version": "0.2.2",
+  "prototype_sha256": "aa8d663c07c2fa8418475b944898eaf9e611bbcbfe72f3403db3c356bc2845d1",
+  "valheim": "l-1.0.20",
+  "server_build": "25909431",
+  "client_build": "25909357",
+  "network_protocol": 41,
+  "dependencies_lock_sha256": "73cf0592acec81e01f74fca644113e55c42d7a6200e5696319b8ace368c107f0",
+  "ui": {
+    "geometry": [
+      1280,
+      720,
+      96
+    ],
+    "language": "eng",
+    "ocr_version": "tesseract 5.5.0",
+    "minimum_confidence": 70
+  },
+  "server_limits": {
+    "memory_bytes": 4294967296,
+    "cpu_percent": 200,
+    "runtime_seconds_per_start": 3600
+  },
+  "observed_memory_peak_bytes": [
+    2734108672,
+    2158850048
+  ],
+  "automatic_connections": [
+    {
+      "status": "passed",
+      "steps": 7,
+      "duration_seconds": 110.946,
+      "captures": 18,
+      "reused_observations": 4,
+      "consecutive_world_confirmations": 2,
+      "report_sha256": "5863a6e14510876bcb5d74aed898d8e0ed4966e620e9253a52a8908550f0a077"
+    },
+    {
+      "status": "passed",
+      "steps": 7,
+      "duration_seconds": 94.473,
+      "captures": 17,
+      "reused_observations": 5,
+      "consecutive_world_confirmations": 2,
+      "report_sha256": "34f81a4961218315f746c49d21cb9112e8d7630d03790676ceefffae0f1a528b"
+    }
+  ],
+  "fixture": {
+    "layout_version": 2,
+    "raised_by_meters": 1.5,
+    "chests": [
+      "zero",
+      "coins",
+      "single",
+      "groups",
+      "overflow"
+    ],
+    "successful_cycles_before_restart": 5,
+    "successful_cycles_after_restart": 5,
+    "additional_look_actions": 0,
+    "identity_check": "Игровой hover и фактический Container.in_use",
+    "ui_check": "OCR: Open, Take all и Place stacks",
+    "contents_quantity_properties_slots_preserved": true
+  },
+  "restart_verification": {
+    "verified_chests": 5,
+    "positions_equal": true,
+    "identity_quantity_properties_slots_equal": true,
+    "reward_states_equal": true,
+    "player_items_equal": true,
+    "guards_alive": 5,
+    "max_durability_delta": 0.0,
+    "chest_units": 547
+  },
+  "final_verification": {
+    "verified_chests": 5,
+    "positions_equal": true,
+    "identity_quantity_properties_slots_equal": true,
+    "reward_states_equal": true,
+    "player_items_equal": true,
+    "guards_alive": 5,
+    "max_durability_delta": 0.0,
+    "chest_units": 547
+  },
+  "calibration": {
+    "short_name_ocr": "inconclusive; цель независимо подтверждена диагностикой игры",
+    "open_prompt_region": [
+      670,
+      380,
+      789,
+      398
+    ],
+    "durability_serialization_step": 0.01,
+    "initial_exact_float_comparison": "Отказ; подтверждено округление формата ItemData.Save/Load"
+  },
+  "observed_guards": [
+    "window_not_foreground",
+    "observation_expired"
+  ],
+  "teardown": {
+    "client_running": false,
+    "server_running": false,
+    "vision_tasks": 0,
+    "ports_released": true,
+    "main_files_unchanged": 121,
+    "baseline_save_files_verified": 9,
+    "final_checkpoint_files": 198,
+    "fixture_disabled_after_backup": true
+  },
+  "limitations": [
+    "Нужны подготовленные персонаж и список серверов",
+    "Один профиль интерфейса и один клиент",
+    "Прежние предупреждения Unity/Jotunn/PoV сохраняются",
+    "Полная приёмка модпака не выполнена"
+  ]
+}
