@@ -1,0 +1,360 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T01:54:47.9954690Z",
+  "status": "headless-prototype-passed-not-gameplay-accepted",
+  "packages_lock": "manifests/dungeon-prototype.lock.json",
+  "game_version": "l-1.0.20",
+  "steam_build_id": "25909431",
+  "prototype": {
+    "version": "0.1.0",
+    "tested_dll_sha256": "ef35e85c4c53f5c2d2d851b425cd1e61fef14e4e08197cc10526333bcce6ab6a"
+  },
+  "limits": {
+    "memory_bytes": 4294967296,
+    "cpu_quota_percent": 200,
+    "runtime_seconds": 600
+  },
+  "final_run": {
+    "plugins_loaded": 7,
+    "plugins_failed": 0,
+    "plugins_skipped": 0,
+    "memory_peak_bytes": 2363936768,
+    "cpu_usage_nanoseconds": 84187115000,
+    "server_ready": true,
+    "world_saved": true,
+    "stopped": true
+  },
+  "creature_cases": [
+    {
+      "prefab": "Skeleton",
+      "requested": 0,
+      "actual": 0,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Skeleton",
+      "requested": 1,
+      "actual": 1,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Skeleton",
+      "requested": 3,
+      "actual": 3,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Skeleton",
+      "requested": 5,
+      "actual": 5,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Skeleton",
+      "requested": 10,
+      "actual": 10,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Greydwarf",
+      "requested": 0,
+      "actual": 0,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Greydwarf",
+      "requested": 1,
+      "actual": 1,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Greydwarf",
+      "requested": 3,
+      "actual": 3,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Greydwarf",
+      "requested": 5,
+      "actual": 5,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    },
+    {
+      "prefab": "Greydwarf",
+      "requested": 10,
+      "actual": 10,
+      "sync": true,
+      "moved": true,
+      "star_changed": true,
+      "zdo_roundtrip": true
+    }
+  ],
+  "control": {
+    "unmarked_vanilla_sync": true
+  },
+  "reward_projection": {
+    "forest_level": 19,
+    "common": 78.0,
+    "magic": 19.0,
+    "rare": 3.0,
+    "reward_per_modifier": 0.5,
+    "star_scale": 1.0,
+    "rare_floor_reference_chance": 0.5,
+    "rows": [
+      {
+        "modifiers": 0,
+        "opportunities": 1.0,
+        "pov_rare": 0.13636363636363635,
+        "raw_epic_probabilities": [
+          0.95,
+          0.040000000000000036,
+          0.010000000000000009,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.95,
+          0.040000000000000036,
+          0.010000000000000009,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": false,
+        "sample": [
+          94833,
+          4108,
+          1059,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      },
+      {
+        "modifiers": 1,
+        "opportunities": 1.5,
+        "pov_rare": 0.19740512870876736,
+        "raw_epic_probabilities": [
+          0.9259454627568515,
+          0.05909209997870224,
+          0.014962437264446238,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.9259454627568515,
+          0.05909209997870224,
+          0.014962437264446238,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": false,
+        "sample": [
+          92553,
+          5941,
+          1506,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      },
+      {
+        "modifiers": 3,
+        "opportunities": 2.5,
+        "pov_rare": 0.3068498838848446,
+        "raw_epic_probabilities": [
+          0.8796481896190089,
+          0.09553899748918926,
+          0.024812812891801816,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.8796481896190089,
+          0.09553899748918926,
+          0.024812812891801816,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": false,
+        "sample": [
+          88052,
+          9503,
+          2445,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      },
+      {
+        "modifiers": 5,
+        "opportunities": 3.5,
+        "pov_rare": 0.4013703542641839,
+        "raw_epic_probabilities": [
+          0.8356657801380584,
+          0.12976953509905786,
+          0.03456468476288377,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.8356657801380584,
+          0.12976953509905786,
+          0.03456468476288377,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": false,
+        "sample": [
+          83598,
+          12920,
+          3482,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      },
+      {
+        "modifiers": 8,
+        "opportunities": 5.0,
+        "pov_rare": 0.5195429165295465,
+        "raw_epic_probabilities": [
+          0.7737809374999998,
+          0.17720911240000015,
+          0.04900995010000009,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.0,
+          0.9509900498999999,
+          0.04900995010000009,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": true,
+        "sample": [
+          0,
+          94917,
+          5083,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      },
+      {
+        "modifiers": 10,
+        "opportunities": 6.0,
+        "pov_rare": 0.5850597915482447,
+        "raw_epic_probabilities": [
+          0.7350918906249998,
+          0.2063882587760002,
+          0.058519850599,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "epic_probabilities": [
+          0.0,
+          0.941480149401,
+          0.058519850599,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "rare_floor": true,
+        "sample": [
+          0,
+          94193,
+          5807,
+          0,
+          0,
+          0
+        ],
+        "trials": 100000,
+        "items_per_trial": 1
+      }
+    ]
+  },
+  "epicloot_cases": [
+    {
+      "prefab": "SwordBronze",
+      "requested": 0,
+      "actual": 0,
+      "quantity": 1
+    },
+    {
+      "prefab": "SwordBronze",
+      "requested": 1,
+      "actual": 1,
+      "quantity": 1
+    },
+    {
+      "prefab": "SwordBronze",
+      "requested": 2,
+      "actual": 2,
+      "quantity": 1
+    },
+    {
+      "chest": "TreasureChest_forestcrypt",
+      "added": 1,
+      "rarity": 1,
+      "duplicate_refused": true
+    }
+  ],
+  "not_tested": [
+    "procedural-depth-generation",
+    "automatic-guard-chest-linking",
+    "combat-balance",
+    "two-client-ownership-transfer",
+    "world-restart-with-persistent-guards",
+    "full-core-modpack"
+  ],
+  "report": "docs/reports/2026-10-28-dungeon-prototype.md"
+}

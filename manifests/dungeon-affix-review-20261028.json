@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T01:13:03.227996+00:00",
+  "purpose": "dungeon-affix-static-review",
+  "verification_source": "release-archive-observation",
+  "runtime_tests_performed": false,
+  "installation_lock": false,
+  "packages": [
+    {
+      "package": "treextr-PathOfValheiman",
+      "version": "5.3.6",
+      "download_url": "https://gcdn.thunderstore.io/live/repository/packages/treextr-PathOfValheiman-5.3.6.zip",
+      "archive_sha256": "0cdadae6479d8785a58c5a4847aa28ab81c7297873d430154501b63e109c6a35",
+      "archive_bytes": 173024527,
+      "declared_dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333",
+        "ValheimModding-Jotunn-2.30.2"
+      ],
+      "dlls": [
+        {
+          "archive_path": "plugins/PathOfValheiman/PathOfValheiman.dll",
+          "sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416",
+          "bytes": 192794624
+        }
+      ],
+      "status": "downloaded-for-static-review-not-installed",
+      "inspected_types": [
+        "Valheiman.Api.Creatures",
+        "PassiveTree.CreatureRarity",
+        "PassiveTree.CreatureStars",
+        "PassiveTree.RarityRoll",
+        "PassiveTree.RarityMods",
+        "PassiveTree.RarityLoot",
+        "PassiveTree.Loot.LootDrops"
+      ]
+    }
+  ],
+  "existing_package_inspected": {
+    "package": "RandyKnapp-EpicLoot-0.15.3",
+    "dll_sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef",
+    "lock": "manifests/core-candidate.lock.json",
+    "inspected_type": "EpicLoot.API",
+    "config_files": [
+      {
+        "relative_path": "BepInEx/config/EpicLoot/baseconfig/enchantcosts.json",
+        "sha256": "55cb8cd7aca15d0d17056df82c41eb6015249bd322063c707c614446075845f3"
+      }
+    ]
+  },
+  "existing_game_assembly_inspected": {
+    "game_version": "l-1.0.20",
+    "steam_build_id": "25909431",
+    "relative_path": "valheim_server_Data/Managed/assembly_valheim.dll",
+    "sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+    "inspected_types": [
+      "CharacterDrop",
+      "Container"
+    ]
+  },
+  "report": "docs/reports/2026-10-28-dungeon-affix-plan.md"
+}

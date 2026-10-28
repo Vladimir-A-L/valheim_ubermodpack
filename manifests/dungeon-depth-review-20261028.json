@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T00:18:59.927476+00:00",
+  "purpose": "dungeon-depth-static-review",
+  "verification_source": "release-archive-observation",
+  "runtime_tests_performed": false,
+  "installation_lock": false,
+  "packages": [
+    {
+      "package": "Max_Dungeon_Rooms",
+      "version": "2.0.42",
+      "download_url": "https://gcdn.thunderstore.io/live/repository/packages/Digitalroot-Max_Dungeon_Rooms-2.0.42.zip",
+      "archive_sha256": "d04d936bcc834d449508501a261967b175d88cb021a3ab3279bfda611c082166",
+      "archive_bytes": 107831,
+      "declared_dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350",
+        "ValheimModding-Jotunn-2.30.2"
+      ],
+      "dlls": [
+        {
+          "archive_path": "plugins/Digitalroot.Valheim.MaxDungeonRooms.dll",
+          "bytes": 25600,
+          "sha256": "cf86b478538fbb782d824e50f741896298ea8c85f717bd121ecc78f74aee3c5c"
+        }
+      ],
+      "status": "downloaded-for-static-review-not-installed"
+    },
+    {
+      "package": "DungeonMaps",
+      "version": "1.1.2",
+      "download_url": "https://gcdn.thunderstore.io/live/repository/packages/OverDrive-DungeonMaps-1.1.2.zip",
+      "archive_sha256": "8e4bb82273f985c304605036225f5acfce36598f8723fff16c4a757cb2c1ac98",
+      "archive_bytes": 28006,
+      "declared_dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350"
+      ],
+      "dlls": [
+        {
+          "archive_path": "DungeonMaps.dll",
+          "bytes": 41984,
+          "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+        }
+      ],
+      "status": "downloaded-for-static-review-not-installed"
+    },
+    {
+      "package": "CreatureLevelAndLootControl",
+      "version": "5.0.7",
+      "download_url": "https://cdn.hexium.gg/upload/342/5.0.7.zip",
+      "archive_sha256": "6ef77bd46b9acddae53d1d626aab255ed572ce8bdb23f5838ce2186e2d71b218",
+      "archive_bytes": 782310,
+      "declared_dependencies": [],
+      "dlls": [
+        {
+          "archive_path": "CreatureLevelControl.dll",
+          "bytes": 1024512,
+          "sha256": "a42201fadaf36ab0a0266e132903e35f3481871c479d2de9fe1351b11b315056"
+        }
+      ],
+      "status": "downloaded-for-static-review-not-installed"
+    }
+  ],
+  "existing_package_inspected": {
+    "package": "RandyKnapp-EpicLoot-0.15.3",
+    "dll_sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef",
+    "lock": "manifests/core-candidate.lock.json",
+    "inspected_type": "EpicLoot.LootRoller"
+  },
+  "publication_only": [
+    {
+      "package": "treextr-PathOfValheiman-5.3.6",
+      "source_url": "https://thunderstore.io/c/valheim/p/treextr/PathOfValheiman/",
+      "api_url": "https://valheiman.com/api",
+      "archive_downloaded": false
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-28T01:47:41.182776+00:00",
+  "status": "isolated-prototype-not-gameplay-accepted",
+  "packages": [
+    {
+      "package": "denikson-BepInExPack_Valheim-5.4.2351",
+      "download_url": "https://thunderstore.io/package/download/denikson/BepInExPack_Valheim/5.4.2351/",
+      "archive_sha256": "bce631497976a93977ceb08e166712e6c31d15244956f89f17df092a9b62e29f",
+      "archive_bytes": 702924,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "BepInEx.dll",
+        "bytes": 132096,
+        "sha256": "36bdb9af2b8f2eda4c911d2a49c2a05a4f643637ad724b876d292a9a5fcd8ae6",
+        "archive_path": "BepInExPack_Valheim/BepInEx/core/BepInEx.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-Jotunn-2.30.2",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/Jotunn/2.30.2/",
+      "archive_sha256": "8aae92da2be0eb6820cd4cf57e2f6c1d6ad0d738d4915966e7c3d7a94e9a9b0f",
+      "archive_bytes": 835193,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Jotunn.dll",
+        "bytes": 526336,
+        "sha256": "9509221046842a70f94b98bab4cb41005dee026823a7a79345829ed46a30f796",
+        "archive_path": "plugins\\Jotunn.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-JsonDotNET-13.0.4",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/JsonDotNET/13.0.4/",
+      "archive_sha256": "a221c7be7163ab9739274b962fbd1f63abde65b1418839a62f02aca210868147",
+      "archive_bytes": 308392,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "Newtonsoft.Json.dll",
+        "bytes": 711952,
+        "sha256": "d134937ec381729074694490e81983b08ec7991b31550eabafb9202e5b404f89",
+        "archive_path": "plugins/Newtonsoft.Json.dll"
+      }
+    },
+    {
+      "package": "ValheimModding-YamlDotNet-16.3.1",
+      "download_url": "https://thunderstore.io/package/download/ValheimModding/YamlDotNet/16.3.1/",
+      "archive_sha256": "2280480d2add7d6a7a17b882f9b755145160c852e89a14794d1493d08495d2ac",
+      "archive_bytes": 130222,
+      "dependencies": [],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "YamlDotNet.dll",
+        "bytes": 291840,
+        "sha256": "9172f0758ed76963e0ede3b5ca9a1fb5b82f64c7e7a92cb3a6de39efa933a668",
+        "archive_path": "plugins/YamlDotNet.dll"
+      }
+    },
+    {
+      "package": "shudnal-ConditionalConfigSync-1.0.11",
+      "download_url": "https://thunderstore.io/package/download/shudnal/ConditionalConfigSync/1.0.11/",
+      "archive_sha256": "19146ae5a25cc3c7bddf47a6d17e4b8fb2c6c29c97360abd93664ba7a4433a62",
+      "archive_bytes": 254611,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2350"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "ConditionalConfigSync.dll",
+        "bytes": 251392,
+        "sha256": "9e3aa79de10b31a4ee06e7cd94faf46d87b3bf3ec64ea3d15b07a396836f8b8a",
+        "archive_path": "ConditionalConfigSync.dll"
+      }
+    },
+    {
+      "package": "RandyKnapp-EpicLoot-0.15.3",
+      "download_url": "https://thunderstore.io/package/download/RandyKnapp/EpicLoot/0.15.3/",
+      "archive_sha256": "586dbeb200c106076d0fcd108fde6768766321227091fb7972c5f1d6d2787ac5",
+      "archive_bytes": 41412586,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2351",
+        "ValheimModding-JsonDotNET-13.0.4",
+        "ValheimModding-Jotunn-2.30.2"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "name": "EpicLoot.dll",
+        "bytes": 52372992,
+        "sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef",
+        "archive_path": "plugins/EpicLoot.dll"
+      }
+    },
+    {
+      "package": "treextr-PathOfValheiman-5.3.6",
+      "download_url": "https://gcdn.thunderstore.io/live/repository/packages/treextr-PathOfValheiman-5.3.6.zip",
+      "archive_sha256": "0cdadae6479d8785a58c5a4847aa28ab81c7297873d430154501b63e109c6a35",
+      "archive_bytes": 173024527,
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2333",
+        "ValheimModding-Jotunn-2.30.2"
+      ],
+      "verification_source": "release-archive-observation",
+      "verified_file": {
+        "archive_path": "plugins/PathOfValheiman/PathOfValheiman.dll",
+        "sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416",
+        "bytes": 192794624,
+        "name": "PathOfValheiman.dll"
+      }
+    }
+  ]
+}
