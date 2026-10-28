@@ -37,6 +37,7 @@ internal static class ProbeSuite
 
     internal static void Run(Dictionary<string, object> report, string phase)
     {
+        checks = 0;
         var randomState = UnityEngine.Random.state;
         var keys = ZoneSystem.instance.GetGlobalKeys().ToArray();
         try
@@ -219,8 +220,12 @@ internal static class ProbeSuite
     private static object Boundaries()
     {
         var rows = new List<object>();
-        foreach (decimal budget in new[] { 0m, 1, 11.999m, 12, 24, 48, 72, 96, 108, 119.999m,
-                     120, 121, 132, 192, 240, 300, 360, 361, 372, 432, 480 })
+        var budgets = GuardedChestReward.Rules.Schema == 2 ?
+            new[] { 0m, .001m, 10, 10.001m, 20, 20.001m, 40, 40.001m, 60, 60.001m, 80, 80.001m,
+                105, 105.001m, 135, 135.001m, 175, 175.001m, 185, 185.001m, 195, 195.001m, 350, 525, 625 } :
+            new[] { 0m, 1, 11.999m, 12, 24, 48, 72, 96, 108, 119.999m,
+                120, 121, 132, 192, 240, 300, 360, 361, 372, 432, 480 };
+        foreach (decimal budget in budgets)
         {
             var chest = Chest();
             NativeFixture(chest);
@@ -250,7 +255,8 @@ internal static class ProbeSuite
             if (expected.Coins > 0)
             {
                 var coins = GuardedChestReward.Unpack(state.Items.Last(), 1, 1).GetAllItems().Single();
-                Require(coins.m_dropPrefab.name == "Coins" && coins.m_stack == 50, "Компенсация умножена");
+                Require(coins.m_dropPrefab.name == "Coins" && coins.m_stack == expected.Coins,
+                    "Компенсация умножена");
             }
             string snapshot = Snapshot(chest), generated = JsonConvert.SerializeObject(state.Items);
             GuardedChestReward.Process(chest);

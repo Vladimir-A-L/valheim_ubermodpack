@@ -17,8 +17,6 @@ internal static class ForestRuntime
     internal const string Tag = "uberdungeon.forest.v1";
     internal const string RoomKey = Tag + ".room", DepthKey = Tag + ".depth", KindKey = Tag + ".kind";
     internal const string LayoutKey = Tag + ".layout";
-    private static readonly string[] Modifiers = { "keen", "warded", "furious", "swift", "hardy",
-        "steadfast", "greedy", "armored", "piercing", "unbreakable" };
     internal static readonly List<ZNetView> Spawned = new List<ZNetView>();
     internal static DungeonGenerator? Active;
     internal static ForestPlan.Layout? LastPlan;
@@ -165,11 +163,12 @@ internal static class ForestRuntime
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
-                schema = 1, seed = plan.Seed, attempts = plan.Attempts,
+                schema = 2, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
                 rooms = plan.Rooms.Select((r, i) => new { id = i, prefab = r.Template.Name,
                     position = new[] { r.Position.X, r.Position.Y, r.Position.Z }, turn = r.Turn,
                     depth = r.Depth, parent = r.Parent, endcap = r.Template.Endcap,
-                    cores = r.GuaranteedCores,
+                    cores = r.GuaranteedCores, resource_count = r.ResourceCount, chest_count = r.ChestCount,
+                    arena = r.Arena, branch = r.Branch,
                     sockets = Enumerable.Range(0, r.Template.Sockets.Length).Select(s => new
                     {
                         position = new[] { r.SocketPosition(s).X, r.SocketPosition(s).Y, r.SocketPosition(s).Z },
@@ -183,7 +182,11 @@ internal static class ForestRuntime
         catch
         {
             foreach (var view in Spawned)
-                if (view != null && view.IsValid() && view.IsOwner()) ZNetScene.instance.Destroy(view.gameObject);
+                if (view != null && view.IsValid() && view.IsOwner())
+                {
+                    view.gameObject.SetActive(false);
+                    ZNetScene.instance.Destroy(view.gameObject);
+                }
             __instance.Clear();
             throw;
         }
@@ -217,32 +220,87 @@ internal static class ForestRuntime
             objects.Add(view);
             return view;
         }
-        if (room.GuaranteedCores)
+        if (room.ResourceCount > 0)
             foreach (var core in template.GetComponentsInChildren<Pickable>(true)
                          .Where(p => p.m_itemPrefab != null && p.m_itemPrefab.name == "SurtlingCore"))
                 Ensure(core);
-        // Каждая выбранная комната награды сохраняет штатный сундук и хотя бы одного штатного охранника.
+        // Штатные предметы сохраняются; количество охраны задано общим бюджетным профилем.
         foreach (var chest in template.GetComponentsInChildren<Container>(true)) Ensure(chest);
         bool hasChest = objects.Any(v => v.GetComponent<Container>() != null);
-        if (hasChest && !objects.Any(v => v.GetComponent<CreatureSpawner>() != null))
+        var occupied = objects.Where(v => v.GetComponent<Container>() != null ||
+            v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore").Select(v => v.transform.position).ToList();
+        var random = new System.Random(unchecked(seed * 397 ^ index));
+        var slots = new List<Vector3>();
+        if (hasChest || room.ResourceCount > 0 || room.Arena)
         {
-            var spawner = template.GetComponentsInChildren<CreatureSpawner>(true).First();
-            Ensure(spawner);
+            // Проверяется настоящий пол и свободная капсула, а не только прямоугольник комнаты.
+            Physics.SyncTransforms();
+            int mask = LayerMask.GetMask("Default", "static_solid", "piece", "terrain");
+            for (float x = -room.Template.Size.X / 2 + 1.2f; x <= room.Template.Size.X / 2 - 1.2f; x += 1.15f)
+            for (float z = -room.Template.Size.Z / 2 + 1.2f; z <= room.Template.Size.Z / 2 - 1.2f; z += 1.15f)
+            {
+                var p = V(room.Position) + rotation * new Vector3(x, 1, z);
+                if (!Physics.Raycast(p, Vector3.down, out RaycastHit hit, 4, mask) ||
+                    hit.normal.y < .85f || Math.Abs(hit.point.y - (room.Position.Y - 1.5f)) > .35f) continue;
+                p = hit.point + Vector3.up * .08f;
+                if (Physics.CheckCapsule(p + Vector3.up * .4f, p + Vector3.up * 1.5f, .3f, mask)) continue;
+                if (Enumerable.Range(0, room.Template.Sockets.Length)
+                    .Any(s => Vector3.Distance(p, V(room.SocketPosition(s))) < 1.4f)) continue;
+                slots.Add(p);
+            }
+            slots = slots.OrderBy(_ => random.Next()).ToList();
         }
+        Vector3 Slot()
+        {
+            int found = slots.FindIndex(p => occupied.All(q =>
+                new Vector2(p.x - q.x, p.z - q.z).magnitude >= 1.05f));
+            if (found < 0) throw new InvalidOperationException($"Нет безопасной точки в комнате {index}");
+            var p = slots[found]; slots.RemoveAt(found); occupied.Add(p); return p;
+        }
+        ZNetView Add(string prefab)
+        {
+            var source = ZNetScene.instance.GetPrefab(prefab) ??
+                throw new InvalidOperationException("Не найден prefab наполнения " + prefab);
+            var view = Object.Instantiate(source, Slot(), rotation).GetComponent<ZNetView>();
+            objects.Add(view); return view;
+        }
+        while (objects.Count(v => v.GetComponent<Container>() != null) < room.ChestCount)
+            Add("TreasureChest_forestcrypt");
+        while (objects.Count(v => v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore") < room.ResourceCount)
+            Add("Pickable_SurtlingCoreStand");
+        var modifiers = EncounterPlan.ForestSet(room.Depth);
+        var budget = GuardedChestReward.Rules.Budget(modifiers, 0, room.Depth <= ForestPlan.SafeDepth);
+        bool planned = hasChest || room.ResourceCount > 0 || room.Arena;
+        int desired = planned ? EncounterPlan.Guards(GuardedChestReward.Rules, budget.Value,
+            room.ResourceCount > 0, room.Arena, unchecked(seed * 397 ^ index)) : 0;
         var guards = new List<Character>();
         foreach (var view in objects.ToArray())
         {
             var spawner = view.GetComponent<CreatureSpawner>();
+            // Бесконечные кучки костей не входят в согласованное разовое число охраны арены.
+            if (room.Arena && view.GetComponent<SpawnArea>() != null)
+            {
+                ZNetScene.instance.Destroy(view.gameObject); objects.Remove(view); continue;
+            }
             if (spawner == null) continue;
-            // Однократная исходная охрана. Штатная точка сохраняется; AI, преследование и лут не ограничиваются.
-            var guard = Object.Instantiate(spawner.m_creaturePrefab,
-                spawner.transform.position + Vector3.up * .15f, spawner.transform.rotation).GetComponent<Character>();
-            guard.SetLevel(spawner.m_minLevel);
-            PovBridge.AssignIds(guard, Modifiers.Take(ForestPlan.ModifierCount(room.Depth)).ToArray());
-            TagObject(guard.GetComponent<ZNetView>(), token, index, room.Depth, "guard");
-            guards.Add(guard);
+            if (!planned)
+            {
+                var guard = Object.Instantiate(spawner.m_creaturePrefab,
+                    spawner.transform.position + Vector3.up * .15f, spawner.transform.rotation)
+                    .GetComponent<Character>();
+                guard.SetLevel(spawner.m_minLevel);
+                guards.Add(guard);
+            }
             ZNetScene.instance.Destroy(view.gameObject);
             objects.Remove(view);
+        }
+        while (guards.Count < desired)
+            guards.Add(Object.Instantiate(ZNetScene.instance.GetPrefab("Skeleton"), Slot(), rotation)
+                .GetComponent<Character>());
+        foreach (var guard in guards)
+        {
+            PovBridge.AssignIds(guard, modifiers);
+            TagObject(guard.GetComponent<ZNetView>(), token, index, room.Depth, "guard");
         }
         int guardIndex = 0;
         foreach (var view in objects)
@@ -258,10 +316,10 @@ internal static class ForestRuntime
             {
                 DungeonId = token, RoomId = index.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 Depth = room.Depth, ProtectedProgressionZone = room.Depth <= ForestPlan.SafeDepth,
-                Seed = unchecked(seed * 397 ^ index)
+                Seed = unchecked(seed * 397 ^ index * 31 ^ guardIndex)
             });
         }
-        if (room.GuaranteedCores && !objects.Any(v => v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore"))
+        if (objects.Count(v => v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore") < room.ResourceCount)
             throw new InvalidOperationException("В ресурсной комнате не появились ядра");
         if (mode == ZoneSystem.SpawnMode.Ghost)
             foreach (var view in objects.Concat(guards.Select(g => g.GetComponent<ZNetView>())))

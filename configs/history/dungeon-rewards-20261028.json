@@ -1,0 +1,23 @@
+{
+  "Schema": 1,
+  "Revision": "forest-provisional-1",
+  "Weights": {
+    "swift": 6,
+    "furious": 5,
+    "armored": 14,
+    "warded": 4,
+    "hardy": 7,
+    "greedy": 8,
+    "keen": 3,
+    "steadfast": 7,
+    "piercing": 22,
+    "unbreakable": 26
+  },
+  "Synergies": [
+    {"Id": "armor-leech", "Requires": ["armored", "greedy"], "Factor": 1.05},
+    {"Id": "attack-leech", "Requires": ["furious", "greedy"], "Factor": 1.03},
+    {"Id": "attack-penetration", "Requires": ["furious", "piercing"], "Factor": 1.04}
+  ],
+  "QualityKnots": [12, 24, 48, 72, 96, 108, 120],
+  "MaxGeneratedItems": 256
+}

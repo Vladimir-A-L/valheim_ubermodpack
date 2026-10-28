@@ -140,7 +140,7 @@ def forecast(model):
 def forecast_runtime(model, rules):
     """Прогноз по той же явной таблице, которую загружает плагин; не частоты наборов PoV."""
     weights = {name: decimal(value) for name, value in rules["Weights"].items()}
-    if rules["Schema"] != 1 or not weights or any(value <= 0 for value in weights.values()):
+    if rules["Schema"] not in (1, 2) or not weights or any(value <= 0 for value in weights.values()):
         raise ValueError("Некорректные глобальные веса")
     synergies = rules["Synergies"]
     if len({rule["Id"] for rule in synergies}) != len(synergies):
@@ -151,12 +151,20 @@ def forecast_runtime(model, rules):
             raise ValueError("Неподдержанный набор сочетания")
         if decimal(rule["Factor"]) < 1:
             raise ValueError("Коэффициент сочетания меньше единицы")
-    knots = rules["QualityKnots"]
-    if len(knots) != 7:
-        raise ValueError("Нужны семь порогов качества")
-    model = {**model, "ancient_scale": knots[-1], "quality_knots": [
-        {"score": score, "rarity": rarity} for score, rarity in zip(
-            knots, ("Common", "Magic", "Rare", "Epic", "Legendary", "Mythic", "Ancient"))]}
+    if rules["Schema"] == 1:
+        knots = rules["QualityKnots"]
+        if len(knots) != 7:
+            raise ValueError("Нужны семь порогов качества")
+        model = {**model, "ancient_scale": knots[-1], "quality_knots": [
+            {"score": score, "rarity": rarity} for score, rarity in zip(
+                knots, ("Common", "Magic", "Rare", "Epic", "Legendary", "Mythic", "Ancient"))]}
+    else:
+        if decimal(rules["ModifierPrice"]) != 10 or decimal(rules["GrowthDivisor"]) <= 0:
+            raise ValueError("Некорректная цена или геометрическая поправка")
+        bands = rules["Bands"]
+        uppers = [decimal(b["Upper"]) for b in bands]
+        if len(bands) != 8 or uppers[0] <= 0 or any(a >= b for a, b in zip(uppers, uppers[1:])):
+            raise ValueError("Некорректные интервалы")
     validate(model)
     rows = []
     for size in range(min(len(weights), model["max_assigned_modifiers"]) + 1):
@@ -167,17 +175,41 @@ def forecast_runtime(model, rules):
             for rule in sorted(matched, key=lambda rule: rule["Id"]):
                 factor *= decimal(rule["Factor"])
             points = sum((weights[name] for name in ids), Decimal(0))
+            if rules["Schema"] == 2:
+                for name in sorted(ids):
+                    factor *= 1 + weights[name] / decimal(rules["GrowthDivisor"])
             cases.append((guard_budget(points, 0, factor), ids))
         low, high = min(cases), max(cases)
+        def projection(value):
+            return project_intervals(value, rules) if rules["Schema"] == 2 else project(value, model)
         rows.append({"modifier_count": size, "combinations": len(cases),
-                     "minimum": {"ids": low[1], **project(low[0], model)},
-                     "maximum": {"ids": high[1], **project(high[0], model)}})
+                     "minimum": {"ids": low[1], **projection(low[0])},
+                     "maximum": {"ids": high[1], **projection(high[0])}})
     return {"schema_version": 1, "captured_at_utc": datetime.now(timezone.utc).isoformat(),
             "status": "runtime-rules-provisional-balance-not-gameplay-acceptance",
             "rules_revision": rules["Revision"], "rows": rows,
             "guard_set_occurrence_probabilities": "not-modelled",
             "native_loot_affects_bonus": False,
             "location_bonus_in_this_projection": 0}
+
+
+def project_intervals(budget, rules):
+    budget = decimal(budget)
+    if budget < 0:
+        raise ValueError("Отрицательный бюджет")
+    scale = decimal(rules["Bands"][-1]["Upper"])
+    completed = int(budget // scale)
+    remainder = budget % scale
+    band = next(b for b in rules["Bands"] if remainder <= decimal(b["Upper"]))
+    active = completed + 1 if remainder > 0 and band["Coins"] == 0 else 0
+    names = ("Common", "Magic", "Rare", "Epic", "Legendary", "Mythic", "Ancient")
+    ancient = completed * (completed + 1) // 2
+    return {"quality_budget": number(budget), "completed_groups": completed, "remainder": number(remainder),
+            "guaranteed_ancient_items": ancient, "active_group_size": active,
+            "active_group_rarity_probabilities": {names[band["Quality"]]: 1} if active else {},
+            "total_special_items": ancient + active,
+            "gold_compensation": band["Coins"] if remainder > 0 else 0,
+            "standard_dungeon_loot_additional": True}
 
 
 def main():

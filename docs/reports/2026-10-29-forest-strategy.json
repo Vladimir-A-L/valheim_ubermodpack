@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T23:41:09.342169+00:00",
+  "candidate": "0.5.0",
+  "model_assertions": 22346,
+  "repository_tests": 36,
+  "planner_unique_seeds": 1000,
+  "runtime_geometry_passed": 12,
+  "runtime_reward_assertions": 1243,
+  "restart_assertions": 24,
+  "restored_checkpoint_assertions": 18,
+  "windows_client": {
+    "connected": true,
+    "quality_3_equipment_count": 8,
+    "god": true,
+    "ghost": false,
+    "counter_ready": true,
+    "pending_events": 0,
+    "rejoin_inventory_and_wear_preserved": true,
+    "native_entrance_observed": true,
+    "full_route_walked": false,
+    "arena_inspection": "diagnostic teleport; stock room contains partitions",
+    "character": "StorageQA"
+  },
+  "installer": {
+    "files_verified": 6,
+    "save_unchanged": true,
+    "backup_restored": true,
+    "unknown_version_rejected": true
+  },
+  "selected_dungeon": {
+    "branches": 5,
+    "rooms_including_endcaps": 122,
+    "resource_rooms": 7,
+    "guards": 81,
+    "modifier_count_distribution": {
+      "0": 27,
+      "1": 5,
+      "3": 4,
+      "4": 6,
+      "5": 1,
+      "6": 6,
+      "7": 6,
+      "8": 3,
+      "9": 1,
+      "10": 22
+    },
+    "chests": 14,
+    "core_objects": 26,
+    "arena": {
+      "guards": 15,
+      "chests": 3,
+      "core_objects": 6,
+      "depth": 40,
+      "branch_start_depth": 32
+    }
+  },
+  "manual_user_acceptance": {
+    "client_update_installed": null,
+    "new_run_complete": null,
+    "status": "awaiting user installation and next authenticated login"
+  },
+  "handoff": {
+    "world_loaded": true,
+    "world_save_pending": 0,
+    "restart_preserved_layout_objects_and_rewards": true,
+    "native_drug_profiles_verified": 5,
+    "same_manual_endpoint": true,
+    "previous_state_checkpoint_files": 463,
+    "previous_release_preserved": true
+  }
+}

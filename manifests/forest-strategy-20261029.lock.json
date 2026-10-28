@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T23:30:11.457428+00:00",
+  "scope": "forest-crypt-qa-strategy-update",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "unchanged_dependencies": [
+    "server-characters-20261029.lock.json",
+    "dungeon-prototype.lock.json",
+    "dungeon-geometry.lock.json"
+  ],
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.5.0",
+    "dll_sha256": "15c0a4886a32f3414f79294f079fb40afb98162a3117aca0fd07568daee5f9c2"
+  },
+  "configuration": {
+    "configs/dungeon-rewards.json": "cfbbd31c33186103acff6694732035624a5196e56414482eb0eec7748525a0b1",
+    "configs/forest-loadout.json": "7df3b0fdffb36b40793107d39f961f0e7becf1842e834419a35426451b693dbc"
+  },
+  "client_update": {
+    "base": "ForestCryptQA 0.4.0",
+    "archive_name": "ForestCryptQA-Drug-0.5.0.zip",
+    "archive_sha256": "c76e148429a0310a9e1a5eca98ace6be56e9b2889e322bd0800160ca6db3252d"
+  }
+}

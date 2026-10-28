@@ -1,6 +1,6 @@
 {
-  "Schema": 1,
-  "Revision": "forest-provisional-1",
+  "Schema": 2,
+  "Revision": "forest-intervals-20261029",
   "Weights": {
     "swift": 6,
     "furious": 5,
@@ -14,10 +14,90 @@
     "unbreakable": 26
   },
   "Synergies": [
-    {"Id": "armor-leech", "Requires": ["armored", "greedy"], "Factor": 1.05},
-    {"Id": "attack-leech", "Requires": ["furious", "greedy"], "Factor": 1.03},
-    {"Id": "attack-penetration", "Requires": ["furious", "piercing"], "Factor": 1.04}
+    {
+      "Id": "armor-leech",
+      "Requires": [
+        "armored",
+        "greedy"
+      ],
+      "Factor": 1.05
+    },
+    {
+      "Id": "attack-leech",
+      "Requires": [
+        "furious",
+        "greedy"
+      ],
+      "Factor": 1.03
+    },
+    {
+      "Id": "attack-penetration",
+      "Requires": [
+        "furious",
+        "piercing"
+      ],
+      "Factor": 1.04
+    }
   ],
-  "QualityKnots": [12, 24, 48, 72, 96, 108, 120],
-  "MaxGeneratedItems": 256
+  "MaxGeneratedItems": 256,
+  "ModifierPrice": 10,
+  "GrowthDivisor": 200,
+  "Bands": [
+    {
+      "Upper": 10,
+      "Coins": 50,
+      "Quality": 0,
+      "MinGuards": 2,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 20,
+      "Coins": 100,
+      "Quality": 0,
+      "MinGuards": 3,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 40,
+      "Coins": 0,
+      "Quality": 1,
+      "MinGuards": 3,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 60,
+      "Coins": 0,
+      "Quality": 2,
+      "MinGuards": 3,
+      "MaxGuards": 6
+    },
+    {
+      "Upper": 80,
+      "Coins": 0,
+      "Quality": 3,
+      "MinGuards": 4,
+      "MaxGuards": 7
+    },
+    {
+      "Upper": 105,
+      "Coins": 0,
+      "Quality": 4,
+      "MinGuards": 4,
+      "MaxGuards": 8
+    },
+    {
+      "Upper": 135,
+      "Coins": 0,
+      "Quality": 5,
+      "MinGuards": 5,
+      "MaxGuards": 9
+    },
+    {
+      "Upper": 175,
+      "Coins": 0,
+      "Quality": 6,
+      "MinGuards": 5,
+      "MaxGuards": 10
+    }
+  ]
 }

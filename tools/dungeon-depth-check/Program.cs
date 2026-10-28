@@ -14,7 +14,7 @@ void Refuses(Action action, string name)
 }
 
 var jsonOptions = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
-string rulesPath = args.Length > 0 ? args[0] : "configs/dungeon-rewards.json";
+string rulesPath = args.Length > 0 ? args[0] : "configs/history/dungeon-rewards-20261028.json";
 var rules = System.Text.Json.JsonSerializer.Deserialize<RewardRules>(File.ReadAllText(rulesPath), jsonOptions)!;
 rules.Validate();
 RewardPlan Plan(decimal b, double draw = 0) => RewardModel.Plan(b, rules, () => draw);
@@ -100,6 +100,7 @@ Check(branch.Max() == 1, "Branching alone does not add depth");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
 ForestPlanChecks.Run(Check);
+IntervalChecks.Run(Check);
 ManualLedgerChecks.Run(Check);
 Check(ManualDeathCounter.ReachedFloor(100, 1), "First conditional death");
 Check(!ManualDeathCounter.ReachedFloor(1, 1), "Hits at floor do not add deaths");

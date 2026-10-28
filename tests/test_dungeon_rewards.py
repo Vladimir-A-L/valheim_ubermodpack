@@ -15,7 +15,23 @@ SPEC.loader.exec_module(FORECAST)
 class DungeonRewardForecastTests(unittest.TestCase):
     def setUp(self):
         self.model = json.loads((ROOT / "manifests/dungeon-reward-forecast-inputs.json").read_text())
-        self.rules = json.loads((ROOT / "configs/dungeon-rewards.json").read_text())
+        self.rules = json.loads((ROOT / "configs/history/dungeon-rewards-20261028.json").read_text())
+
+    def test_interval_boundaries_and_overflow(self):
+        rules = json.loads((ROOT / "configs/dungeon-rewards.json").read_text())
+        for budget, coins, items, quality in [(0, 0, 0, {}), (10, 50, 0, {}), (20, 100, 0, {}),
+                                             (20.01, 0, 1, {"Magic": 1}), (135, 0, 1, {"Mythic": 1}),
+                                             (135.01, 0, 1, {"Ancient": 1}), (175, 0, 1, {}),
+                                             (185, 50, 1, {}), (195, 100, 1, {}),
+                                             (195.01, 0, 3, {"Magic": 1}), (350, 0, 3, {})]:
+            p = FORECAST.project_intervals(budget, rules)
+            self.assertEqual((p["gold_compensation"], p["total_special_items"],
+                              p["active_group_rarity_probabilities"]), (coins, items, quality))
+        forecast = FORECAST.forecast_runtime(self.model, rules)
+        maximum = forecast["rows"][-1]["maximum"]
+        self.assertGreater(maximum["quality_budget"], 175)
+        self.assertLess(maximum["quality_budget"], 195)
+        self.assertEqual(sum(row["combinations"] for row in forecast["rows"]), 1024)
 
     def test_historical_example_keeps_six_plus_four_and_small_remainder(self):
         self.assertEqual(FORECAST.project(300, self.model)["total_special_items"], 6)

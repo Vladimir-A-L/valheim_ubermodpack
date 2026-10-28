@@ -60,15 +60,24 @@ internal static class ForestLoadout
         }).ToArray();
     }
 
-    internal static object Grant(Player player)
+    internal static object Grant(Player player, bool reset = false)
     {
         if (!ForestManual.Target(player) ||
             player.IsTeleporting() || player.IsDead() || InventoryGui.IsVisible())
             throw new InvalidOperationException("Нужен выбранный тестовый персонаж в отдельном мире");
-        if (player.m_customData.ContainsKey(Key))
+        if (!reset && player.m_customData.ContainsKey(Key))
             throw new InvalidOperationException("Этот комплект уже выдан; повторная выдача заблокирована");
         var inventory = player.GetInventory();
         var items = Build();
+        var previous = inventory.GetAllItems().ToArray();
+        var equipped = previous.Where(i => i.m_equipped).ToArray();
+        if (reset && items.Length > inventory.GetWidth() * inventory.GetHeight())
+            throw new InvalidOperationException("Комплект не помещается в пустой инвентарь");
+        if (reset)
+        {
+            player.UnequipAllItems();
+            inventory.RemoveAll();
+        }
         var free = new Queue<Vector2i>();
         for (int y = 0; y < inventory.GetHeight(); y++)
         for (int x = 0; x < inventory.GetWidth(); x++)
@@ -87,12 +96,18 @@ internal static class ForestLoadout
         catch
         {
             foreach (var item in added) inventory.RemoveItem(item);
+            if (reset)
+            {
+                foreach (var item in previous) inventory.AddItem(item, item.m_gridPos);
+                foreach (var item in equipped) player.EquipItem(item, false);
+            }
             throw;
         }
         player.m_customData[Key] = DateTime.UtcNow.ToString("O");
         foreach (var item in items.Where(i => i.m_dropPrefab.name.StartsWith("Armor", StringComparison.Ordinal) ||
                      i.m_dropPrefab.name == "HelmetBronze" || i.m_dropPrefab.name == "CapeDeerHide"))
             player.EquipItem(item, false);
+        if (reset) player.ClearFood();
         foreach (string food in new[] { "DeerStew", "MinceMeatSauce", "CarrotSoup" })
         {
             var item = items.First(i => i.m_dropPrefab.name == food);

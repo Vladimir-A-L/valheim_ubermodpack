@@ -31,7 +31,7 @@ internal static class ForestPlanChecks
             Room("forestcrypt_new_BurialChamber01", n), Room("forestcrypt_room1", n, s, w, e),
             Room("forestcrypt_Corridor1", n, s, w), Room("forestcrypt_Corridor2", n, s, e),
             Room("forestcrypt_Bend1", n, w), Room("forestcrypt_Bend2", n, e),
-            Room("forestcrypt_Stairs1", n, s) };
+            Room("forestcrypt_Stairs1", n, s), Room("forestcrypt_new_Burialchamber05", n, s) };
         string Fingerprint(ForestPlan.Layout layout) => string.Join(";", layout.Rooms.Select(r =>
             FormattableString.Invariant($"{r.Template.Name}:{r.Position.X},{r.Position.Y},{r.Position.Z}:{r.Turn}")));
         foreach (int seed in new[] { 0, 1, 1001, 1002, 1003, 1004, 1005, 1006 })
@@ -40,9 +40,10 @@ internal static class ForestPlanChecks
             var a = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed);
             var b = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed);
             check(Fingerprint(a) == Fingerprint(b), "Повторяемость полного плана");
-            check(a.Rooms.Count(r => !r.Template.Endcap) == 50, "Вход, ресурсная комната, путь и две ветви");
-            check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 1), "Ресурсы у входа");
-            check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 1, "Достижимая глубина 40");
+            check(a.BranchCount >= 2 && a.BranchCount <= 5, "От двух до пяти ветвей");
+            check(a.Rooms.Single(r => r.Arena).ChestCount == 3, "Три сундука на арене");
+            check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 16), "Начальные ресурсы без усиления");
+            check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 2, "Основной конец и арена на глубине 40");
             var deep = a.Rooms.FindIndex(r => r.Depth == 40 && !r.Template.Endcap);
             a.Edges.Add((0, deep));
             bool rejected = false;

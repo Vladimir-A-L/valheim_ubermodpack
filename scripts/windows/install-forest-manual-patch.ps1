@@ -29,14 +29,16 @@ if ($oldHash -notin $manifest.accepted_previous_dll_sha256 -and $oldHash -ne $ma
 }
 $managerRelative = 'BepInEx\plugins\ServerManager\ServerManager.dll'
 $managerConfigRelative = 'BepInEx\config\sighsorry.ServerManager.cfg'
-$allowed = @($dllRelative, $configRelative, $managerRelative, $managerConfigRelative)
+$requiredFiles = @($dllRelative, $configRelative, $managerRelative, $managerConfigRelative)
+$allowed = $requiredFiles + @('BepInEx\config\dungeon-rewards.json', 'BepInEx\config\forest-loadout.json')
 $sources = @($manifest.files | ForEach-Object {
     if ($_.relative -notin $allowed -or $_.source -ne [IO.Path]::GetFileName($_.source)) {
         throw 'Неожиданный файл в manifest обновления.'
     }
     @{relative=$_.relative; source=(Join-Path $payload $_.source); hash=$_.sha256}
 })
-if ($sources.Count -ne 4 -or @($sources.relative | Sort-Object -Unique).Count -ne 4) {
+if ($sources.Count -notin @(4, 6) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
+    @($requiredFiles | Where-Object { $_ -notin $sources.relative }).Count -ne 0) {
     throw 'Неполный или повторяющийся набор файлов обновления.'
 }
 foreach ($item in $sources) {

@@ -72,6 +72,17 @@ internal sealed class ForestFixture : MonoBehaviour
             return PlayerState();
         }
         if (action == "snapshot") return Snapshot();
+        if (action == "portals")
+            return Object.FindObjectsByType<Teleport>(FindObjectsSortMode.None).Where(t => t.m_targetPoint != null)
+                .Select(t => new { position = V(t.transform.position), forward = V(t.transform.forward),
+                    target = V(t.m_targetPoint.transform.position), hover = t.m_hoverText }).ToArray();
+        if (action == "reward-probe")
+        {
+            if (!ZNet.instance.IsServer()) throw new InvalidOperationException("Нужен сервер");
+            var report = new Dictionary<string, object>();
+            ProbeSuite.Run(report, command.Value<string>("phase") ?? "create");
+            return report;
+        }
         if (action == "probe")
         {
             if (!ZNet.instance.IsServer()) throw new InvalidOperationException("Нужен сервер");
@@ -133,7 +144,8 @@ internal sealed class ForestFixture : MonoBehaviour
             inventory = player.GetInventory().GetAllItems().Select(i => new
             {
                 prefab = i.m_dropPrefab.name, count = i.m_stack, quality = i.m_quality,
-                equipped = i.m_equipped, loadout = i.m_customData.ContainsKey(ForestLoadout.Key)
+                equipped = i.m_equipped, loadout = i.m_customData.ContainsKey(ForestLoadout.Key),
+                durability = i.m_durability, max_durability = i.GetMaxDurability()
             }).ToArray(),
             hovered = view == null ? "" : Utils.GetPrefabName(view.gameObject),
             hover_room = view == null ? -1 : view.GetZDO().GetInt(ForestRuntime.RoomKey, -1),
@@ -199,22 +211,44 @@ internal sealed class ForestFixture : MonoBehaviour
                     state.GuardModifiers.Length == ForestPlan.ModifierCount(state.Room.Depth) &&
                     (state.Room.Depth > 16 || state.Budget.Value == 0));
                 int earlyCores = cores.Count(v => v.GetZDO().GetInt(ForestRuntime.DepthKey) <= 16);
+                bool density = layout.Rooms.Select((r, i) => (r, i)).Where(x => x.r.ChestCount > 0 ||
+                    x.r.ResourceCount > 0).All(x =>
+                {
+                    decimal budget = GuardedChestReward.Rules.Budget(EncounterPlan.ForestSet(x.r.Depth), 0,
+                        x.r.Depth <= ForestPlan.SafeDepth).Value;
+                    int expected = EncounterPlan.Guards(GuardedChestReward.Rules, budget,
+                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i));
+                    return guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i) == expected &&
+                        chests.Count(c => ForestRuntime.Zdo(c).GetInt(ForestRuntime.RoomKey) == x.i) ==
+                            x.r.ChestCount &&
+                        cores.Count(c => c.GetZDO().GetInt(ForestRuntime.RoomKey) == x.i) >= x.r.ResourceCount;
+                });
                 string fingerprint = EpicLootBridge.Hash(ForestRuntime.Zdo(generator).GetByteArray(ZDOVars.s_roomData));
                 bool repeat = !fingerprints.TryGetValue(seed, out string previous) || previous == fingerprint;
                 fingerprints[seed] = fingerprint;
-                bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 && repeat;
+                bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 &&
+                    repeat && density;
                 results.Add(new { seed, passed, rooms = rooms.Length, open_sockets = open,
                     max_depth = layout.Rooms.Max(r => r.Depth), early_core_pickables = earlyCores,
                     guards = guards.Length, chests = chests.Length, depth_match = depthMatch,
                     guard_match = guardMatch, reward_match = rewardMatch, repeat_matches = repeat,
+                    density_match = density, branches = layout.BranchCount,
+                    resource_rooms = layout.Rooms.Count(r => r.ResourceCount > 0),
+                    arena_guards = guards.Count(g => layout.Rooms[ForestRuntime.Zdo(g)
+                        .GetInt(ForestRuntime.RoomKey)].Arena),
                     fingerprint, duration_ms = watch.ElapsedMilliseconds });
             }
             catch (Exception e) { results.Add(new { seed, passed = false, error = e.ToString() }); }
             finally
             {
                 foreach (var view in ForestRuntime.Spawned.ToArray())
-                    if (view != null && view.IsValid() && view.IsOwner()) ZNetScene.instance.Destroy(view.gameObject);
+                    if (view != null && view.IsValid() && view.IsOwner())
+                    {
+                        view.gameObject.SetActive(false);
+                        ZNetScene.instance.Destroy(view.gameObject);
+                    }
                 ForestRuntime.Spawned.Clear();
+                generator.gameObject.SetActive(false);
                 ZNetScene.instance.Destroy(generator.gameObject);
             }
         }

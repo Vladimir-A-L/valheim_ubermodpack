@@ -13,6 +13,9 @@ internal sealed class ForestManual : MonoBehaviour
     private sealed class Settings
     {
         public bool Enabled = false, Record = false, StartFullOnce = false, AutoPrepareOnce = false;
+        public bool ResetInventory = false;
+        public string PreparationId = "v1";
+        public float StartYaw = 180;
         public string PlayerName = "RewardQA";
         public float[] StartPosition = Array.Empty<float>();
     }
@@ -25,7 +28,7 @@ internal sealed class ForestManual : MonoBehaviour
     private Player? preparing;
     private bool teleportStarted, preparationFailed;
     private float prepareDeadline;
-    private const string PreparedKey = "uberdungeon.qa.manual.prepared.v1";
+    private static string PreparedKey => "uberdungeon.qa.manual.prepared." + settings.PreparationId;
     private float next;
     private static string Folder => Path.Combine(Paths.ConfigPath, "ForestCryptQA");
     internal static bool Target(Player? p) => p != null && ZNet.instance != null &&
@@ -51,6 +54,9 @@ internal sealed class ForestManual : MonoBehaviour
         string path = Path.Combine(Paths.ConfigPath, "forest-manual-test.json");
         settings = File.Exists(path)
             ? JsonConvert.DeserializeObject<Settings>(File.ReadAllText(path))! : new Settings();
+        if (!System.Text.RegularExpressions.Regex.IsMatch(settings.PreparationId, "^[a-zA-Z0-9_-]{1,40}$") ||
+            (settings.ResetInventory && (!settings.AutoPrepareOnce || settings.PreparationId == "v1")))
+            throw new InvalidOperationException("Сброс комплекта требует отдельного ID однократной подготовки");
     }
 
     private static void Spawned(Player __instance)
@@ -107,7 +113,8 @@ internal sealed class ForestManual : MonoBehaviour
             if (Time.realtimeSinceStartup > prepareDeadline)
                 throw new InvalidOperationException("Истёк срок подготовки у входа; требуется проверка позиции");
             var p = settings.StartPosition;
-            if (p.Length != 3 || Array.Exists(p, v => float.IsNaN(v) || float.IsInfinity(v)))
+            if (p.Length != 3 || Array.Exists(p, v => float.IsNaN(v) || float.IsInfinity(v)) ||
+                float.IsNaN(settings.StartYaw) || float.IsInfinity(settings.StartYaw))
                 throw new InvalidOperationException("Не задана проверенная точка у входа");
             if (player.IsDead() || player.IsTeleporting() || !player.IsOnGround() || InventoryGui.IsVisible())
                 return false;
@@ -118,7 +125,7 @@ internal sealed class ForestManual : MonoBehaviour
                 if ((float)AccessTools.Field(typeof(Player), "m_teleportCooldown").GetValue(player) < 2f)
                     return false;
                 ForestLoadout.Validate();
-                if (!player.TeleportTo(destination, Quaternion.Euler(0, 180, 0), false))
+                if (!player.TeleportTo(destination, Quaternion.Euler(0, settings.StartYaw, 0), false))
                     throw new InvalidOperationException("Телепортация отклонена");
                 teleportStarted = true;
                 return false;
@@ -126,7 +133,8 @@ internal sealed class ForestManual : MonoBehaviour
             var offset = player.transform.position - destination;
             if (new Vector2(offset.x, offset.z).magnitude > 5 || Math.Abs(offset.y) > 12)
                 throw new InvalidOperationException("Персонаж не достиг ожидаемой площадки у входа");
-            if (!player.m_customData.ContainsKey(ForestLoadout.Key)) ForestLoadout.Grant(player);
+            if (settings.ResetInventory || !player.m_customData.ContainsKey(ForestLoadout.Key))
+                ForestLoadout.Grant(player, settings.ResetInventory);
             player.m_customData[PreparedKey] = DateTime.UtcNow.ToString("O");
             Game.instance.SavePlayerProfile(true);
             Record("preparation-complete", new { god = player.InGodMode(), ghost = player.InGhostMode(),
