@@ -1,0 +1,503 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-28T10:35:07.459035+00:00",
+  "status": "runtime-rules-provisional-balance-not-gameplay-acceptance",
+  "rules_revision": "forest-provisional-1",
+  "rows": [
+    {
+      "modifier_count": 0,
+      "combinations": 1,
+      "minimum": {
+        "ids": [],
+        "quality_budget": 0.0,
+        "completed_groups": 0,
+        "remainder": 0.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 0,
+        "active_group_rarity_probabilities": {},
+        "total_special_items": 0,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [],
+        "quality_budget": 0.0,
+        "completed_groups": 0,
+        "remainder": 0.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 0,
+        "active_group_rarity_probabilities": {},
+        "total_special_items": 0,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 1,
+      "combinations": 10,
+      "minimum": {
+        "ids": [
+          "keen"
+        ],
+        "quality_budget": 3.0,
+        "completed_groups": 0,
+        "remainder": 3.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 0,
+        "active_group_rarity_probabilities": {},
+        "total_special_items": 0,
+        "gold_compensation": 50,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "unbreakable"
+        ],
+        "quality_budget": 26.0,
+        "completed_groups": 0,
+        "remainder": 26.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Magic": 0.91666667,
+          "Rare": 0.08333333
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 2,
+      "combinations": 45,
+      "minimum": {
+        "ids": [
+          "keen",
+          "warded"
+        ],
+        "quality_budget": 7.0,
+        "completed_groups": 0,
+        "remainder": 7.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 0,
+        "active_group_rarity_probabilities": {},
+        "total_special_items": 0,
+        "gold_compensation": 50,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "piercing",
+          "unbreakable"
+        ],
+        "quality_budget": 48.0,
+        "completed_groups": 0,
+        "remainder": 48.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Rare": 1.0
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 3,
+      "combinations": 120,
+      "minimum": {
+        "ids": [
+          "furious",
+          "keen",
+          "warded"
+        ],
+        "quality_budget": 12.0,
+        "completed_groups": 0,
+        "remainder": 12.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Common": 1.0
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "piercing",
+          "unbreakable"
+        ],
+        "quality_budget": 62.0,
+        "completed_groups": 0,
+        "remainder": 62.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Rare": 0.41666667,
+          "Epic": 0.58333333
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 4,
+      "combinations": 210,
+      "minimum": {
+        "ids": [
+          "furious",
+          "keen",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 18.0,
+        "completed_groups": 0,
+        "remainder": 18.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Common": 0.5,
+          "Magic": 0.5
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "greedy",
+          "piercing",
+          "unbreakable"
+        ],
+        "quality_budget": 73.5,
+        "completed_groups": 0,
+        "remainder": 73.5,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Epic": 0.9375,
+          "Legendary": 0.0625
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 5,
+      "combinations": 252,
+      "minimum": {
+        "ids": [
+          "furious",
+          "hardy",
+          "keen",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 25.0,
+        "completed_groups": 0,
+        "remainder": 25.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Magic": 0.95833333,
+          "Rare": 0.04166667
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "piercing",
+          "unbreakable"
+        ],
+        "quality_budget": 84.357,
+        "completed_groups": 0,
+        "remainder": 84.357,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Epic": 0.485125,
+          "Legendary": 0.514875
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 6,
+      "combinations": 210,
+      "minimum": {
+        "ids": [
+          "furious",
+          "hardy",
+          "keen",
+          "steadfast",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 32.0,
+        "completed_groups": 0,
+        "remainder": 32.0,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Magic": 0.66666667,
+          "Rare": 0.33333333
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "piercing",
+          "steadfast",
+          "unbreakable"
+        ],
+        "quality_budget": 92.23032,
+        "completed_groups": 0,
+        "remainder": 92.23032,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Epic": 0.15707,
+          "Legendary": 0.84293
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 7,
+      "combinations": 120,
+      "minimum": {
+        "ids": [
+          "furious",
+          "greedy",
+          "hardy",
+          "keen",
+          "steadfast",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 41.2,
+        "completed_groups": 0,
+        "remainder": 41.2,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Magic": 0.28333333,
+          "Rare": 0.71666667
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "piercing",
+          "steadfast",
+          "unbreakable"
+        ],
+        "quality_budget": 100.10364,
+        "completed_groups": 0,
+        "remainder": 100.10364,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Legendary": 0.65803,
+          "Mythic": 0.34197
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 8,
+      "combinations": 45,
+      "minimum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "keen",
+          "steadfast",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 58.401,
+        "completed_groups": 0,
+        "remainder": 58.401,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Rare": 0.566625,
+          "Epic": 0.433375
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "piercing",
+          "steadfast",
+          "swift",
+          "unbreakable"
+        ],
+        "quality_budget": 106.8522,
+        "completed_groups": 0,
+        "remainder": 106.8522,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Legendary": 0.09565,
+          "Mythic": 0.90435
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 9,
+      "combinations": 10,
+      "minimum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "keen",
+          "piercing",
+          "steadfast",
+          "swift",
+          "warded"
+        ],
+        "quality_budget": 85.48176,
+        "completed_groups": 0,
+        "remainder": 85.48176,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Epic": 0.43826,
+          "Legendary": 0.56174
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "piercing",
+          "steadfast",
+          "swift",
+          "unbreakable",
+          "warded"
+        ],
+        "quality_budget": 111.35124,
+        "completed_groups": 0,
+        "remainder": 111.35124,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Mythic": 0.72073,
+          "Ancient": 0.27927
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    },
+    {
+      "modifier_count": 10,
+      "combinations": 1,
+      "minimum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "keen",
+          "piercing",
+          "steadfast",
+          "swift",
+          "unbreakable",
+          "warded"
+        ],
+        "quality_budget": 114.72552,
+        "completed_groups": 0,
+        "remainder": 114.72552,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Mythic": 0.43954,
+          "Ancient": 0.56046
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      },
+      "maximum": {
+        "ids": [
+          "armored",
+          "furious",
+          "greedy",
+          "hardy",
+          "keen",
+          "piercing",
+          "steadfast",
+          "swift",
+          "unbreakable",
+          "warded"
+        ],
+        "quality_budget": 114.72552,
+        "completed_groups": 0,
+        "remainder": 114.72552,
+        "guaranteed_ancient_items": 0,
+        "active_group_size": 1,
+        "active_group_rarity_probabilities": {
+          "Mythic": 0.43954,
+          "Ancient": 0.56046
+        },
+        "total_special_items": 1,
+        "gold_compensation": 0,
+        "standard_dungeon_loot_additional": true
+      }
+    }
+  ],
+  "guard_set_occurrence_probabilities": "not-modelled",
+  "native_loot_affects_bonus": false,
+  "location_bonus_in_this_projection": 0,
+  "rules_sha256": "56f2c34ce498d5a1c4d08ec0573d67981b24509c45ada0f0ae7b8f061f0c2eb4",
+  "inputs_sha256": "87e187b87fedf12955d2ee38e796b6a050ac5f4329a5f8a67fb120b9b3205de7"
+}

@@ -73,6 +73,36 @@ internal static class PovBridge
 
     internal static int Read(Character character) => Convert.ToInt32(read.Invoke(null, new object[] { character }));
 
+    internal static string[] Ids(int mask)
+    {
+        var modType = set.GetParameters()[1].ParameterType;
+        var idOf = Method("PassiveTree.RarityMods", "IdOf");
+        return Enum.GetValues(modType).Cast<object>().Where(v =>
+            Convert.ToInt32(v) != 0 && (mask & Convert.ToInt32(v)) == Convert.ToInt32(v))
+            .Select(v => (string)idOf.Invoke(null, new[] { v })).OrderBy(v => v).ToArray();
+    }
+
+    internal static int AssignIds(Character character, params string[] ids)
+    {
+        var modType = set.GetParameters()[1].ParameterType;
+        int mask = 0;
+        foreach (string id in ids)
+        {
+            object[] args = { id, Enum.ToObject(modType, 0) };
+            if (!(bool)Method("PassiveTree.RarityMods", "Parse").Invoke(null, args))
+                throw new ArgumentException("Неизвестный модификатор PoV: " + id);
+            mask |= Convert.ToInt32(args[1]);
+        }
+        var view = character.GetComponent<ZNetView>();
+        if (view == null || !view.IsValid() || !view.IsOwner())
+            throw new InvalidOperationException("Назначение разрешено только владельцу");
+        Set(character, mask);
+        if (Read(character) != mask) throw new InvalidOperationException("PoV отклонил набор");
+        view.GetZDO().Set(ModsKey, mask);
+        view.GetZDO().Set(ProfileKey, 1);
+        return mask;
+    }
+
     private static void Set(Character character, int mask)
     {
         object value = Enum.ToObject(set.GetParameters()[1].ParameterType, mask);

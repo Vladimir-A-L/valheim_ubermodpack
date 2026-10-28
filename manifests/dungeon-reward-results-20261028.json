@@ -1,0 +1,733 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-10-28T11:39:44.742751+00:00",
+  "status": "isolated-headless-mechanism-verified-not-gameplay-acceptance",
+  "prototype_version": "0.2.0",
+  "reward_state_schema": 2,
+  "plugin_sha256": "fb6fe52de91700be2cf8c2fa7ea61e678b78661e064995ff8f797edb52782199",
+  "dependency_lock": "manifests/dungeon-prototype.lock.json",
+  "verified_dependency_components": 7,
+  "game": {
+    "build_id": "25909431",
+    "version": "l-1.0.20",
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "assembly_valheim_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+    "build_identity": "manifests/server-build.json",
+    "updated_for_this_stage": false
+  },
+  "rules": {
+    "path": "configs/dungeon-rewards.json",
+    "sha256": "56f2c34ce498d5a1c4d08ec0573d67981b24509c45ada0f0ae7b8f061f0c2eb4",
+    "revision": "forest-provisional-1",
+    "balance_accepted": false
+  },
+  "checks": {
+    "dotnet_assertions": 11397,
+    "python_tests": 26,
+    "python_compileall": true,
+    "shellcheck": true,
+    "diff_check": true,
+    "math_is_gameplay_acceptance": false
+  },
+  "server_phases": [
+    {
+      "phase": "create",
+      "observed_at_utc": "2026-10-28T11:25:54.3267920Z",
+      "assertions": 1267,
+      "passed": true
+    },
+    {
+      "phase": "resume",
+      "observed_at_utc": "2026-10-28T11:29:07.6110690Z",
+      "assertions": 28,
+      "passed": true
+    },
+    {
+      "phase": "verify",
+      "observed_at_utc": "2026-10-28T11:37:49.9553050Z",
+      "assertions": 18,
+      "passed": true
+    }
+  ],
+  "open_rpc": {
+    "inventory_scan_does_not_generate": true,
+    "real_server_open_rpc": true,
+    "repeated_rpc_no_duplicate": true,
+    "client_ui_tested": false
+  },
+  "native_independence": [
+    {
+      "budget": 0.0,
+      "native_rate_for_fixture": 0.0,
+      "native_magic_items": 0,
+      "bonus_items": 0
+    },
+    {
+      "budget": 0.0,
+      "native_rate_for_fixture": 4.0,
+      "native_magic_items": 1,
+      "bonus_items": 0
+    },
+    {
+      "budget": 120.0,
+      "native_rate_for_fixture": 0.0,
+      "native_magic_items": 0,
+      "bonus_items": 1
+    },
+    {
+      "budget": 120.0,
+      "native_rate_for_fixture": 4.0,
+      "native_magic_items": 1,
+      "bonus_items": 1
+    }
+  ],
+  "native_trigger_scope": {
+    "pending_preserved_until_native_trigger": true,
+    "bonus_unchanged": true,
+    "trigger": "headless-direct-native-Roll-not-client-interaction"
+  },
+  "native_drop_rate_restored": 0.7,
+  "world_resource_modifier": "resources most (x3)",
+  "budget_boundaries": [
+    {
+      "budget": 0.0,
+      "items": 0,
+      "coins": 0,
+      "delivered": 0,
+      "pending": 0
+    },
+    {
+      "budget": 1.0,
+      "items": 0,
+      "coins": 50,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 11.999,
+      "items": 0,
+      "coins": 50,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 12.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 24.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 48.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 72.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 96.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 108.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 119.999,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 120.0,
+      "items": 1,
+      "coins": 0,
+      "delivered": 1,
+      "pending": 0
+    },
+    {
+      "budget": 121.0,
+      "items": 1,
+      "coins": 50,
+      "delivered": 2,
+      "pending": 0
+    },
+    {
+      "budget": 132.0,
+      "items": 3,
+      "coins": 0,
+      "delivered": 3,
+      "pending": 0
+    },
+    {
+      "budget": 192.0,
+      "items": 3,
+      "coins": 0,
+      "delivered": 3,
+      "pending": 0
+    },
+    {
+      "budget": 240.0,
+      "items": 3,
+      "coins": 0,
+      "delivered": 3,
+      "pending": 0
+    },
+    {
+      "budget": 300.0,
+      "items": 6,
+      "coins": 0,
+      "delivered": 4,
+      "pending": 2
+    },
+    {
+      "budget": 360.0,
+      "items": 6,
+      "coins": 0,
+      "delivered": 4,
+      "pending": 2
+    },
+    {
+      "budget": 361.0,
+      "items": 6,
+      "coins": 50,
+      "delivered": 5,
+      "pending": 2
+    },
+    {
+      "budget": 372.0,
+      "items": 10,
+      "coins": 0,
+      "delivered": 4,
+      "pending": 6
+    },
+    {
+      "budget": 432.0,
+      "items": 10,
+      "coins": 0,
+      "delivered": 3,
+      "pending": 7
+    },
+    {
+      "budget": 480.0,
+      "items": 10,
+      "coins": 0,
+      "delivered": 3,
+      "pending": 7
+    },
+    {
+      "saved_modifier_count": 10,
+      "saved_budget": 114.72552,
+      "moved_alive_open": true,
+      "duplicate_guard_refused": true,
+      "rebind_unchanged": true
+    }
+  ],
+  "journal_and_partial_stack": [
+    {
+      "interruption": "prepared",
+      "recovered": true
+    },
+    {
+      "interruption": "inventory-saved",
+      "recovered": true
+    },
+    {
+      "partial_coin_stack_atomic": true
+    }
+  ],
+  "technology": {
+    "mode": "BossKillUnlocksCurrentBiomeItems",
+    "total_samples": 960,
+    "all_results_allowed_by_native_gate_or_explicit_fallback": true,
+    "rows": [
+      {
+        "boss_stage": "none",
+        "source": "TreasureChest_forestcrypt",
+        "samples": 120,
+        "distinct_bases": 15,
+        "bronze_seen": false,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "none",
+        "source": "TreasureChest_sunkencrypt",
+        "samples": 120,
+        "distinct_bases": 14,
+        "bronze_seen": false,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "eikthyr",
+        "source": "TreasureChest_forestcrypt",
+        "samples": 120,
+        "distinct_bases": 22,
+        "bronze_seen": false,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "eikthyr",
+        "source": "TreasureChest_sunkencrypt",
+        "samples": 120,
+        "distinct_bases": 21,
+        "bronze_seen": false,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "elder",
+        "source": "TreasureChest_forestcrypt",
+        "samples": 120,
+        "distinct_bases": 40,
+        "bronze_seen": true,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "elder",
+        "source": "TreasureChest_sunkencrypt",
+        "samples": 120,
+        "distinct_bases": 28,
+        "bronze_seen": true,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "bonemass",
+        "source": "TreasureChest_forestcrypt",
+        "samples": 120,
+        "distinct_bases": 41,
+        "bronze_seen": true,
+        "iron_seen": false
+      },
+      {
+        "boss_stage": "bonemass",
+        "source": "TreasureChest_sunkencrypt",
+        "samples": 120,
+        "distinct_bases": 44,
+        "bronze_seen": true,
+        "iron_seen": true
+      }
+    ]
+  },
+  "persistence": {
+    "same_plugin_all_three_phases": true,
+    "stable_guard_tokens_and_modifiers": true,
+    "complete_inventory_and_reward_match_on_both_reloads": true,
+    "complete_cases": 3,
+    "overflow_entries_before_restart": {
+      "delivered": 2,
+      "total": 10
+    },
+    "overflow_entries_after_restart": {
+      "delivered": 10,
+      "total": 10
+    },
+    "ordinary_and_bonus_items_conserved_including_removed_items": true,
+    "repeat_access_no_duplicates": true,
+    "formed_items_unchanged_after_new_boss": true,
+    "unformed_chest_used_key_at_first_generation": true,
+    "backup_restored_to_separate_directory": true,
+    "restored_file_hashes_matched": 115,
+    "world_and_external_mod_data_in_backup": true,
+    "all_three_stops_saved_world": true
+  },
+  "mechanics": {
+    "constants": {
+      "SwiftSpeed": 1.4,
+      "FuriousSpeed": 1.18,
+      "ArmoredTaken": 0.7,
+      "ArmoredSlow": 0.85,
+      "WardedShare": 0.4,
+      "HardyPerSecond": 0.02,
+      "GreedyLeech": 0.2,
+      "KeenSight": 2.0,
+      "SteadfastStagger": 0.34,
+      "PiercingArmor": 22.0,
+      "PiercingResist": 0.12,
+      "UnbreakableCap": 0.2
+    },
+    "real_rpc_damage_samples": [
+      {
+        "prefab": "Skeleton",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 5.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 5.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 8.0
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 3.20000076
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 16.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 30.4000015
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 18.8800011
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Skeleton",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 38.4,
+        "health_loss": 19.2
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 5.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 8.0,
+        "health_loss": 5.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 8.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 8.0
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 3.20000076
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 16.0,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 16.0,
+        "health_loss": 0.0
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 30.4000015
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 18.8800011
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "armored",
+          "unbreakable"
+        ],
+        "maximum": 48.0,
+        "hit_slash": 38.4,
+        "health_loss": 1.59999847
+      },
+      {
+        "prefab": "Greydwarf",
+        "modifiers": [
+          "warded"
+        ],
+        "maximum": 28.8,
+        "hit_slash": 38.4,
+        "health_loss": 19.2
+      }
+    ],
+    "limitation": "single-native-hits-not-human-combat-or-sustained-DPS"
+  },
+  "stand": {
+    "host_vcpu": 6,
+    "host_memory_mib": 7946,
+    "limits": {
+      "memory_bytes": 4294967296,
+      "cpu_percent": 200,
+      "runtime_seconds": 900
+    },
+    "resource_measurements": {
+      "create": {
+        "memory_peak_bytes": 2161500160,
+        "cpu_time_ns_at_capture": 67261752000
+      },
+      "resume": {
+        "memory_peak_bytes": 2188963840,
+        "cpu_time_ns_at_capture": 87836532000
+      },
+      "verify": {
+        "memory_peak_bytes": 2186633216,
+        "cpu_time_ns_at_capture": 58008474000
+      }
+    },
+    "stopped": true,
+    "test_ports_free_after_stop": true,
+    "main_client_profile_changed": false,
+    "existing_world_changed": false,
+    "capacity_claim": false
+  },
+  "not_tested": [
+    "client-ui",
+    "two-client-owner-transfer",
+    "full-core-candidate-integration",
+    "actual-player-combat",
+    "dungeon-room-generation",
+    "chest-destruction-with-pending-items",
+    "maximum-size-network-stress",
+    "power-loss-or-process-kill-at-journal-boundary"
+  ],
+  "known_findings": [
+    "native-zdo-identifiers-renumber-on-load-fixed-with-stable-tokens",
+    "native-item-durability-serialization-is-lossy-use-raw-journal-snapshots",
+    "first-generation-only-on-open-rpc-not-background-inventory-read",
+    "armored-small-hit-nonmonotonic-health-loss-needs-combat-investigation"
+  ],
+  "source_sha256": [
+    {
+      "path": "scripts/forecast-dungeon-rewards.py",
+      "sha256": "1689ec0da37504741ba5adcfbb4f92a849dfca6e67743ff7d7725da55ab6ef17"
+    },
+    {
+      "path": "tests/test_dungeon_rewards.py",
+      "sha256": "0cbdc73d476fab9979fa2da932e169554df3403ff8c896ede14453df9f15e305"
+    },
+    {
+      "path": "tools/dungeon-depth-check/DungeonDepthCheck.csproj",
+      "sha256": "4208e6a7e1e741b851c9dcafac54873916f961548fdd5ce77ffc7783b7d099cc"
+    },
+    {
+      "path": "tools/dungeon-depth-check/Program.cs",
+      "sha256": "1d3b8f9aa0797fecb3d6575ff825eaac01b14b3115da11e68bbc4f77da852650"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/DungeonDepthPrototype.csproj",
+      "sha256": "4aabd0d2daeab877100e2534a1658373a967a80d33aa36b7204f25cd6f6042ef"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/EpicLootBridge.cs",
+      "sha256": "344182d17587f58c8a16fe517e86ef0e2cba4007bf7a84bcf2cbb4f2ca7addc3"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/GuardedChestReward.cs",
+      "sha256": "2e2e692f7afaefa29f1010eb368dde4dde7558d62dc2f1e078191c2f99842cb6"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/Plugin.cs",
+      "sha256": "8df5fa1b057b99cff11d4c5f35748142d4a669aa43c5dc129bb067b3cf5626ca"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/PovBridge.cs",
+      "sha256": "0da76842f7fa2f082b0372206af6a595bf8636a822b7c7dea1c9ddc046680b98"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/ProbeSuite.cs",
+      "sha256": "788984585dd284f398702f919f86a9fdfffcf92b34ef957e324f0cc456f1e93e"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/RewardJournal.cs",
+      "sha256": "4398cf625f91db0e71755d864cc6e9c67c89dbfcc7cb6e3fc245ec686e0ed59d"
+    },
+    {
+      "path": "tools/dungeon-depth-prototype/RewardModel.cs",
+      "sha256": "375ad696ce470fcc8bed79fc4978c0457f04f0f59d002bd3b20f0a3ab4ee1f19"
+    }
+  ]
+}

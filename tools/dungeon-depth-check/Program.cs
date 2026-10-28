@@ -13,39 +13,82 @@ void Refuses(Action action, string name)
     throw new Exception(name);
 }
 
-double[] input = { 80, 15, 5, 0 };
-var unchanged = RewardProjection.BestOf(input, 1);
-Check(unchanged.Zip(input).All(p => Math.Abs(p.First - p.Second / 100) < 1e-12), "Baseline");
-// Точные вероятности максимума двух независимых категориальных бросков.
-double[] pairExpected = { 0.64, 0.2625, 0.0975, 0 };
-var pair = RewardProjection.BestOf(input, 2);
-Check(pair.Zip(pairExpected).All(p => Math.Abs(p.First - p.Second) < 1e-12), "Two draws");
-Check(RewardProjection.OpportunityFactor(10, 0.5, 1) == 6, "Normal PoV factor");
-Check(RewardProjection.OpportunityFactor(10, 0.5, 0.4, 2) == 2, "Normalized PoV factor");
-var floored = RewardProjection.WithMinimum(input, 1);
-Check(floored[0] == 0 && Math.Abs(floored[1] - 0.95) < 1e-12 && Math.Abs(floored[2] - 0.05) < 1e-12,
-    "Minimum quality preserves upper rarity probability and total mass");
-Check(RewardProjection.BestOf(new double[] { 19, 3 }, 4.5)[1] < 0.5 &&
-    RewardProjection.BestOf(new double[] { 19, 3 }, 5)[1] > 0.5, "First rare floor at eight default modifiers");
-double previousRare = 0;
-for (int modifiers = 0; modifiers <= 26; modifiers++)
+var jsonOptions = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
+string rulesPath = args.Length > 0 ? args[0] : "configs/dungeon-rewards.json";
+var rules = System.Text.Json.JsonSerializer.Deserialize<RewardRules>(File.ReadAllText(rulesPath), jsonOptions)!;
+rules.Validate();
+RewardPlan Plan(decimal b, double draw = 0) => RewardModel.Plan(b, rules, () => draw);
+decimal scale = rules.QualityKnots[6], minimum = rules.QualityKnots[0];
+for (int n = 0; n <= 12; n++)
 {
-    var distribution = RewardProjection.BestOf(input, RewardProjection.OpportunityFactor(modifiers, 0.5, 1));
-    Check(Math.Abs(distribution.Sum() - 1) < 1e-12, "Normalization");
-    Check(distribution.All(p => p >= 0) && distribution[3] == 0, "Support preservation");
-    Check(distribution[2] >= previousRare, "Monotone rarity");
-    previousRare = distribution[2];
+    decimal b = n * scale;
+    int ancient = n * (n + 1) / 2;
+    var exact = Plan(b);
+    Check(exact.ItemCount == ancient && exact.Coins == 0, "Exact complete scale");
+    Check(exact.Groups.All(g => g.Quality == RewardQuality.Ancient), "Completed groups retained");
+    foreach (decimal small in new[] { 0.001m, minimum - 0.001m })
+    {
+        var below = Plan(b + small);
+        Check(below.ItemCount == ancient && below.Coins == 50, "One compensation at positive remainder");
+    }
+    var common = Plan(b + minimum);
+    Check(common.ItemCount == ancient + n + 1 && common.Coins == 0, "Next group threshold");
+    Check(common.Groups.Last().Quality == RewardQuality.Common, "Common is not Magic");
+    for (int k = 1; k < 6; k++)
+    {
+        var plan = Plan(b + rules.QualityKnots[k]);
+        Check(plan.Groups.Last().Size == n + 1 && plan.Groups.Last().Quality == (RewardQuality)k,
+            "Budget not divided by group size");
+    }
+    if (n > 0)
+    {
+        var below = Plan(b - 0.001m, 0.999999);
+        Check(below.ItemCount == ancient && below.Groups.Count == n, "Early Ancient does not open next group");
+    }
 }
-Check(RewardProjection.Roll(new double[] { 0, 0, 1, 0 }, 0) == 2, "Leading zero weights");
-Check(RewardProjection.Roll(new double[] { 0, 0, 1, 0 }, 0.9999999) == 2, "Trailing zero weights");
-Refuses(() => RewardProjection.BestOf(new double[] { 0, 0 }, 1), "Empty mass");
-Refuses(() => RewardProjection.BestOf(new double[] { -1, 2 }, 1), "Negative weight");
-Refuses(() => RewardProjection.BestOf(new double[] { double.NaN }, 1), "NaN weight");
-Refuses(() => RewardProjection.BestOf(input, double.PositiveInfinity), "Infinite opportunities");
-Refuses(() => RewardProjection.OpportunityFactor(-1, 0.5, 1), "Negative modifiers");
-Refuses(() => RewardProjection.OpportunityFactor(10, 0.5, 2), "Invalid normalization");
-Refuses(() => RewardProjection.Roll(input, 1), "Upper RNG boundary");
-Refuses(() => RewardProjection.WithMinimum(input, 4), "Invalid minimum quality");
+Check(Plan(3 * scale + rules.QualityKnots[3]).ItemCount == 10, "Six Ancient plus four Epic");
+var previous = new decimal[7];
+for (decimal score = minimum; score <= scale; score += 0.25m)
+{
+    var p = RewardModel.Distribution(score, rules.QualityKnots);
+    Check(Math.Abs(p.Sum() - 1) < 0.00000000001m && p.All(x => x >= 0 && x <= 1), "Probability mass");
+    for (int k = 1; k < 7; k++)
+    {
+        decimal tail = p.Skip(k).Sum();
+        Check(tail >= previous[k], "Stochastic quality monotonicity");
+        previous[k] = tail;
+    }
+}
+var rng = new Random(20261028);
+int upper = 0;
+for (int i = 0; i < 20000; i++)
+    if (Plan((rules.QualityKnots[2] + rules.QualityKnots[3]) / 2, rng.NextDouble())
+            .Groups.Single().Quality == RewardQuality.Epic) upper++;
+Check(Math.Abs(upper / 20000.0 - 0.5) < 0.015, "Adjacent quality sample");
+var ids = rules.Weights.Keys.ToArray();
+for (int mask = 0; mask < (1 << ids.Length); mask++)
+{
+    var chosen = ids.Where((_, i) => (mask & (1 << i)) != 0).ToArray();
+    var b = rules.Budget(chosen, 0, false);
+    Check(b.Points == chosen.Sum(id => rules.Weights[id]), "Actual modifier identities");
+    Check(b.Value == rules.Budget(chosen.Reverse(), 0, false).Value, "Order independence");
+    Check(rules.Budget(chosen, 20, false).Value - b.Value == 20, "Global weights across biomes");
+    foreach (string id in ids.Except(chosen))
+        Check(rules.Budget(chosen.Append(id), 0, false).Value >= b.Value, "Adding an affix never reduces budget");
+}
+Check(rules.Budget(Array.Empty<string>(), 40, true).Value == 0, "Protected zone cancels location bonus");
+Refuses(() => rules.Budget(new[] { "unknown" }, 0, false), "No invented affix cost");
+Refuses(() => rules.Budget(new[] { "swift", "swift" }, 0, false), "No duplicate affix");
+Refuses(() => rules.Budget(new[] { "swift" }, 0, true), "No guarded progression zone");
+Refuses(() => Plan(-1), "Negative budget");
+Refuses(() => Plan(1000000), "Excessive reward refuses before partial generation");
+Refuses(() => Plan(minimum, double.NaN), "NaN RNG");
+Refuses(() => Plan(minimum, 1), "Exclusive upper RNG bound");
+var journal = new RewardJournal { Before = "ordinary", After = "ordinary+bonus", Next = 1 };
+Check(journal.NeedsApply("ordinary"), "Prepared transaction resumes");
+Check(!journal.NeedsApply("ordinary+bonus"), "Written transaction does not duplicate");
+try { journal.NeedsApply("different ordinary content"); throw new Exception("Conflict accepted"); }
+catch (InvalidOperationException) { checks++; }
 var chain = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (1, 2), (2, 3) }, 0);
 Check(chain.SequenceEqual(new[] { 0, 1, 2, 3 }), "Room chain depth");
 var shortcut = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (1, 2), (2, 3), (3, 0) }, 0);
@@ -56,4 +99,4 @@ var branch = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (0, 2),
 Check(branch.Max() == 1, "Branching alone does not add depth");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
-Console.WriteLine($"Проверки распределения наград и графа комнат: {checks} OK");
+Console.WriteLine($"Проверки групп, глобальных весов, журнала и графа комнат: {checks} OK");

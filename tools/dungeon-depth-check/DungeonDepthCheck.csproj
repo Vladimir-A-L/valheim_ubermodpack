@@ -6,7 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../dungeon-depth-prototype/RewardProjection.cs" Link="RewardProjection.cs" />
+    <Compile Include="../dungeon-depth-prototype/RewardModel.cs" Link="RewardModel.cs" />
+    <Compile Include="../dungeon-depth-prototype/RewardJournal.cs" Link="RewardJournal.cs" />
     <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />
   </ItemGroup>
 </Project>

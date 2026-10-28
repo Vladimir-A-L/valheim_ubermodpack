@@ -6,6 +6,7 @@ from datetime import datetime, timezone
 from decimal import Decimal, ROUND_CEILING
 import hashlib
 import json
+from itertools import combinations
 from pathlib import Path
 
 
@@ -136,18 +137,68 @@ def forecast(model):
     }
 
 
+def forecast_runtime(model, rules):
+    """Прогноз по той же явной таблице, которую загружает плагин; не частоты наборов PoV."""
+    weights = {name: decimal(value) for name, value in rules["Weights"].items()}
+    if rules["Schema"] != 1 or not weights or any(value <= 0 for value in weights.values()):
+        raise ValueError("Некорректные глобальные веса")
+    synergies = rules["Synergies"]
+    if len({rule["Id"] for rule in synergies}) != len(synergies):
+        raise ValueError("Повторное правило сочетания")
+    for rule in synergies:
+        required = rule["Requires"]
+        if len(set(required)) != len(required) or len(required) < 2 or not set(required).issubset(weights):
+            raise ValueError("Неподдержанный набор сочетания")
+        if decimal(rule["Factor"]) < 1:
+            raise ValueError("Коэффициент сочетания меньше единицы")
+    knots = rules["QualityKnots"]
+    if len(knots) != 7:
+        raise ValueError("Нужны семь порогов качества")
+    model = {**model, "ancient_scale": knots[-1], "quality_knots": [
+        {"score": score, "rarity": rarity} for score, rarity in zip(
+            knots, ("Common", "Magic", "Rare", "Epic", "Legendary", "Mythic", "Ancient"))]}
+    validate(model)
+    rows = []
+    for size in range(min(len(weights), model["max_assigned_modifiers"]) + 1):
+        cases = []
+        for ids in combinations(sorted(weights), size):
+            matched = [rule for rule in synergies if set(rule["Requires"]).issubset(ids)]
+            factor = Decimal(1)
+            for rule in sorted(matched, key=lambda rule: rule["Id"]):
+                factor *= decimal(rule["Factor"])
+            points = sum((weights[name] for name in ids), Decimal(0))
+            cases.append((guard_budget(points, 0, factor), ids))
+        low, high = min(cases), max(cases)
+        rows.append({"modifier_count": size, "combinations": len(cases),
+                     "minimum": {"ids": low[1], **project(low[0], model)},
+                     "maximum": {"ids": high[1], **project(high[0], model)}})
+    return {"schema_version": 1, "captured_at_utc": datetime.now(timezone.utc).isoformat(),
+            "status": "runtime-rules-provisional-balance-not-gameplay-acceptance",
+            "rules_revision": rules["Revision"], "rows": rows,
+            "guard_set_occurrence_probabilities": "not-modelled",
+            "native_loot_affects_bonus": False,
+            "location_bonus_in_this_projection": 0}
+
+
 def main():
     root = Path(__file__).resolve().parents[1]
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--inputs", type=Path, default=root / "manifests/dungeon-reward-forecast-inputs.json")
     parser.add_argument("--output", type=Path, required=True)
+    parser.add_argument("--runtime-rules", type=Path,
+                        help="Явная таблица плагина вместо исторического примера 10/100")
     args = parser.parse_args()
     payload = args.inputs.read_bytes()
-    result = forecast(json.loads(payload))
+    if args.runtime_rules:
+        rules_payload = args.runtime_rules.read_bytes()
+        result = forecast_runtime(json.loads(payload), json.loads(rules_payload))
+        result["rules_sha256"] = hashlib.sha256(rules_payload).hexdigest()
+    else:
+        result = forecast(json.loads(payload))
     result["inputs_sha256"] = hashlib.sha256(payload).hexdigest()
     args.output.parent.mkdir(parents=True, exist_ok=True)
     args.output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    print(f"Сценарный прогноз: {len(result['rows'])} случаев, {len(result['stage_examples'])} примеров границ")
+    print(f"Сценарный прогноз: {len(result['rows'])} строк, статус {result['status']}")
 
 
 if __name__ == "__main__":
