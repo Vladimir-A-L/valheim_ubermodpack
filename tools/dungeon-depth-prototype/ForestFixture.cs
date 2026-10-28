@@ -50,6 +50,20 @@ internal sealed class ForestFixture : MonoBehaviour
         string action = command.Value<string>("action") ?? "";
         if (action == "loadout-check") return ForestLoadout.Validate();
         if (action == "manual-god-probe") return ForestManual.Probe();
+        if (action == "manual-telemetry-status") return ManualTelemetry.Status();
+        if (action == "manual-telemetry-replay") return ManualTelemetry.ReplayProbe();
+        if (action == "server-save")
+        {
+            if (!ZNet.instance.IsServer()) throw new InvalidOperationException("Нужен сервер");
+            ZNet.instance.Save(false, true);
+            return new { requested = true };
+        }
+        if (action == "server-peers")
+        {
+            if (!ZNet.instance.IsServer()) throw new InvalidOperationException("Нужен сервер");
+            return ZNet.instance.GetPeers().Select(p => new { name = p.m_playerName,
+                account = p.m_socket.GetHostName(), ready = p.IsReady() }).ToArray();
+        }
         if (action == "save-player")
         {
             if (!ForestManual.Target(Player.m_localPlayer))

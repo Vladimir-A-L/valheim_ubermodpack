@@ -1,0 +1,20 @@
+# Постоянный режим после контролируемого импорта Drug.
+serverSettings:
+  maxPlayers: 10
+  maxCharactersPerAccount: 3
+  backupsPerProfile: 4
+  loadServerCharacterOnJoin: true
+forbiddenItems: []
+cheatDetection:
+  action: log
+statCaps:
+  action: log
+  health: 1000000
+  stamina: 1000000
+  eitr: 1000000
+  weight: 1000000
+  damage: 1000000000
+# Обычный стартовый набор; бронза QA выдаётся только разрешённому тестовому персонажу.
+startItems:
+  - ArmorRagsChest
+  - Torch

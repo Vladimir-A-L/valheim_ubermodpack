@@ -100,6 +100,7 @@ Check(branch.Max() == 1, "Branching alone does not add depth");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
 ForestPlanChecks.Run(Check);
+ManualLedgerChecks.Run(Check);
 Check(ManualDeathCounter.ReachedFloor(100, 1), "First conditional death");
 Check(!ManualDeathCounter.ReachedFloor(1, 1), "Hits at floor do not add deaths");
 Check(!ManualDeathCounter.ReachedFloor(1, 8), "Healing is not a death");

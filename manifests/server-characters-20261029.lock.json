@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T20:32:14.618242+00:00",
+  "scope": "forest-crypt-qa-server-character-update",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "packages": [
+    {
+      "full_name": "sighsorry-ServerManager-1.2.5",
+      "url": "https://thunderstore.io/c/valheim/p/sighsorry/ServerManager/1.2.5/",
+      "download_url": "https://thunderstore.io/package/download/sighsorry/ServerManager/1.2.5/",
+      "archive_sha256": "05862327c156b7f3ae9b2add5496134acd53f076117e824256902fd938eb221e",
+      "files": [
+        {
+          "name": "ServerManager.dll",
+          "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+        }
+      ],
+      "dependencies": [
+        "denikson-BepInExPack_Valheim-5.4.2351"
+      ],
+      "verification_source": "downloaded-release-archive"
+    }
+  ],
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.4.0",
+    "dll_sha256": "42ccc5039bb89217d5869a089de332dd085f7963f9e3a0cde090663a30929285"
+  },
+  "client_update": {
+    "base": "Valheim-ForestCryptQA-client-0.3.0-20261029",
+    "archive_name": "ForestCryptQA-Drug-0.4.0.zip",
+    "archive_sha256": "37f561a9c2744d03267bcb92cfcd786ddc45ee1e594292b60ca7736800cf89a0"
+  }
+}

@@ -18,14 +18,14 @@ internal sealed class ForestManual : MonoBehaviour
     }
     private static Settings settings = new Settings();
     private static string attempt = "";
-    private static int deaths;
+    private static int sequence, probeSequence;
+    private static string probeAttempt = "";
     private static int probeDeaths = -1;
     private static Player? current;
     private Player? preparing;
     private bool teleportStarted, preparationFailed;
     private float prepareDeadline;
     private const string PreparedKey = "uberdungeon.qa.manual.prepared.v1";
-    private const string DeathsKey = "uberdungeon.qa.manual.deaths.v1";
     private float next;
     private static string Folder => Path.Combine(Paths.ConfigPath, "ForestCryptQA");
     internal static bool Target(Player? p) => p != null && ZNet.instance != null &&
@@ -36,6 +36,7 @@ internal sealed class ForestManual : MonoBehaviour
     internal static void Install(GameObject host)
     {
         ReadSettings();
+        ManualTelemetry.Install(host);
         var harmony = new Harmony(Plugin.Guid + ".manual-test");
         harmony.Patch(AccessTools.Method(typeof(Player), "OnSpawned"),
             prefix: new HarmonyMethod(typeof(ForestManual), nameof(Spawned)));
@@ -71,6 +72,7 @@ internal sealed class ForestManual : MonoBehaviour
                 current = null; attempt = ""; preparing = null; return;
             }
             Spawned(player!);
+            if (!ManualTelemetry.Ready) return;
             if (!Prepare(player!)) return;
             if (!settings.Record) { attempt = ""; current = null; return; }
             const string freshStart = "uberdungeon.qa.manual.fresh-start.v1";
@@ -82,13 +84,9 @@ internal sealed class ForestManual : MonoBehaviour
             }
             if (current != player || attempt.Length == 0)
             {
-                current = player; attempt = Guid.NewGuid().ToString("N"); deaths = 0;
-                Record("attempt-start", new { health = player!.GetHealth(), max_health = player.GetMaxHealth(),
-                    starts_at_floor = player.GetHealth() <= 1.001f, total_deaths = TotalDeaths(player),
-                    god = player.InGodMode(), ghost = player.InGhostMode() });
+                current = player; attempt = Guid.NewGuid().ToString("N"); sequence = 0;
+                SendSample(player!, "start", player!.GetHealth(), player.GetHealth(), "", false);
                 Game.instance.SavePlayerProfile(true);
-                player.Message(MessageHud.MessageType.Center,
-                    "Тест готов: god включён, ghost выключен. Условных смертей: " + TotalDeaths(player));
             }
         }
         catch (Exception e) { Plugin.LogError("MANUAL_TEST " + e.Message); }
@@ -97,6 +95,7 @@ internal sealed class ForestManual : MonoBehaviour
     private bool Prepare(Player player)
     {
         if (!settings.AutoPrepareOnce || player.m_customData.ContainsKey(PreparedKey)) return true;
+        if (player.InIntro()) return false;
         if (preparing != player)
         {
             preparing = player; teleportStarted = false; preparationFailed = false;
@@ -144,10 +143,6 @@ internal sealed class ForestManual : MonoBehaviour
         }
     }
 
-    private static int TotalDeaths(Player player) =>
-        player.m_customData.TryGetValue(DeathsKey, out string value) && int.TryParse(value, out int count)
-            ? count : 0;
-
     private static void BeforeDamage(Character __instance, out float __state)
     {
         __state = __instance == Player.m_localPlayer && Matches(Player.m_localPlayer) ? __instance.GetHealth() : -1;
@@ -155,28 +150,35 @@ internal sealed class ForestManual : MonoBehaviour
 
     private static void AfterDamage(Character __instance, HitData hit, float __state)
     {
-        if (__state < 0) return;
-        float after = __instance.GetHealth();
-        if (probeDeaths >= 0)
+        try
         {
-            if (ManualDeathCounter.ReachedFloor(__state, after)) probeDeaths++;
-            return;
+            if (__state < 0) return;
+            float after = __instance.GetHealth();
+            if (probeDeaths >= 0)
+            {
+                if (ManualDeathCounter.ReachedFloor(__state, after)) probeDeaths++;
+                SendSample(Player.m_localPlayer, "damage", __state, after, "controlled-probe", true);
+                return;
+            }
+            if (!settings.Record || attempt.Length == 0 || __instance != current) return;
+            if (after >= __state && after > 1.001f) return;
+            var attacker = hit.GetAttacker();
+            SendSample(current!, "damage", __state, after,
+                attacker == null ? "environment" : Utils.GetPrefabName(attacker.gameObject), false);
         }
-        if (!settings.Record || attempt.Length == 0 || __instance != current) return;
-        if (after >= __state && after > 1.001f) return;
-        var attacker = hit.GetAttacker();
-        var p = __instance.transform.position;
-        bool reachedFloor = ManualDeathCounter.ReachedFloor(__state, after);
-        if (reachedFloor)
+        catch (Exception e) { ManualTelemetry.ReportFailure(e); }
+    }
+
+    private static void SendSample(Player player, string kind, float before, float after, string attacker, bool probe)
+    {
+        var p = player.transform.position;
+        ManualTelemetry.Enqueue(new ManualSample
         {
-            deaths++;
-            current!.m_customData[DeathsKey] = (TotalDeaths(current) + 1).ToString();
-            current.Message(MessageHud.MessageType.Center,
-                "Условная смерть: " + deaths + " за вход, " + TotalDeaths(current) + " всего. HP = 1");
-        }
-        Record(reachedFloor ? "conditional-death" : "damage", new { before = __state, after,
-            death_number = deaths, total_deaths = TotalDeaths(current!), position = new[] { p.x, p.y, p.z },
-            attacker = attacker == null ? "environment" : Utils.GetPrefabName(attacker.gameObject) });
+            Attempt = probe ? probeAttempt : attempt, Sequence = probe ? probeSequence++ : sequence++,
+            Kind = kind, Character = player.GetPlayerName(), ClientUtc = DateTime.UtcNow.ToString("O"),
+            Before = before, After = after, Position = new[] { p.x, p.y, p.z }, Attacker = attacker,
+            God = player.InGodMode(), Ghost = player.InGhostMode(), Probe = probe
+        });
     }
 
     private static void Record(string kind, object value)
@@ -190,7 +192,7 @@ internal sealed class ForestManual : MonoBehaviour
     internal static object Probe()
     {
         var player = Player.m_localPlayer;
-        if (!Matches(player) || settings.Record || player!.IsDead() || player.IsTeleporting())
+        if (!Matches(player) || !ManualTelemetry.Ready || settings.Record || player!.IsDead() || player.IsTeleporting())
             throw new InvalidOperationException("Проба допустима только до начала ручной записи");
         float before = player.GetHealth();
         try
@@ -198,6 +200,8 @@ internal sealed class ForestManual : MonoBehaviour
             Spawned(player);
             probeDeaths = 0;
             player.SetHealth(10);
+            probeAttempt = Guid.NewGuid().ToString("N"); probeSequence = 0;
+            SendSample(player, "start", 10, 10, "controlled-probe", true);
             var hit = new HitData { m_point = player.transform.position };
             hit.m_damage.m_damage = 100000;
             player.ApplyDamage(hit, false, false);

@@ -24,17 +24,29 @@ $configRelative = 'BepInEx\config\forest-manual-test.json'
 $dll = Join-Path $game $dllRelative
 if (-not (Test-Path -LiteralPath $dll)) { throw 'Нужен ранее установленный клиент ForestCryptQA 0.3.0.' }
 $oldHash = (Get-FileHash -LiteralPath $dll -Algorithm SHA256).Hash
-if ($oldHash -ne $manifest.previous_dll_sha256 -and $oldHash -ne $manifest.dll_sha256) {
+if ($oldHash -notin $manifest.accepted_previous_dll_sha256 -and $oldHash -ne $manifest.dll_sha256) {
     throw 'Неизвестная версия тестового модуля. Установка остановлена.'
 }
-$sources = @(
-    @{relative=$dllRelative; source=(Join-Path $payload 'DungeonDepthPrototype.dll'); hash=$manifest.dll_sha256},
-    @{relative=$configRelative; source=(Join-Path $payload 'forest-manual-test.json'); hash=$manifest.config_sha256}
-)
+$managerRelative = 'BepInEx\plugins\ServerManager\ServerManager.dll'
+$managerConfigRelative = 'BepInEx\config\sighsorry.ServerManager.cfg'
+$allowed = @($dllRelative, $configRelative, $managerRelative, $managerConfigRelative)
+$sources = @($manifest.files | ForEach-Object {
+    if ($_.relative -notin $allowed -or $_.source -ne [IO.Path]::GetFileName($_.source)) {
+        throw 'Неожиданный файл в manifest обновления.'
+    }
+    @{relative=$_.relative; source=(Join-Path $payload $_.source); hash=$_.sha256}
+})
+if ($sources.Count -ne 4 -or @($sources.relative | Sort-Object -Unique).Count -ne 4) {
+    throw 'Неполный или повторяющийся набор файлов обновления.'
+}
 foreach ($item in $sources) {
     if ((Get-FileHash -LiteralPath $item.source -Algorithm SHA256).Hash -ne $item.hash) {
         throw 'Контрольная сумма патча не совпала.'
     }
+}
+$manager = Join-Path $game $managerRelative
+if ((Test-Path $manager) -and (Get-FileHash $manager).Hash -ne $manifest.servermanager_sha256) {
+    throw 'Уже установлена другая версия ServerManager. Требуется проверка перед заменой.'
 }
 $manual = Get-Content (Join-Path $payload 'forest-manual-test.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 if ($manual.PlayerName -ne $manifest.character -or -not $manual.Enabled -or -not $manual.Record) {
@@ -91,7 +103,17 @@ try {
             }
         }
     }
-    Copy-Item -LiteralPath $dll -Destination (Join-Path $stage 'DungeonDepthPrototype.dll')
+    foreach ($item in $sources) {
+        $previous = Join-Path $game $item.relative
+        if (Test-Path -LiteralPath $previous) {
+            $destination = Join-Path (Join-Path $stage 'original') $item.relative
+            New-Item -ItemType Directory -Path (Split-Path $destination) -Force | Out-Null
+            Copy-Item -LiteralPath $previous -Destination $destination
+            if ((Get-FileHash $previous).Hash -ne (Get-FileHash $destination).Hash) {
+                throw 'Файл поставки изменился во время резервирования.'
+            }
+        }
+    }
     $files = @(Get-ChildItem $stage -Recurse -File | ForEach-Object {
         @{path=$_.FullName.Substring($stage.Length + 1).Replace('\', '/'); sha256=(Get-FileHash $_.FullName).Hash}
     })
@@ -116,19 +138,22 @@ try {
     try {
         foreach ($item in $sources) {
             $destination = Join-Path $game $item.relative
+            New-Item -ItemType Directory -Path (Split-Path $destination) -Force | Out-Null
             Copy-Item -LiteralPath $item.source -Destination $destination -Force
             if ((Get-FileHash -LiteralPath $destination).Hash -ne $item.hash) { throw 'Ошибка установки патча.' }
         }
     } catch {
-        Copy-Item (Join-Path $stage 'DungeonDepthPrototype.dll') $dll -Force
-        $oldConfig = Join-Path $stage 'config\forest-manual-test.json'
-        if (Test-Path $oldConfig) { Copy-Item $oldConfig (Join-Path $game $configRelative) -Force }
-        else { Remove-Item (Join-Path $game $configRelative) -ErrorAction SilentlyContinue }
+        foreach ($item in $sources) {
+            $previous = Join-Path (Join-Path $stage 'original') $item.relative
+            $destination = Join-Path $game $item.relative
+            if (Test-Path -LiteralPath $previous) { Copy-Item $previous $destination -Force }
+            elseif (Test-Path -LiteralPath $destination) { Remove-Item -LiteralPath $destination }
+        }
         throw
     }
     Write-Host ('Патч установлен для персонажа ' + $manifest.character + '. Backup: ' + $archive)
     Write-Host 'Запустите тестовую копию игры и войдите на прежний сервер.'
-    Write-Host 'Дождитесь сообщения «Тест готов»: комплект выдан, god включён, ghost выключен.'
+    Write-Host 'Дождитесь сообщения «Тест готов» с подтверждённым счётчиком сервера.'
 } finally {
     if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
 }
