@@ -14,6 +14,8 @@ namespace DungeonDepthPrototype;
 internal sealed class ClientFixture : MonoBehaviour
 {
     internal const string Tag = "uberdungeon.client.fixture";
+    private const string LayoutKey = Tag + ".layout";
+    private const int LayoutVersion = 2;
     private static readonly string[] Names = { "zero", "coins", "single", "groups", "overflow" };
     private static readonly decimal[] Budgets = { 0, 1, 120, 240, 432 };
     private readonly Dictionary<string, string> last = new Dictionary<string, string>();
@@ -131,8 +133,11 @@ internal sealed class ClientFixture : MonoBehaviour
                     .GetComponent<Character>();
                 guard.GetComponent<BaseAI>().enabled = false;
                 PovBridge.AssignIds(guard);
-                var chest = Spawn("TreasureChest_forestcrypt", new Vector3(i * 4, 201, 0), Names[i])
+                // При горизонтальном взгляде сундук должен попадать в прицел без отдельного наклона.
+                Spawn("stone_floor_2x2", new Vector3(i * 4, 201.5f, 0), "pedestal-" + Names[i]);
+                var chest = Spawn("TreasureChest_forestcrypt", new Vector3(i * 4, 202.5f, 0), Names[i])
                     .GetComponent<Container>();
+                Zdo(chest).Set(LayoutKey, LayoutVersion);
                 // Штатное содержимое и pending EpicLoot сохраняются. Наполнитель помечен отдельно.
                 if (Names[i] == "overflow")
                     while (Inv(chest).HaveEmptySlot()) Add(Inv(chest), "Wood", "qa-filler");
@@ -148,15 +153,31 @@ internal sealed class ClientFixture : MonoBehaviour
         if (player == null || player.GetPlayerName() != "RewardQA")
             throw new InvalidOperationException("Нужен отдельный персонаж RewardQA");
         if (InventoryGui.IsVisible()) throw new InvalidOperationException("Сначала закрыть UI инвентаря");
+        if (action == "position-status")
+        {
+            if (!Names.Contains(command["chest"])) throw new ArgumentException("Неизвестный сундук");
+            var hovered = player.GetHoverObject();
+            var chest = hovered == null ? null : hovered.GetComponentInParent<Container>();
+            string? name = chest == null ? null : Zdo(chest)?.GetString(Tag);
+            return new
+            {
+                ready_to_open = !player.IsTeleporting() && name == command["chest"],
+                teleporting = player.IsTeleporting(), hovered_chest = name
+            };
+        }
         if (action == "position")
         {
             int index = Array.IndexOf(Names, command["chest"]);
             if (index < 0) throw new ArgumentException("Неизвестный сундук");
-            AccessTools.Field(typeof(Player), "m_lookPitch").SetValue(player, 25f);
+            var chest = AllZdos().Values.Single(z => z.GetString(Tag) == Names[index]);
+            if (chest.GetInt(LayoutKey) != LayoutVersion)
+                throw new InvalidOperationException("Нужна новая площадка layout 2; прежние сундуки не перемещаются");
+            if (player.IsTeleporting()) throw new InvalidOperationException("Дождаться текущей телепортации");
             player.SetGodMode(true);
             player.SetGhostMode(true);
             bool started = player.TeleportTo(new Vector3(index * 4, 202, -1.7f), Quaternion.identity, false);
-            return new { teleport_started = started };
+            if (started) AccessTools.Field(typeof(Player), "m_lookPitch").SetValue(player, 0f);
+            return new { teleport_started = started, layout_version = LayoutVersion };
         }
         if (action == "prepare-overflow")
         {
@@ -213,7 +234,7 @@ internal sealed class ClientFixture : MonoBehaviour
         server = ZNet.instance.IsServer(), local = ZNet.GetUID(), world_keys = ZoneSystem.instance.GetGlobalKeys(),
         network = AllZdos().Values.Where(z => Names.Contains(z.GetString(Tag))).Select(z => new
         {
-            chest = z.GetString(Tag), owner = z.GetOwner(),
+            chest = z.GetString(Tag), layout_version = z.GetInt(LayoutKey), owner = z.GetOwner(),
             state = JsonConvert.DeserializeObject<ChestRewardState>(z.GetString(GuardedChestReward.StateKey)),
             inventory = EpicLootBridge.Hash(z.GetByteArray(ZDOVars.s_items) ?? Array.Empty<byte>())
         }).ToArray(),

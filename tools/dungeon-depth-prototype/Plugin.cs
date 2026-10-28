@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.2.1")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.2.2")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -44,7 +44,7 @@ public sealed class Plugin : BaseUnityPlugin
             if (session == null || session != ZNet.instance || !Ready(expectedWorld)) continue;
             var report = new Dictionary<string, object>
             {
-                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.2.1",
+                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.2.2",
                 ["phase"] = phase, ["scope"] = probe ? "headless-real-container-probe" : "runtime-initialization",
                 ["gameplay_accepted"] = false, ["two_client_tested"] = false
             };

@@ -206,10 +206,21 @@
             1250,
             47
           ],
-          "minimum_confidence": 70
+          "minimum_confidence": 70,
+          "variants": [
+            {
+              "preprocessing": "none",
+              "psm": 6
+            },
+            {
+              "preprocessing": "light_text_v1",
+              "psm": 7
+            }
+          ]
         }
       ],
-      "timeout_seconds": 60
+      "timeout_seconds": 60,
+      "stable_observations": 2
     }
   ]
 }
