@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.2.0")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.2.1")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -35,53 +35,64 @@ public sealed class Plugin : BaseUnityPlugin
 
     private IEnumerator Run(string expectedWorld, bool probe, string phase)
     {
-        float deadline = Time.realtimeSinceStartup + 240;
-        while (ZNet.instance == null || ZNetScene.instance == null || ObjectDB.instance == null ||
-               ObjectDB.instance.GetItemPrefab("Coins") == null || ZoneSystem.instance == null)
+        // Меню клиента может оставаться открытым сколько угодно. Каждый вход — отдельная сессия.
+        while (true)
         {
-            if (Time.realtimeSinceStartup > deadline) { Logger.LogError("Таймаут готовности мира"); yield break; }
-            yield return new WaitForSeconds(1);
-        }
-        // Дать зависимостям завершить отложенную загрузку таблиц и конфигов.
-        yield return new WaitForSeconds(3);
-        var report = new Dictionary<string, object>
-        {
-            ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.2.0",
-            ["phase"] = phase, ["scope"] = "headless-real-container-probe",
-            ["gameplay_accepted"] = false, ["two_client_tested"] = false
-        };
-        try
-        {
-            var getWorld = AccessTools.Method(typeof(ZNet), "GetWorldName");
-            string actualWorld = (string)getWorld.Invoke(getWorld.IsStatic ? null : ZNet.instance, null);
-            if (actualWorld != expectedWorld || probe && !ZNet.instance.IsServer())
-                throw new InvalidOperationException("Не тот тестовый мир или режим");
-            GuardedChestReward.Rules = JsonConvert.DeserializeObject<RewardRules>(
-                File.ReadAllText(Path.Combine(Paths.ConfigPath, "dungeon-rewards.json")))!;
-            GuardedChestReward.Rules.Validate();
-            EpicLootBridge.Verify();
-            EpicLootBridge.Install(harmony!);
-            PovBridge.Install(harmony!);
-            GuardedChestReward.Install(harmony!);
-            if (probe) ProbeSuite.Run(report, phase);
-            report["passed"] = true;
-            Logger.LogInfo("DUNGEON_REWARDS_PASS: " + phase);
-        }
-        catch (Exception error)
-        {
+            while (!Ready(expectedWorld)) yield return new WaitForSeconds(1);
+            var session = ZNet.instance;
+            yield return new WaitForSeconds(3);
+            if (session == null || session != ZNet.instance || !Ready(expectedWorld)) continue;
+            var report = new Dictionary<string, object>
+            {
+                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.2.1",
+                ["phase"] = phase, ["scope"] = probe ? "headless-real-container-probe" : "runtime-initialization",
+                ["gameplay_accepted"] = false, ["two_client_tested"] = false
+            };
+            ClientFixture? fixture = null;
+            try
+            {
+                if (probe && !session.IsServer())
+                    throw new InvalidOperationException("ProbeSuite разрешён только на сервере");
+                GuardedChestReward.Rules = JsonConvert.DeserializeObject<RewardRules>(
+                    File.ReadAllText(Path.Combine(Paths.ConfigPath, "dungeon-rewards.json")))!;
+                GuardedChestReward.Rules.Validate();
+                EpicLootBridge.Verify();
+                EpicLootBridge.Install(harmony!);
+                PovBridge.Install(harmony!);
+                GuardedChestReward.Install(harmony!);
+                if (Config.Bind("ClientFixture", "Enabled", false,
+                        "Площадка и приватная диагностика только для DungeonClientRewards.").Value)
+                    fixture = gameObject.AddComponent<ClientFixture>();
+                if (probe) ProbeSuite.Run(report, phase);
+                report["passed"] = true;
+                Logger.LogInfo(probe ? "DUNGEON_REWARDS_PASS: " + phase : "DUNGEON_REWARDS_READY");
+            }
+            catch (Exception error)
+            {
+                harmony?.UnpatchSelf();
+                report["passed"] = false;
+                report["error"] = error.ToString();
+                Logger.LogError("DUNGEON_REWARDS_FAIL: " + error);
+            }
+            if (probe)
+            {
+                string output = Path.Combine(Paths.ConfigPath, "DungeonDepthPrototype");
+                Directory.CreateDirectory(output);
+                File.WriteAllText(Path.Combine(output, "rewards-" + phase + ".json"),
+                    JsonConvert.SerializeObject(report, Formatting.Indented));
+            }
+            while (session != null && session == ZNet.instance && Ready(expectedWorld))
+                yield return new WaitForSeconds(1);
+            if (fixture != null) Destroy(fixture);
             harmony?.UnpatchSelf();
-            report["passed"] = false;
-            report["error"] = error.ToString();
-            Logger.LogError("DUNGEON_REWARDS_FAIL: " + error);
-        }
-        if (probe)
-        {
-            string output = Path.Combine(Paths.ConfigPath, "DungeonDepthPrototype");
-            Directory.CreateDirectory(output);
-            File.WriteAllText(Path.Combine(output, "rewards-" + phase + ".json"),
-                JsonConvert.SerializeObject(report, Formatting.Indented));
+            Logger.LogInfo("DUNGEON_REWARDS_SESSION_CLOSED");
         }
     }
+
+    private static bool Ready(string expectedWorld) => ZNet.instance != null && ZNetScene.instance != null &&
+        ObjectDB.instance != null && ObjectDB.instance.GetItemPrefab("Coins") != null && ZoneSystem.instance != null &&
+        (ZNet.instance.IsServer() || Player.m_localPlayer != null) &&
+        ZNet.instance.GetWorldName() == expectedWorld;
 
     private void OnDestroy() => harmony?.UnpatchSelf();
 }

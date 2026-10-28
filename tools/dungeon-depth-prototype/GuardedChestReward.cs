@@ -44,6 +44,7 @@ public static class GuardedChestReward
     internal const string IdentityKey = "uberdungeon.reward.identity";
     private const string AssignedChestKey = "uberdungeon.reward.chest";
     private static readonly HashSet<Container> Busy = new HashSet<Container>();
+    private static readonly HashSet<string> LoadingReported = new HashSet<string>();
     internal static Action<string>? Fault;
     internal static RewardRules Rules = null!;
 
@@ -201,7 +202,7 @@ public static class GuardedChestReward
     public static int Process(Container chest)
     {
         var view = chest.GetComponent<ZNetView>();
-        if (view == null || !view.IsValid() || !view.IsOwner() || Busy.Contains(chest)) return 0;
+        if (view == null || !view.IsValid() || !view.IsOwner() || Busy.Contains(chest) || Loading(chest)) return 0;
         var state = Read(chest);
         if (state == null || state.Error.Length > 0) return 0;
         Busy.Add(chest);
@@ -289,6 +290,9 @@ public static class GuardedChestReward
     private static void OnAccess(Container __instance) => SafeProcess(__instance, true);
     private static void OnUpdate(Container __instance) => SafeProcess(__instance, true);
 
+    private static bool Loading(Container chest) =>
+        (bool)AccessTools.Field(typeof(Container), "m_loading").GetValue(chest);
+
     private static void SafeProcess(Container chest, bool pendingOnly)
     {
         // После освобождения места очередь продолжится при закрытии/следующем открытии.
@@ -299,6 +303,14 @@ public static class GuardedChestReward
             var state = Read(chest);
             if (state == null || pendingOnly && state.Plan == null) return;
             if (pendingOnly && state.Delivered == state.Items.Count && state.Journal == null) return;
+            // Inventory.Load добавляет вещи по одной. Патчи других модов могут вызвать GetInventory
+            // посреди Load; его m_lastRevision уже обновлён, поэтому повторный Load не защитит нас.
+            if (Loading(chest))
+            {
+                if (LoadingReported.Add(state.ChestToken))
+                    Plugin.LogInfo("DUNGEON_REWARD_DEFER_LOADING: " + state.Room.RoomId);
+                return;
+            }
             Process(chest);
         }
         catch (Exception error) { Plugin.LogError("Ошибка бонуса сундука: " + error); }

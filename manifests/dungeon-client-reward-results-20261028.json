@@ -1,0 +1,472 @@
+{
+  "observed_at_utc": "2026-10-28T14:30:34.400397+00:00",
+  "scope": "Пять сундуков на отдельной площадке, один настоящий Windows-клиент",
+  "prototype_version": "0.2.1",
+  "gameplay_accepted": false,
+  "two_client_tested": false,
+  "dependencies_updated": false,
+  "dependency_lock": "manifests/dungeon-prototype.lock.json",
+  "dependency_lock_sha256": "73cf0592acec81e01f74fca644113e55c42d7a6200e5696319b8ace368c107f0",
+  "server_steam_build": "25909431",
+  "client_steam_build": "25909357",
+  "pov_version": "5.3.6",
+  "epicloot_version": "0.15.3",
+  "delivery": {
+    "ui_retest_sha256": "5898ae6ff0e87b6f355b4a2665ed5c569931c4802f560ca2caa4c724fbd6866c",
+    "final_server_and_client_sha256": "f1c854a43e2c11fd1dcd72950fcc766689199cbbde2aa81d53af23c708772fec",
+    "difference": "В финальную DLL добавлена диагностика владельца сырого ZDO; обработчик наград тот же",
+    "final_delivery_tested": [
+      "restart",
+      "queue_completion",
+      "epic_properties",
+      "coherent_restore",
+      "queue_after_restore"
+    ],
+    "restore_release_files_verified": 1044,
+    "excluded_regenerated_bepinex_cache_files": 2,
+    "same_final_delivery_for_restart_and_restore": true,
+    "source_sha256": {
+      "ClientFixture.cs": "34cb7d3d15bdcb5e9d648db81deb8939a6f7d6f59b0da857ccb4d3088186e7a5",
+      "EpicLootBridge.cs": "344182d17587f58c8a16fe517e86ef0e2cba4007bf7a84bcf2cbb4f2ca7addc3",
+      "GuardedChestReward.cs": "8a7c3751b24591c419d8292c13ce48c27f1950b3128b5ce209ba7f8d9157d547",
+      "Plugin.cs": "25130dfddc46c52616a5ea4fb7f636050b65ed9d28904d4eccc93758e4a103b0",
+      "PovBridge.cs": "0da76842f7fa2f082b0372206af6a595bf8636a822b7c7dea1c9ddc046680b98",
+      "ProbeSuite.cs": "da7ff50f9031cbc4f5de6d6f7326aa022c9defd195114ceb8bd0e1f756d05ba2",
+      "RewardJournal.cs": "4398cf625f91db0e71755d864cc6e9c67c89dbfcc7cb6e3fc245ec686e0ed59d",
+      "RewardModel.cs": "375ad696ce470fcc8bed79fc4978c0457f04f0f59d002bd3b20f0a3ab4ee1f19",
+      "DungeonDepthPrototype.csproj": "48a76c989950e392c15b385c70000ffa1f06cf8b50145e3ebbfd1239b1fe367f"
+    }
+  },
+  "isolation": {
+    "separate_candidate": true,
+    "separate_world": true,
+    "separate_character": true,
+    "main_profile_unchanged": true,
+    "main_dlls_verified": 16,
+    "main_configs_verified": 65,
+    "previous_character_files_verified": 2,
+    "probe_disabled_on_client": true,
+    "probe_disabled_on_ui_server": true,
+    "preflight_resources_and_ports_checked": true,
+    "server_memory_limit_bytes": 4294967296,
+    "server_cpu_percent_limit": 200,
+    "last_server_memory_peak_bytes": 2491002880,
+    "capacity_claim": false,
+    "guard_ai_disabled": true,
+    "god_and_ghost_for_fixture": true
+  },
+  "fixed_defects": [
+    {
+      "id": "menu_timeout_and_reconnect",
+      "reproduced": true,
+      "fixed": true,
+      "description": "Ожидание нужного мира без 240-секундного таймаута; патчи на каждую сессию"
+    },
+    {
+      "id": "reentrant_container_load",
+      "reproduced_in_real_ui": true,
+      "fixed": true,
+      "description": "Выдача запрещена при m_loading; частично загруженный inventory больше не сохраняется",
+      "old_handler_regression_failed": true,
+      "fixed_regression": {
+        "callbacks": 7,
+        "preserved": true,
+        "delivered_after_load": 1
+      }
+    }
+  ],
+  "ui_cases": {
+    "open_with_alive_guard": true,
+    "alive_guards_at_final_snapshot": 5,
+    "zero": {
+      "budget": 0,
+      "bonus_items": 0
+    },
+    "coins": {
+      "budget": 1,
+      "before": 77,
+      "after": 127,
+      "bonus": 50
+    },
+    "single": {
+      "budget": 120,
+      "group_sizes": [
+        1
+      ],
+      "bonus_items": 1
+    },
+    "groups": {
+      "budget": 240,
+      "group_sizes": [
+        1,
+        2
+      ],
+      "bonus_items": 3
+    },
+    "overflow": {
+      "budget": 432,
+      "group_sizes": [
+        1,
+        2,
+        3,
+        4
+      ],
+      "bonus_items": 10,
+      "ancient": 6,
+      "epic": 4
+    },
+    "rarity_and_magic_tooltips_checked": true,
+    "individual_item_transfer": true,
+    "take_all": true,
+    "full_player_inventory": {
+      "coins_before": 127,
+      "coins_after": 174,
+      "other_items_retained_in_chest": true
+    },
+    "queue_only_continues_after_closing": true,
+    "reopen_without_duplicates": true,
+    "ordinary_loot_preserved": true,
+    "independent_native_epicloot_preserved": true,
+    "world_resource_rate_percent": 300,
+    "bonuses_and_compensation_not_tripled": true
+  },
+  "conservation": {
+    "definition": "Сундуки + персонаж + невыданная очередь; помеченный наполнитель сундука включён",
+    "identity": "prefab, quality, variant, канонический полный JSON магических свойств",
+    "excluded_metadata": "Служебный pt.born PoV не является идентичностью магического предмета",
+    "durability": "Штатное усечение float при Save/Load измерено отдельно; побитовое равенство не заявлено",
+    "phases": {
+      "reconnect": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": true,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.010039000000006126,
+        "overflow_delivered": 2,
+        "overflow_total": 10
+      },
+      "restart": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": true,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.010039000000006126,
+        "overflow_delivered": 2,
+        "overflow_total": 10
+      },
+      "restore": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": true,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.010039000000006126,
+        "overflow_delivered": 2,
+        "overflow_total": 10
+      },
+      "takeall1": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": false,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 2,
+        "overflow_total": 10
+      },
+      "refilled": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": false,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 10,
+        "overflow_total": 10
+      },
+      "drained": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": false,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 10,
+        "overflow_total": 10
+      },
+      "empty-reopen": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": true,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 10,
+        "overflow_total": 10
+      },
+      "restore-continued": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": false,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 3,
+        "overflow_total": 10
+      },
+      "final-reopen": {
+        "conserved": true,
+        "state_and_magic_properties_exact": true,
+        "locations_equal": true,
+        "identity_count": 23,
+        "unit_count": 640,
+        "total_sha256": "082bcb9439f59d4ddf73125146a6d6ef51ca065d3665dee1f7917f275fb5afa4",
+        "max_durability_delta": 0.0,
+        "overflow_delivered": 3,
+        "overflow_total": 10
+      }
+    }
+  },
+  "ownership": {
+    "server_owned_all_five_at_creation": true,
+    "server_restart_happened_before_ui": true,
+    "unowned_zdos_after_restart": 5,
+    "single_client_owned_all_five_on_both_observers": true,
+    "unloaded_zdos_retained_previous_client_uid_after_disconnect": true,
+    "direct_server_client_server_transfer_without_unloading_tested": false,
+    "forced_claim_by_reward_mechanism": false,
+    "two_client_transfer_tested": false
+  },
+  "automated_checks": {
+    "csharp_build_passed": true,
+    "csharp_warnings": 0,
+    "csharp_errors": 0,
+    "headless_create_assertions": 1279,
+    "pure_dotnet_assertions": 11397,
+    "python_tests": 26,
+    "compileall": true,
+    "shellcheck": true,
+    "git_diff_check": true
+  },
+  "checkpoints": {
+    "initial": {
+      "sha256": "50078dd0a6975f408a3c4609205e1d00c1d9134d2726846da8b7b0d0ce7b2c9a",
+      "files": 124,
+      "utc": "2026-10-28T12:09:15.691746+00:00"
+    },
+    "defect": {
+      "sha256": "02b596b76dae72e7c88eba812f6bde20fcaf5dd5f4ac05660e8bc84eaba801d4",
+      "files": 213,
+      "utc": "2026-10-28T13:06:41.836166+00:00"
+    },
+    "mixed": {
+      "sha256": "99a0f8a0dc11a85cbae905cdf1762d763eb2e9c73d8ca7c8c1fe918b584853c0",
+      "files": 215,
+      "utc": "2026-10-28T13:45:55.506252+00:00"
+    },
+    "drained": {
+      "sha256": "d4ad4b8060378150a08dc40aa942107bef93df05a1a8bd93f19b3bb5c6c0a9d1",
+      "files": 224,
+      "utc": "2026-10-28T14:04:09.956590+00:00"
+    },
+    "final": {
+      "sha256": "5061914d6eae3882bc06e7d8ac137fcfa4d7ac8ab622e419a848367f5ddee76e",
+      "files": 222,
+      "utc": "2026-10-28T14:24:37.774538+00:00"
+    }
+  },
+  "final_state": {
+    "overflow_delivered": 3,
+    "overflow_total": 10,
+    "overflow_items_in_player": 2,
+    "overflow_items_in_chest": 1,
+    "overflow_items_pending": 7,
+    "checkpoint_hashes_verified": true,
+    "final_checkpoint_reloaded": false,
+    "client_running": false,
+    "server_running": false,
+    "temporary_tasks_remaining": 0,
+    "test_ports_released": true,
+    "runtime_and_fixture_disabled_after_checkpoint": true,
+    "resume": "Восстановить checkpoint вместе с тестовыми конфигами, миром и персонажем"
+  },
+  "not_tested": [
+    "Передача между двумя клиентами",
+    "Непрерывная передача сервер → клиент → сервер",
+    "Полный основной модпак",
+    "Геометрия лесного склепа и остальных данжей",
+    "Боевой баланс и итоговые веса",
+    "Разрушение сундука с очередью",
+    "Обрыв сети во время переноса",
+    "Предельный размер ZDO и нагрузка"
+  ],
+  "evidence_location": ".local/dungeon-client и .local/evidence; сырые данные и кадры вне Git",
+  "evidence_sha256": {
+    "reward-fixed-zero-open": {
+      "kind": "private_screenshot",
+      "sha256": "f7706ca12bd8c4c869923af49771132c3edb8e6f8276fd049a5c88661e1b4d05"
+    },
+    "reward-fixed-coins-open": {
+      "kind": "private_screenshot",
+      "sha256": "98bfa78e09141bae1b60cbd71e67ddbed173c52634ec3bbf1eaa01c6ff52f748"
+    },
+    "reward-fixed-groups-open": {
+      "kind": "private_screenshot",
+      "sha256": "13f415b2db5e13ce09ee5b1123ae2cd066b413a4bf2e4468871d5c91552e7492"
+    },
+    "reward-native-picked": {
+      "kind": "private_screenshot",
+      "sha256": "90815f7bc7349bffbaf7df59024aa9eb543133982d499d4b44eb550fdd3553ac"
+    },
+    "reward-native-transferred": {
+      "kind": "private_screenshot",
+      "sha256": "5f3e2b960a1e2abec16cfb62e14c7134ac20fb4967ae7b58969abc17dd641226"
+    },
+    "reward-fixed-overflow-open": {
+      "kind": "private_screenshot",
+      "sha256": "8991f58ec557631fae333430a1c014338cbc18b4581f9766ff824c1d6c126fd5"
+    },
+    "reward-fixed-reopen1": {
+      "kind": "private_screenshot",
+      "sha256": "eabd0f6cdc394e130d81c5c5a3b4010c89658458cfe1ae06fd3bf1a5ecd1e37e"
+    },
+    "reward-reconnect-world": {
+      "kind": "private_screenshot",
+      "sha256": "a984af002995e1283fc9141442f8e53746aad45d34cb44edb7fd967de22e8630"
+    },
+    "reward-restart-refilled-open": {
+      "kind": "private_screenshot",
+      "sha256": "fe393f402615c9c30e9f98bedfbb7ace6b0bb1744ea444af5d62ff32db3f2b00"
+    },
+    "reward-epic-tooltip": {
+      "kind": "private_screenshot",
+      "sha256": "5d3dd98824fe3b5e06b4bef92cd06373234e0140a261824a37f3cabbaf792a4b"
+    },
+    "reward-epic-transferred": {
+      "kind": "private_screenshot",
+      "sha256": "21b66d530f93eb2755bb512c2a348f5adf30a204bc31dc59d42507c1d7e2bd30"
+    },
+    "reward-restart-empty-reopen": {
+      "kind": "private_screenshot",
+      "sha256": "ad9d220c8e9619ac9259368d0f984024997ac1ddcac0c92dd0b99045b706e554"
+    },
+    "reward-restored-open": {
+      "kind": "private_screenshot",
+      "sha256": "da8e07487fad10f89075bde3c94f38f2adf86d5915211638bf9a56c22e047901"
+    },
+    "reward-restored-shield-picked": {
+      "kind": "private_screenshot",
+      "sha256": "a11101ac7febb948805f07db31e202b097d277f5e59555678783495bbf0eea9b"
+    },
+    "reward-restored-shield-transferred": {
+      "kind": "private_screenshot",
+      "sha256": "ecba6ce50edc71976140d39615e5c38649e3754b91095879a6872b8dbfaeefde"
+    },
+    "reward-restored-reopen": {
+      "kind": "private_screenshot",
+      "sha256": "2c5e3d926bba3ff675b82b76753cb2522413721d7bc95dc26780d454f6ce2020"
+    },
+    "reward-restored-end-save": {
+      "kind": "private_screenshot",
+      "sha256": "7ac554023983f47115c2ee0fd33a0654ab15ea64d11c69d9c13ec2668e92d325"
+    },
+    "fixed-before-reconnect": {
+      "kind": "private_state_snapshot",
+      "sha256": "a40ccfcecc3e9a0b0275efbe030464ed54d36e646610535f80b7fb9cce4ff9c5"
+    },
+    "fixed-after-reconnect": {
+      "kind": "private_state_snapshot",
+      "sha256": "fef4b25b2b88fd8f8880ad5a1d7d5b7e0102181005f7d4f7606ba63a40f52308"
+    },
+    "fixed-full-takeall": {
+      "kind": "private_state_snapshot",
+      "sha256": "d242ab11428174139a3ca2609e9fabd4ad195b5a4a4da75c1efccb0dca47068f"
+    },
+    "fixed-space-open": {
+      "kind": "private_state_snapshot",
+      "sha256": "75aaa770d4ee5249c4f7e2c143a1db578c31040ec230d4c3505d93fe6ba81367"
+    },
+    "fixed-closed1": {
+      "kind": "private_state_snapshot",
+      "sha256": "b9e2f129219e1b0bd50aefba9d53cf131e841010bae9346acd9b32aa65774467"
+    },
+    "fixed-closed2": {
+      "kind": "private_state_snapshot",
+      "sha256": "240c1782098861ecd90f61f9f59ef00a17b2fa98392404bc82a7de25425bd216"
+    },
+    "after-restart": {
+      "kind": "private_state_snapshot",
+      "sha256": "a9b93f5b91b2dc1d21199d4c6a93ffe7a590a588c0181f21f3d017bd9f3361f6"
+    },
+    "restart-takeall1": {
+      "kind": "private_state_snapshot",
+      "sha256": "c2bc99fbb80cc2ee34c78556ada5b7f7552326b51cc40008c7942f093a40f574"
+    },
+    "restart-refilled": {
+      "kind": "private_state_snapshot",
+      "sha256": "c8fd86a7bbaa2573f00b56e56182a0616e60752d1c32281553b412a4e53c0100"
+    },
+    "restart-drained": {
+      "kind": "private_state_snapshot",
+      "sha256": "bf4adeeb2eb4b930b1ab430a278f685f69c297e8614107e3958f98810f794ca7"
+    },
+    "restart-empty-reopen": {
+      "kind": "private_state_snapshot",
+      "sha256": "e781063e5c1aa1fab7d1d99b63b4a198d347d8d4e683e6bc764455427704ef39"
+    },
+    "after-restore": {
+      "kind": "private_state_snapshot",
+      "sha256": "e75862d937654a2335bd0b33d3c5f01629629bad3510beee57027165907debc7"
+    },
+    "restore-transfer-open": {
+      "kind": "private_state_snapshot",
+      "sha256": "04d99abb33361e70719bb61b352158befce788f40da082f0a0c9cdcf844adc79"
+    },
+    "restore-continued": {
+      "kind": "private_state_snapshot",
+      "sha256": "13a9ace3d0fd59bc6aeadb40c23d6c374cad2ec2f5a3e39d7e48ed47133878a6"
+    },
+    "final-inventory": {
+      "kind": "private_state_snapshot",
+      "sha256": "56ee5bd4d225288b23bdc23a4f05ccb35469b0cee3cfd2e093302a3bbcaa6c81"
+    },
+    "regression-fixed.json": {
+      "kind": "private_test_evidence",
+      "sha256": "f41f366f3f6edcd31606d63b6869681a481f858853f88ae2d44316043a16ace0"
+    },
+    "regression-old.json": {
+      "kind": "private_test_evidence",
+      "sha256": "114a80ba077000fc8b9b34507ee2b7a70f25b1787f7b2490a06e5f43bee9d500"
+    },
+    "math-final.log": {
+      "kind": "private_test_evidence",
+      "sha256": "d458ea4367adca3058441becf33708d9bd932b9aad062bb8edf8375575e71499"
+    },
+    "check-final.log": {
+      "kind": "private_test_evidence",
+      "sha256": "ef613127a1acfaf06faa207ef7f5864df29083aa6ae1fe90a509b88e0f1ee284"
+    },
+    "client-reconnected.log": {
+      "kind": "private_test_evidence",
+      "sha256": "6a5da65945f993bf9031adc238538112e2ba1b14d56b53a91fb713e1e06b7317"
+    },
+    "client-restored-final.log": {
+      "kind": "private_test_evidence",
+      "sha256": "e7a69d055add86661c01d0b45886199eaf1663a476a93ee98bc30413ca1f1bba"
+    },
+    "owner-role-audit.json": {
+      "kind": "private_test_evidence",
+      "sha256": "55952dc6d2b1588b59be0f8ed4ddbdee423ff9a18b1a66d3e70e25d51861f959"
+    }
+  }
+}

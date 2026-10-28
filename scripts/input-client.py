@@ -16,10 +16,13 @@ from vision_transport import execute_worker
 
 def validate_action(action, target):
     kind = action.get("kind")
-    if kind == "click":
+    if kind in {"click", "move"}:
         for field, limit in (("x", "width"), ("y", "height")):
             if type(action.get(field)) is not int or not 0 <= action[field] < target[limit]:
                 raise ValueError("Координата за пределами клиентской области")
+    elif kind == "look":
+        if any(type(action.get(axis)) is not int or abs(action[axis]) > 200 for axis in ("dx", "dy")):
+            raise ValueError("Поворот камеры ограничен 200 отсчётами по каждой оси")
     elif kind == "key":
         keys = action.get("keys", [])
         allowed = {8, 9, 13, 16, 17, 27, 32, 37, 38, 39, 40, 112, 113, 114, 115, 116}

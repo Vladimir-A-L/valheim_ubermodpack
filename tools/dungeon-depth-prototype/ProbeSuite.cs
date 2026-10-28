@@ -49,6 +49,7 @@ internal static class ProbeSuite
                 report["open_rpc"] = OpenHook();
                 report["native_independence"] = Independence();
                 report["deferred_native"] = DeferredNative();
+                report["reentrant_load"] = ReentrantLoad();
                 Plugin.LogInfo("REWARD_CHECK: native independence");
                 report["boundaries"] = Boundaries();
                 Plugin.LogInfo("REWARD_CHECK: boundaries");
@@ -105,6 +106,51 @@ internal static class ProbeSuite
     };
 
     private static Inventory Inv(Container chest) => GuardedChestReward.Inventory(chest);
+
+    private static Container? loadingChest;
+    private static int loadingCallbacks;
+
+    private static void DuringItemLoad(Inventory __instance)
+    {
+        if (loadingChest == null || __instance != Inv(loadingChest)) return;
+        loadingCallbacks++;
+        // Имитируем клиентский мод, запрашивающий сундук из уведомления о загрузке очередной вещи.
+        loadingChest.GetInventory();
+    }
+
+    private static object ReentrantLoad()
+    {
+        var chest = Chest();
+        NativeFixture(chest);
+        Fill(chest);
+        GuardedChestReward.Bind(chest, Guard(), Context(432));
+        GuardedChestReward.Process(chest);
+        Require(State(chest).Delivered == 0, "Нужна полная очередь");
+        AccessTools.Field(typeof(Container), "m_inUse").SetValue(chest, true);
+        try { Inv(chest).RemoveItem(Inv(chest).GetAllItems().Last()); }
+        finally { AccessTools.Field(typeof(Container), "m_inUse").SetValue(chest, false); }
+        Require(State(chest).Delivered == 0, "Открытый сундук не должен продолжать очередь");
+        string before = Totals(Inv(chest).GetAllItems());
+        string stored = GuardedChestReward.StoredInventory(chest);
+        var patch = new Harmony(Plugin.Guid + ".reentrant-load-test");
+        try
+        {
+            loadingChest = chest;
+            loadingCallbacks = 0;
+            patch.Patch(AccessTools.Method(typeof(Inventory), "AddItem", new[]
+                { typeof(ItemDrop.ItemData), typeof(int), typeof(int), typeof(int), typeof(bool) }),
+                postfix: new HarmonyMethod(typeof(ProbeSuite), nameof(DuringItemLoad)));
+            chest.GetComponent<ZNetView>().GetZDO().Set("qa.force.load", 1);
+            AccessTools.Method(typeof(Container), "Load").Invoke(chest, null);
+        }
+        finally { loadingChest = null; patch.UnpatchSelf(); }
+        Require(loadingCallbacks > 1, "Не проверены промежуточные стадии Load");
+        Require(State(chest).Delivered == 0, "Выдача началась внутри Load");
+        Require(GuardedChestReward.StoredInventory(chest) == stored &&
+            Totals(Inv(chest).GetAllItems()) == before, "Load с повторным входом потерял предметы");
+        Require(GuardedChestReward.Process(chest) == 1, "После полного Load должна заполниться одна ячейка");
+        return new { callbacks = loadingCallbacks, preserved = true, delivered_after_load = 1 };
+    }
     private static string Snapshot(Container chest) => GuardedChestReward.Pack(Inv(chest));
     private static ChestRewardState State(Container chest) => GuardedChestReward.Read(chest)!;
 

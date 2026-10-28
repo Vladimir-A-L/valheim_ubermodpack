@@ -62,6 +62,8 @@ class ScenarioGuardsTests(unittest.TestCase):
     def test_bounds_and_durations_cannot_escape_test_window(self):
         target = {"width": 1280, "height": 720}
         for action in [{"kind": "click", "x": -1, "y": 100}, {"kind": "click", "x": 1280, "y": 100},
+                       {"kind": "move", "x": 0, "y": 720}, {"kind": "move", "x": 1.5, "y": 10},
+                       {"kind": "look", "dx": 201, "dy": 0}, {"kind": "look", "dx": 0, "dy": 1.5},
                        {"kind": "key", "keys": [87], "hold_ms": 60000},
                        {"kind": "key", "keys": [91]}, {"kind": "key", "keys": [87, 87]},
                        {"kind": "key", "keys": [17, 27]}, {"kind": "key", "keys": [87.0]},
@@ -72,6 +74,8 @@ class ScenarioGuardsTests(unittest.TestCase):
     def test_valid_short_actions(self):
         target = {"width": 1280, "height": 720}
         for action in [{"kind": "click", "x": 1279, "y": 719},
+                       {"kind": "move", "x": 0, "y": 0},
+                       {"kind": "look", "dx": 0, "dy": 100},
                        {"kind": "key", "keys": [87], "hold_ms": 500},
                        {"kind": "text", "text": "Automation"}]:
             scenario.inputs.validate_action(action, target)

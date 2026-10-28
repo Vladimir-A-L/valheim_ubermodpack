@@ -40,9 +40,11 @@ try {
     }
     if ([ValheimInput]::IdleMilliseconds() -lt 500) { throw 'recent_manual_input' }
     $action = $request.action
-    if ($action.kind -notin @('click','key','text')) { throw 'unknown_action' }
-    if ($action.kind -eq 'click' -and ($action.x -lt 0 -or $action.y -lt 0 -or
+    if ($action.kind -notin @('click','move','look','key','text')) { throw 'unknown_action' }
+    if ($action.kind -in @('click','move') -and ($action.x -lt 0 -or $action.y -lt 0 -or
         $action.x -ge $source.target.width -or $action.y -ge $source.target.height)) { throw 'outside_client' }
+    if ($action.kind -eq 'look' -and ($null -eq $action.dx -or $null -eq $action.dy -or
+        [Math]::Abs($action.dx) -gt 200 -or [Math]::Abs($action.dy) -gt 200)) { throw 'invalid_look_action' }
     if ($action.kind -eq 'key' -and ($action.hold_ms -lt 20 -or $action.hold_ms -gt 1500 -or
         @($action.keys).Count -lt 1 -or @($action.keys).Count -gt 2)) { throw 'invalid_key_action' }
     if ($action.kind -eq 'key') {
@@ -65,6 +67,15 @@ try {
     Assert-Target
     $result.input_performed = $true
     switch ($action.kind) {
+        'look' {
+            [ValheimInput]::Look($action.dx, $action.dy)
+            Wait-Checked 250
+        }
+        'move' {
+            if (-not [ValheimInput]::SetCursorPos(($source.target.x + $action.x),
+                ($source.target.y + $action.y))) { throw 'cursor_move_failed' }
+            Wait-Checked 250
+        }
         'click' {
             if (-not [ValheimInput]::SetCursorPos(($source.target.x + $action.x),
                 ($source.target.y + $action.y))) { throw 'cursor_move_failed' }

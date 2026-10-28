@@ -40,4 +40,7 @@ public static class ValheimInput {
     public static void Button(bool up) {
         Send(new Input { type = 0, value = new Union { mouse = new Mouse { flags = up ? 4u : 2u } } });
     }
+    public static void Look(int dx, int dy) {
+        Send(new Input { type = 0, value = new Union { mouse = new Mouse { x = dx, y = dy, flags = 1u } } });
+    }
 }
