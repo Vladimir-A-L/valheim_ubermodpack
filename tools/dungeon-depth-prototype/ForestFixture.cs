@@ -52,7 +52,7 @@ internal sealed class ForestFixture : MonoBehaviour
         if (action == "manual-god-probe") return ForestManual.Probe();
         if (action == "save-player")
         {
-            if (Player.m_localPlayer?.GetPlayerName() != "RewardQA")
+            if (!ForestManual.Target(Player.m_localPlayer))
                 throw new InvalidOperationException("Нужен тестовый персонаж");
             Game.instance.SavePlayerProfile(true);
             return PlayerState();
@@ -69,8 +69,8 @@ internal sealed class ForestFixture : MonoBehaviour
                 .OrderBy(l => l.m_position.sqrMagnitude).Take(5)
                 .Select(l => new { position = V(l.m_position), placed = l.m_placed }).ToArray();
         var player = Player.m_localPlayer;
-        if (player == null || player.GetPlayerName() != "RewardQA")
-            throw new InvalidOperationException("Нужен отдельный персонаж RewardQA");
+        if (player == null || !ForestManual.Target(player))
+            throw new InvalidOperationException("Нужен выбранный тестовый персонаж");
         if (action == "prepare")
         {
             var p = command["position"]!.ToObject<float[]>()!;

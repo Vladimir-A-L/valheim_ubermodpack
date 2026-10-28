@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 
 namespace DungeonDepthPrototype;
 
-// Только подготовка отдельного RewardQA. Предметы не относятся к добыче склепа.
+// Только подготовка выбранного тестового персонажа. Предметы не относятся к добыче склепа.
 internal static class ForestLoadout
 {
     internal const string Key = "uberdungeon.qa.bronze.v1";
@@ -62,9 +62,9 @@ internal static class ForestLoadout
 
     internal static object Grant(Player player)
     {
-        if (ZNet.instance.GetWorldName() != "ForestCryptQA" || player.GetPlayerName() != "RewardQA" ||
+        if (!ForestManual.Target(player) ||
             player.IsTeleporting() || player.IsDead() || InventoryGui.IsVisible())
-            throw new InvalidOperationException("Нужен готовый RewardQA в отдельном тестовом мире");
+            throw new InvalidOperationException("Нужен выбранный тестовый персонаж в отдельном мире");
         if (player.m_customData.ContainsKey(Key))
             throw new InvalidOperationException("Этот комплект уже выдан; повторная выдача заблокирована");
         var inventory = player.GetInventory();

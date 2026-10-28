@@ -10,15 +10,28 @@ namespace DungeonDepthPrototype;
 // Изолированная ручная проверка: штатный god оставляет 1 HP, ghost всегда выключен.
 internal sealed class ForestManual : MonoBehaviour
 {
-    private sealed class Settings { public bool Enabled = false, Record = false, StartFullOnce = false; }
+    private sealed class Settings
+    {
+        public bool Enabled = false, Record = false, StartFullOnce = false, AutoPrepareOnce = false;
+        public string PlayerName = "RewardQA";
+        public float[] StartPosition = Array.Empty<float>();
+    }
     private static Settings settings = new Settings();
     private static string attempt = "";
-    private static bool floorReached;
+    private static int deaths;
+    private static int probeDeaths = -1;
     private static Player? current;
+    private Player? preparing;
+    private bool teleportStarted, preparationFailed;
+    private float prepareDeadline;
+    private const string PreparedKey = "uberdungeon.qa.manual.prepared.v1";
+    private const string DeathsKey = "uberdungeon.qa.manual.deaths.v1";
     private float next;
     private static string Folder => Path.Combine(Paths.ConfigPath, "ForestCryptQA");
-    private static bool Matches(Player? p) => settings.Enabled && p != null &&
-        ZNet.instance != null && ZNet.instance.GetWorldName() == "ForestCryptQA" && p.GetPlayerName() == "RewardQA";
+    internal static bool Target(Player? p) => p != null && ZNet.instance != null &&
+        ZNet.instance.GetWorldName() == "ForestCryptQA" && !string.IsNullOrWhiteSpace(settings.PlayerName) &&
+        p.GetPlayerName() == settings.PlayerName;
+    private static bool Matches(Player? p) => settings.Enabled && Target(p);
 
     internal static void Install(GameObject host)
     {
@@ -53,8 +66,12 @@ internal sealed class ForestManual : MonoBehaviour
         {
             ReadSettings();
             var player = Player.m_localPlayer;
-            if (!Matches(player)) { current = null; attempt = ""; return; }
+            if (!Matches(player))
+            {
+                current = null; attempt = ""; preparing = null; return;
+            }
             Spawned(player!);
+            if (!Prepare(player!)) return;
             if (!settings.Record) { attempt = ""; current = null; return; }
             const string freshStart = "uberdungeon.qa.manual.fresh-start.v1";
             if (settings.StartFullOnce && !player!.m_customData.ContainsKey(freshStart))
@@ -65,13 +82,71 @@ internal sealed class ForestManual : MonoBehaviour
             }
             if (current != player || attempt.Length == 0)
             {
-                current = player; attempt = Guid.NewGuid().ToString("N"); floorReached = false;
+                current = player; attempt = Guid.NewGuid().ToString("N"); deaths = 0;
                 Record("attempt-start", new { health = player!.GetHealth(), max_health = player.GetMaxHealth(),
-                    starts_at_floor = player.GetHealth() <= 1.001f });
+                    starts_at_floor = player.GetHealth() <= 1.001f, total_deaths = TotalDeaths(player),
+                    god = player.InGodMode(), ghost = player.InGhostMode() });
+                Game.instance.SavePlayerProfile(true);
+                player.Message(MessageHud.MessageType.Center,
+                    "Тест готов: god включён, ghost выключен. Условных смертей: " + TotalDeaths(player));
             }
         }
         catch (Exception e) { Plugin.LogError("MANUAL_TEST " + e.Message); }
     }
+
+    private bool Prepare(Player player)
+    {
+        if (!settings.AutoPrepareOnce || player.m_customData.ContainsKey(PreparedKey)) return true;
+        if (preparing != player)
+        {
+            preparing = player; teleportStarted = false; preparationFailed = false;
+            prepareDeadline = Time.realtimeSinceStartup + 90;
+        }
+        if (preparationFailed) return false;
+        try
+        {
+            if (Time.realtimeSinceStartup > prepareDeadline)
+                throw new InvalidOperationException("Истёк срок подготовки у входа; требуется проверка позиции");
+            var p = settings.StartPosition;
+            if (p.Length != 3 || Array.Exists(p, v => float.IsNaN(v) || float.IsInfinity(v)))
+                throw new InvalidOperationException("Не задана проверенная точка у входа");
+            if (player.IsDead() || player.IsTeleporting() || !player.IsOnGround() || InventoryGui.IsVisible())
+                return false;
+            var destination = new Vector3(p[0], p[1], p[2]);
+            if (!teleportStarted)
+            {
+                // Штатный переход после появления может уже закончиться, но cooldown ещё действует.
+                if ((float)AccessTools.Field(typeof(Player), "m_teleportCooldown").GetValue(player) < 2f)
+                    return false;
+                ForestLoadout.Validate();
+                if (!player.TeleportTo(destination, Quaternion.Euler(0, 180, 0), false))
+                    throw new InvalidOperationException("Телепортация отклонена");
+                teleportStarted = true;
+                return false;
+            }
+            var offset = player.transform.position - destination;
+            if (new Vector2(offset.x, offset.z).magnitude > 5 || Math.Abs(offset.y) > 12)
+                throw new InvalidOperationException("Персонаж не достиг ожидаемой площадки у входа");
+            if (!player.m_customData.ContainsKey(ForestLoadout.Key)) ForestLoadout.Grant(player);
+            player.m_customData[PreparedKey] = DateTime.UtcNow.ToString("O");
+            Game.instance.SavePlayerProfile(true);
+            Record("preparation-complete", new { god = player.InGodMode(), ghost = player.InGhostMode(),
+                position = new[] { player.transform.position.x, player.transform.position.y,
+                    player.transform.position.z }, excluded_from_attempts = true });
+            return true;
+        }
+        catch (Exception e)
+        {
+            preparationFailed = true;
+            Plugin.LogError("MANUAL_PREPARATION " + e.Message);
+            player.Message(MessageHud.MessageType.Center, "Подготовка теста остановлена: " + e.Message);
+            return false;
+        }
+    }
+
+    private static int TotalDeaths(Player player) =>
+        player.m_customData.TryGetValue(DeathsKey, out string value) && int.TryParse(value, out int count)
+            ? count : 0;
 
     private static void BeforeDamage(Character __instance, out float __state)
     {
@@ -80,15 +155,27 @@ internal sealed class ForestManual : MonoBehaviour
 
     private static void AfterDamage(Character __instance, HitData hit, float __state)
     {
-        if (__state < 0 || !settings.Record || attempt.Length == 0 || __instance != current) return;
+        if (__state < 0) return;
         float after = __instance.GetHealth();
+        if (probeDeaths >= 0)
+        {
+            if (ManualDeathCounter.ReachedFloor(__state, after)) probeDeaths++;
+            return;
+        }
+        if (!settings.Record || attempt.Length == 0 || __instance != current) return;
         if (after >= __state && after > 1.001f) return;
         var attacker = hit.GetAttacker();
         var p = __instance.transform.position;
-        bool first = !floorReached && after <= 1.001f;
-        if (first) floorReached = true;
-        Record(first ? "conditional-death" : "damage", new { before = __state, after,
-            first_floor = first, position = new[] { p.x, p.y, p.z },
+        bool reachedFloor = ManualDeathCounter.ReachedFloor(__state, after);
+        if (reachedFloor)
+        {
+            deaths++;
+            current!.m_customData[DeathsKey] = (TotalDeaths(current) + 1).ToString();
+            current.Message(MessageHud.MessageType.Center,
+                "Условная смерть: " + deaths + " за вход, " + TotalDeaths(current) + " всего. HP = 1");
+        }
+        Record(reachedFloor ? "conditional-death" : "damage", new { before = __state, after,
+            death_number = deaths, total_deaths = TotalDeaths(current!), position = new[] { p.x, p.y, p.z },
             attacker = attacker == null ? "environment" : Utils.GetPrefabName(attacker.gameObject) });
     }
 
@@ -96,7 +183,8 @@ internal sealed class ForestManual : MonoBehaviour
     {
         Directory.CreateDirectory(Folder);
         File.AppendAllText(Path.Combine(Folder, "manual-attempts.jsonl"), JsonConvert.SerializeObject(new
-            { observed_at_utc = DateTime.UtcNow.ToString("O"), attempt, kind, value }) + Environment.NewLine);
+            { observed_at_utc = DateTime.UtcNow.ToString("O"), character = settings.PlayerName,
+                attempt, kind, value }) + Environment.NewLine);
     }
 
     internal static object Probe()
@@ -108,6 +196,7 @@ internal sealed class ForestManual : MonoBehaviour
         try
         {
             Spawned(player);
+            probeDeaths = 0;
             player.SetHealth(10);
             var hit = new HitData { m_point = player.transform.position };
             hit.m_damage.m_damage = 100000;
@@ -115,10 +204,18 @@ internal sealed class ForestManual : MonoBehaviour
             float after = player.GetHealth();
             bool passed = Math.Abs(after - 1) < .001f && !player.IsDead() &&
                 player.InGodMode() && !player.InGhostMode();
+            bool firstCounted = probeDeaths == 1;
+            player.ApplyDamage(hit, false, false);
+            bool repeatedAtFloor = probeDeaths != 1;
+            player.SetHealth(10);
+            player.ApplyDamage(hit, false, false);
+            bool nextCounted = probeDeaths == 2;
+            passed &= firstCounted && !repeatedAtFloor && nextCounted;
             if (!passed) throw new InvalidOperationException("Проверка god с порогом 1 HP не пройдена");
             return new { passed, damage_applied = true, health_at_floor = after,
+                conditional_deaths = probeDeaths, repeated_at_floor_counted = repeatedAtFloor,
                 god = player.InGodMode(), ghost = player.InGhostMode(), excluded_from_attempts = true };
         }
-        finally { player.SetHealth(before); }
+        finally { probeDeaths = -1; player.SetHealth(before); }
     }
 }
