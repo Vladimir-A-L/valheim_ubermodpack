@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "status": "unified-affix-cost-example-not-runtime-config",
+  "reward_scope": "budget-bonus-only",
+  "native_epicloot_container_loot": "preserved-independent",
+  "item_drop_limits": "BossKillUnlocksCurrentBiomeItems",
+  "large_reward_example_is_target": false,
+  "ancient_scale": "100",
+  "example_modifier_weight": "10",
+  "example_weight_origin": "user-illustration-not-final-per-modifier-costs",
+  "max_assigned_modifiers": 10,
+  "protected_progression_zone_budget": "0",
+  "guard_budget_source": "one-saved-designated-guard-profile-not-sum-of-all-possible-spawns",
+  "gold_for_small_positive_remainder": 50,
+  "quality_knots": [
+    {"score": "10", "rarity": "Common"},
+    {"score": "20", "rarity": "Magic"},
+    {"score": "40", "rarity": "Rare"},
+    {"score": "60", "rarity": "Epic"},
+    {"score": "80", "rarity": "Legendary"},
+    {"score": "90", "rarity": "Mythic"},
+    {"score": "100", "rarity": "Ancient"}
+  ],
+  "location_bonus_origin": "optional-user-examples-not-biome-specific-modifier-costs",
+  "profiles": [
+    {"id": "standard", "biomes": ["BlackForest", "Swamp", "Mountain"], "location_bonus": "0"},
+    {"id": "mistlands", "biomes": ["Mistlands"], "location_bonus": "20"},
+    {"id": "deep_north", "biomes": ["DeepNorth"], "location_bonus": "40"}
+  ],
+  "modifier_count_examples": [0, 3, 5, 6, 8, 10],
+  "synergy_factor_examples": ["1", "2", "3"],
+  "synergy_origin": "global-combination-rule-sensitivity-not-measured-or-approved-bonuses",
+  "observed_PoV": {
+    "version": "5.3.6",
+    "lock": "dungeon-prototype.lock.json",
+    "dll_sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416",
+    "source": "isolated-prototype-generated-config-and-pinned-DLL-inspection",
+    "modifier_strength": "1",
+    "furious_animation_speed": "1.18",
+    "armored_physical_taken": "0.7",
+    "reward_per_modifier": "0.5"
+  }
+}

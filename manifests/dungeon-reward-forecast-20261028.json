@@ -1,0 +1,1232 @@
+{
+  "schema_version": 2,
+  "captured_at_utc": "2026-10-28T09:39:46.170522+00:00",
+  "status": "unified-affix-cost-example-not-gameplay-observation",
+  "reward_policy": {
+    "reward_scope": "budget-bonus-only",
+    "native_epicloot_container_loot": "preserved-independent",
+    "item_drop_limits": "BossKillUnlocksCurrentBiomeItems",
+    "large_reward_example_is_target": false
+  },
+  "formula": "B = locationBonus + sum(globalModifierCosts) * globalSynergyFactor; protectedZone -> 0",
+  "quality_curve": "piecewise-linear-probabilities-between-adjacent-knots",
+  "rows": [
+    {
+      "profile": "standard",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 30.0,
+      "completed_groups": 0,
+      "remainder": 30.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Magic": 0.5,
+        "Rare": 0.5
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 60.0,
+      "completed_groups": 0,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 90.0,
+      "completed_groups": 0,
+      "remainder": 90.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Mythic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 50.0,
+      "completed_groups": 0,
+      "remainder": 50.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 0.5,
+        "Epic": 0.5
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 150.0,
+      "completed_groups": 1,
+      "remainder": 50.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Rare": 0.5,
+        "Epic": 0.5
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 60.0,
+      "completed_groups": 0,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 120.0,
+      "completed_groups": 1,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 180.0,
+      "completed_groups": 1,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 80.0,
+      "completed_groups": 0,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 160.0,
+      "completed_groups": 1,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 240.0,
+      "completed_groups": 2,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 200.0,
+      "completed_groups": 2,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "standard",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 0.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 300.0,
+      "completed_groups": 3,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 20.0,
+      "completed_groups": 0,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 20.0,
+      "completed_groups": 0,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 20.0,
+      "completed_groups": 0,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 50.0,
+      "completed_groups": 0,
+      "remainder": 50.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 0.5,
+        "Epic": 0.5
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 80.0,
+      "completed_groups": 0,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 110.0,
+      "completed_groups": 1,
+      "remainder": 10.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Common": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 70.0,
+      "completed_groups": 0,
+      "remainder": 70.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Epic": 0.5,
+        "Legendary": 0.5
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 120.0,
+      "completed_groups": 1,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 170.0,
+      "completed_groups": 1,
+      "remainder": 70.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Epic": 0.5,
+        "Legendary": 0.5
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 80.0,
+      "completed_groups": 0,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 140.0,
+      "completed_groups": 1,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 200.0,
+      "completed_groups": 2,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 180.0,
+      "completed_groups": 1,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 260.0,
+      "completed_groups": 2,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 120.0,
+      "completed_groups": 1,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 220.0,
+      "completed_groups": 2,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 20.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 320.0,
+      "completed_groups": 3,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 4,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 10,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 40.0,
+      "completed_groups": 0,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 40.0,
+      "completed_groups": 0,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 0,
+      "modifier_points": 0.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 40.0,
+      "completed_groups": 0,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 70.0,
+      "completed_groups": 0,
+      "remainder": 70.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Epic": 0.5,
+        "Legendary": 0.5
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 3,
+      "modifier_points": 30.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 130.0,
+      "completed_groups": 1,
+      "remainder": 30.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Magic": 0.5,
+        "Rare": 0.5
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 90.0,
+      "completed_groups": 0,
+      "remainder": 90.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Mythic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 140.0,
+      "completed_groups": 1,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 5,
+      "modifier_points": 50.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 190.0,
+      "completed_groups": 1,
+      "remainder": 90.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Mythic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 160.0,
+      "completed_groups": 1,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 6,
+      "modifier_points": 60.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 220.0,
+      "completed_groups": 2,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 120.0,
+      "completed_groups": 1,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 200.0,
+      "completed_groups": 2,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 8,
+      "modifier_points": 80.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 280.0,
+      "completed_groups": 2,
+      "remainder": 80.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Legendary": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 1.0,
+      "quality_budget": 140.0,
+      "completed_groups": 1,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 2.0,
+      "quality_budget": 240.0,
+      "completed_groups": 2,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "modifier_count": 10,
+      "modifier_points": 100.0,
+      "location_bonus": 40.0,
+      "synergy_factor": 3.0,
+      "quality_budget": 340.0,
+      "completed_groups": 3,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 4,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 10,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    }
+  ],
+  "six_ancient_plus_four_thresholds": [
+    {
+      "profile": "standard",
+      "first_ancient_modifier_count_without_synergy": 10,
+      "max_budget_without_synergy": 100.0,
+      "six_plus_four_synergy_min_at_max_modifiers": 3.1,
+      "six_plus_four_synergy_max_exclusive_at_max_modifiers": 4.0,
+      "six_plus_four_reachable_without_synergy": false
+    },
+    {
+      "profile": "mistlands",
+      "first_ancient_modifier_count_without_synergy": 8,
+      "max_budget_without_synergy": 120.0,
+      "six_plus_four_synergy_min_at_max_modifiers": 2.9,
+      "six_plus_four_synergy_max_exclusive_at_max_modifiers": 3.8,
+      "six_plus_four_reachable_without_synergy": false
+    },
+    {
+      "profile": "deep_north",
+      "first_ancient_modifier_count_without_synergy": 6,
+      "max_budget_without_synergy": 140.0,
+      "six_plus_four_synergy_min_at_max_modifiers": 2.7,
+      "six_plus_four_synergy_max_exclusive_at_max_modifiers": 3.6,
+      "six_plus_four_reachable_without_synergy": false
+    }
+  ],
+  "protected_zone_examples": [
+    {
+      "profile": "standard",
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    }
+  ],
+  "unprotected_zero_modifier_examples": [
+    {
+      "profile": "standard",
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "mistlands",
+      "quality_budget": 20.0,
+      "completed_groups": 0,
+      "remainder": 20.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Magic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "profile": "deep_north",
+      "quality_budget": 40.0,
+      "completed_groups": 0,
+      "remainder": 40.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Rare": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    }
+  ],
+  "stage_examples": [
+    {
+      "quality_budget": 0.0,
+      "completed_groups": 0,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 5.0,
+      "completed_groups": 0,
+      "remainder": 5.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 0,
+      "gold_compensation": 50,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 10.0,
+      "completed_groups": 0,
+      "remainder": 10.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Common": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 60.0,
+      "completed_groups": 0,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 0,
+      "active_group_size": 1,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 100.0,
+      "completed_groups": 1,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 105.0,
+      "completed_groups": 1,
+      "remainder": 5.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 1,
+      "gold_compensation": 50,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 160.0,
+      "completed_groups": 1,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 1,
+      "active_group_size": 2,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 200.0,
+      "completed_groups": 2,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 3,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 260.0,
+      "completed_groups": 2,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 3,
+      "active_group_size": 3,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 300.0,
+      "completed_groups": 3,
+      "remainder": 0.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 6,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 305.0,
+      "completed_groups": 3,
+      "remainder": 5.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 0,
+      "active_group_rarity_probabilities": {},
+      "total_special_items": 6,
+      "gold_compensation": 50,
+      "standard_dungeon_loot_additional": true
+    },
+    {
+      "quality_budget": 360.0,
+      "completed_groups": 3,
+      "remainder": 60.0,
+      "guaranteed_ancient_items": 6,
+      "active_group_size": 4,
+      "active_group_rarity_probabilities": {
+        "Epic": 1.0
+      },
+      "total_special_items": 10,
+      "gold_compensation": 0,
+      "standard_dungeon_loot_additional": true
+    }
+  ],
+  "limitations": [
+    "ten-points-per-modifier-is-an-example",
+    "rarity-knots-and-location-bonuses-are-proposals",
+    "global-synergy-weights-not-calibrated",
+    "native-EpicLoot-loot-not-simulated",
+    "item-base-selection-and-boss-gates-not-simulated",
+    "forty-transition-layout-not-implemented",
+    "guarded-chest-frequency-not-selected",
+    "no-gameplay-or-runtime-reward-change"
+  ],
+  "inputs_sha256": "87e187b87fedf12955d2ee38e796b6a050ac5f4329a5f8a67fb120b9b3205de7"
+}
