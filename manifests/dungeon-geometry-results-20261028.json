@@ -1,0 +1,928 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-28T02:42:52.8608170Z",
+  "status": "geometry-plan-not-met",
+  "gameplay_accepted": false,
+  "game": {
+    "version": "l-1.0.20",
+    "steam_server_build": "25909431",
+    "assembly_valheim_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812"
+  },
+  "probe": {
+    "name": "DungeonGeometryProbe",
+    "version": "0.1.0",
+    "dll_sha256": "b4563c3836e8b02a3bf09394be07f3e59b7306e1fe75125c97d7fe0e6cd88a2d"
+  },
+  "dependency_lock": "dungeon-geometry.lock.json",
+  "method": {
+    "mode": "headless-native-ghost-generation",
+    "seeds": [
+      1001,
+      1002,
+      1003,
+      1004,
+      1005,
+      1006
+    ],
+    "repeat_seed": 1001,
+    "anchor": "first-enabled-native-location-per-generator",
+    "scope": "registered-Algorithm.Dungeon-prefabs",
+    "candidate": {
+      "min_rooms_at_least": 48,
+      "placement_attempts_at_least": 160,
+      "prefer_deep_connections_until_place_order": 17,
+      "preserve_native_bounds": true
+    },
+    "provisional_acceptance": {
+      "shortest_room_graph_depth_at_least": 16,
+      "junctions_at_least": 2,
+      "not_a_final_balance_threshold": true
+    },
+    "geometry_excludes_endcaps_dividers_and_zero_extent_boxes_from_overlap_audit": true,
+    "native_load_spawn_test_is_not_a_server_restart_test": true
+  },
+  "execution": {
+    "complete": true,
+    "attempted_cases": 154,
+    "measured_cases": 140,
+    "unique_measured_cases": 120,
+    "repeat_cases": 20,
+    "repeat_snapshot_matches": 20,
+    "load_spawn_graph_matches": 140,
+    "unmapped_anchor_cases": 14,
+    "unmapped_prefabs": [
+      "DG_HalfBurried_ForestCrypt"
+    ],
+    "memory_peak_bytes": 3340054528,
+    "memory_limit_bytes": 4294967296,
+    "cpu_quota_percent": 200,
+    "runtime_limit_seconds": 900,
+    "max_generation_and_capture_ms": 6063.84,
+    "server_stopped_and_world_saved": true
+  },
+  "unique_case_issue_counts": {
+    "disconnected": 0,
+    "overlap_pairs": 0,
+    "outside_bounds": 0,
+    "open_sockets": 5,
+    "ambiguous_sockets": 0,
+    "mismatched_contacts": 8
+  },
+  "profiles": [
+    {
+      "prefab": "DG_Cave",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 9.0,
+        "max": 13
+      },
+      "junctions": {
+        "min": 3,
+        "median": 5.0,
+        "max": 9
+      },
+      "regular_rooms": {
+        "min": 12,
+        "median": 23.0,
+        "max": 31
+      },
+      "depth_by_seed_1001_to_1006": [
+        11,
+        6,
+        4,
+        10,
+        13,
+        8
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 4,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Cave",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 4.5,
+        "max": 6
+      },
+      "junctions": {
+        "min": 3,
+        "median": 4.0,
+        "max": 6
+      },
+      "regular_rooms": {
+        "min": 11,
+        "median": 17.5,
+        "max": 21
+      },
+      "depth_by_seed_1001_to_1006": [
+        4,
+        6,
+        5,
+        4,
+        5,
+        4
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 0,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_DvergrBoss",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 1,
+        "median": 1.0,
+        "max": 1
+      },
+      "depth_by_seed_1001_to_1006": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 0,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_DvergrBoss",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 1,
+        "median": 1.0,
+        "max": 1
+      },
+      "depth_by_seed_1001_to_1006": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 0,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_DvergrTown",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 12,
+        "median": 15.0,
+        "max": 16
+      },
+      "junctions": {
+        "min": 9,
+        "median": 14.5,
+        "max": 20
+      },
+      "regular_rooms": {
+        "min": 29,
+        "median": 49.0,
+        "max": 70
+      },
+      "depth_by_seed_1001_to_1006": [
+        16,
+        13,
+        16,
+        14,
+        12,
+        16
+      ],
+      "proposed_depth_and_branch_target_met": 3,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 5
+      }
+    },
+    {
+      "prefab": "DG_DvergrTown",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 3,
+        "median": 5.0,
+        "max": 9
+      },
+      "junctions": {
+        "min": 3,
+        "median": 4.5,
+        "max": 7
+      },
+      "regular_rooms": {
+        "min": 17,
+        "median": 17.0,
+        "max": 25
+      },
+      "depth_by_seed_1001_to_1006": [
+        4,
+        3,
+        5,
+        5,
+        9,
+        6
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 3
+      }
+    },
+    {
+      "prefab": "DG_ForestCrypt",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 5,
+        "median": 7.0,
+        "max": 10
+      },
+      "junctions": {
+        "min": 2,
+        "median": 4.5,
+        "max": 6
+      },
+      "regular_rooms": {
+        "min": 15,
+        "median": 20.0,
+        "max": 32
+      },
+      "depth_by_seed_1001_to_1006": [
+        7,
+        5,
+        10,
+        7,
+        10,
+        6
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 4,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_ForestCrypt",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 5.5,
+        "max": 8
+      },
+      "junctions": {
+        "min": 5,
+        "median": 6.0,
+        "max": 8
+      },
+      "regular_rooms": {
+        "min": 18,
+        "median": 20.0,
+        "max": 21
+      },
+      "depth_by_seed_1001_to_1006": [
+        5,
+        6,
+        4,
+        5,
+        7,
+        8
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 4,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_Cave",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 5,
+        "median": 11.0,
+        "max": 17
+      },
+      "junctions": {
+        "min": 1,
+        "median": 8.0,
+        "max": 16
+      },
+      "regular_rooms": {
+        "min": 12,
+        "median": 25.0,
+        "max": 50
+      },
+      "depth_by_seed_1001_to_1006": [
+        5,
+        7,
+        12,
+        10,
+        16,
+        17
+      ],
+      "proposed_depth_and_branch_target_met": 1,
+      "configured_required_target_met": 0,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_Cave",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 6.0,
+        "max": 6
+      },
+      "junctions": {
+        "min": 2,
+        "median": 3.5,
+        "max": 6
+      },
+      "regular_rooms": {
+        "min": 13,
+        "median": 15.5,
+        "max": 20
+      },
+      "depth_by_seed_1001_to_1006": [
+        6,
+        6,
+        6,
+        4,
+        6,
+        4
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 0,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_ForestCrypt",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 6,
+        "median": 12.5,
+        "max": 19
+      },
+      "junctions": {
+        "min": 5,
+        "median": 5.0,
+        "max": 7
+      },
+      "regular_rooms": {
+        "min": 20,
+        "median": 27.0,
+        "max": 39
+      },
+      "depth_by_seed_1001_to_1006": [
+        10,
+        7,
+        19,
+        15,
+        15,
+        6
+      ],
+      "proposed_depth_and_branch_target_met": 1,
+      "configured_required_target_met": 6,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_ForestCrypt",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 5.5,
+        "max": 9
+      },
+      "junctions": {
+        "min": 4,
+        "median": 5.5,
+        "max": 7
+      },
+      "regular_rooms": {
+        "min": 17,
+        "median": 20.5,
+        "max": 27
+      },
+      "depth_by_seed_1001_to_1006": [
+        9,
+        4,
+        5,
+        5,
+        6,
+        6
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_PlainsFortress",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 7,
+        "median": 7.0,
+        "max": 7
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 8,
+        "median": 8.0,
+        "max": 8
+      },
+      "depth_by_seed_1001_to_1006": [
+        7,
+        7,
+        7,
+        7,
+        7,
+        7
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hildir_PlainsFortress",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 5,
+        "median": 6.0,
+        "max": 7
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 6,
+        "median": 7.0,
+        "max": 8
+      },
+      "depth_by_seed_1001_to_1006": [
+        5,
+        6,
+        7,
+        6,
+        6,
+        6
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 3,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hole",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 2,
+        "median": 7.5,
+        "max": 16
+      },
+      "junctions": {
+        "min": 1,
+        "median": 9.0,
+        "max": 11
+      },
+      "regular_rooms": {
+        "min": 7,
+        "median": 31.0,
+        "max": 48
+      },
+      "depth_by_seed_1001_to_1006": [
+        2,
+        9,
+        7,
+        7,
+        8,
+        16
+      ],
+      "proposed_depth_and_branch_target_met": 1,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_Hole",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 2,
+        "median": 3.0,
+        "max": 5
+      },
+      "junctions": {
+        "min": 1,
+        "median": 2.0,
+        "max": 5
+      },
+      "regular_rooms": {
+        "min": 9,
+        "median": 11.5,
+        "max": 16
+      },
+      "depth_by_seed_1001_to_1006": [
+        4,
+        3,
+        3,
+        2,
+        3,
+        5
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 5,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_MorkHalla",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 14.0,
+        "max": 16
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 5,
+        "median": 15.0,
+        "max": 17
+      },
+      "depth_by_seed_1001_to_1006": [
+        14,
+        15,
+        4,
+        16,
+        14,
+        14
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 6,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 5,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_MorkHalla",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 5.0,
+        "max": 5
+      },
+      "junctions": {
+        "min": 0,
+        "median": 0.0,
+        "max": 0
+      },
+      "regular_rooms": {
+        "min": 5,
+        "median": 6.0,
+        "max": 6
+      },
+      "depth_by_seed_1001_to_1006": [
+        5,
+        5,
+        4,
+        5,
+        5,
+        5
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 6,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_SunkenCrypt",
+      "profile": "depth-first",
+      "unique_cases": 6,
+      "depth": {
+        "min": 5,
+        "median": 6.5,
+        "max": 13
+      },
+      "junctions": {
+        "min": 2,
+        "median": 4.0,
+        "max": 5
+      },
+      "regular_rooms": {
+        "min": 11,
+        "median": 17.5,
+        "max": 25
+      },
+      "depth_by_seed_1001_to_1006": [
+        8,
+        13,
+        6,
+        6,
+        5,
+        7
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 6,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    },
+    {
+      "prefab": "DG_SunkenCrypt",
+      "profile": "vanilla",
+      "unique_cases": 6,
+      "depth": {
+        "min": 4,
+        "median": 4.0,
+        "max": 7
+      },
+      "junctions": {
+        "min": 3,
+        "median": 4.0,
+        "max": 5
+      },
+      "regular_rooms": {
+        "min": 12,
+        "median": 14.5,
+        "max": 17
+      },
+      "depth_by_seed_1001_to_1006": [
+        4,
+        7,
+        4,
+        4,
+        5,
+        4
+      ],
+      "proposed_depth_and_branch_target_met": 0,
+      "configured_required_target_met": 6,
+      "issue_cases": {
+        "disconnected": 0,
+        "overlap_pairs": 0,
+        "outside_bounds": 0,
+        "open_sockets": 0,
+        "ambiguous_sockets": 0,
+        "mismatched_contacts": 0
+      }
+    }
+  ],
+  "forest_core_observations": [
+    {
+      "profile": "depth-first",
+      "seed": 1001,
+      "core_pickable_count": 10,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "depth-first",
+      "seed": 1002,
+      "core_pickable_count": 1,
+      "first_core_depth": 2,
+      "core_pickables_at_depth_le_2": 1
+    },
+    {
+      "profile": "depth-first",
+      "seed": 1003,
+      "core_pickable_count": 8,
+      "first_core_depth": 5,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "depth-first",
+      "seed": 1004,
+      "core_pickable_count": 8,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "depth-first",
+      "seed": 1005,
+      "core_pickable_count": 12,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "depth-first",
+      "seed": 1006,
+      "core_pickable_count": 7,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1001,
+      "core_pickable_count": 3,
+      "first_core_depth": 4,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1002,
+      "core_pickable_count": 2,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1003,
+      "core_pickable_count": 12,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1004,
+      "core_pickable_count": 8,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1005,
+      "core_pickable_count": 8,
+      "first_core_depth": 3,
+      "core_pickables_at_depth_le_2": 0
+    },
+    {
+      "profile": "vanilla",
+      "seed": 1006,
+      "core_pickable_count": 8,
+      "first_core_depth": 2,
+      "core_pickables_at_depth_le_2": 1
+    }
+  ],
+  "limitations": [
+    "socket-graph-is-not-player-walkability",
+    "six-seeds-only",
+    "one-native-anchor-per-generator",
+    "no-PoV-EpicLoot-or-content-mods-in-this-run",
+    "no-client-or-combat-test",
+    "configured-required-rooms-are-not-quest-acceptance",
+    "other-generator-algorithms-and-fixed-custom-interiors-not-covered"
+  ]
+}

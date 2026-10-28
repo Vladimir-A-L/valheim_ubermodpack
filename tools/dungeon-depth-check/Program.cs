@@ -46,4 +46,14 @@ Refuses(() => RewardProjection.OpportunityFactor(-1, 0.5, 1), "Negative modifier
 Refuses(() => RewardProjection.OpportunityFactor(10, 0.5, 2), "Invalid normalization");
 Refuses(() => RewardProjection.Roll(input, 1), "Upper RNG boundary");
 Refuses(() => RewardProjection.WithMinimum(input, 4), "Invalid minimum quality");
-Console.WriteLine($"Проверки распределения наград: {checks} OK");
+var chain = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (1, 2), (2, 3) }, 0);
+Check(chain.SequenceEqual(new[] { 0, 1, 2, 3 }), "Room chain depth");
+var shortcut = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (1, 2), (2, 3), (3, 0) }, 0);
+Check(shortcut.SequenceEqual(new[] { 0, 1, 2, 1 }), "Cycle changes shortest path");
+var disconnected = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (2, 3) }, 0);
+Check(disconnected.SequenceEqual(new[] { 0, 1, -1, -1 }), "Disconnected rooms stay unreachable");
+var branch = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (0, 2), (0, 3) }, 0);
+Check(branch.Max() == 1, "Branching alone does not add depth");
+Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
+Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
+Console.WriteLine($"Проверки распределения наград и графа комнат: {checks} OK");
