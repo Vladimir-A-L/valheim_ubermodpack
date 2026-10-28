@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.2.2")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.3.0")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -23,6 +23,7 @@ public sealed class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Instance = this;
+        ForestManual.Install(gameObject);
         bool probe = Config.Bind("Probe", "Enabled", false, "Автопроверки на отдельном сервере.").Value;
         bool enabled = Config.Bind("Runtime", "Enabled", false, "Механизм явно назначенных сундуков.").Value;
         if (!probe && !enabled) return;
@@ -30,6 +31,9 @@ public sealed class Plugin : BaseUnityPlugin
             "Изоляция от постоянного мира; одинаково на сервере и клиентах.").Value;
         string phase = Config.Bind("Probe", "Phase", "create", "create / resume / verify").Value;
         harmony = new Harmony(Guid);
+        if (Config.Bind("ForestCrypt", "Enabled", false,
+                "Полный лесной профиль только в отдельном ExpectedWorld.").Value)
+            ForestRuntime.InstallTransforms(harmony, expectedWorld);
         StartCoroutine(Run(expectedWorld, probe, phase));
     }
 
@@ -44,11 +48,12 @@ public sealed class Plugin : BaseUnityPlugin
             if (session == null || session != ZNet.instance || !Ready(expectedWorld)) continue;
             var report = new Dictionary<string, object>
             {
-                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.2.2",
+                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.3.0",
                 ["phase"] = phase, ["scope"] = probe ? "headless-real-container-probe" : "runtime-initialization",
                 ["gameplay_accepted"] = false, ["two_client_tested"] = false
             };
             ClientFixture? fixture = null;
+            ForestFixture? forestFixture = null;
             try
             {
                 if (probe && !session.IsServer())
@@ -60,6 +65,14 @@ public sealed class Plugin : BaseUnityPlugin
                 EpicLootBridge.Install(harmony!);
                 PovBridge.Install(harmony!);
                 GuardedChestReward.Install(harmony!);
+                if (Config.Bind("ForestCrypt", "Enabled", false,
+                        "Полный лесной профиль только в отдельном ExpectedWorld.").Value)
+                {
+                    ForestRuntime.Install(harmony!);
+                    if (Config.Bind("ForestCrypt", "Diagnostics", false,
+                            "Приватные команды проверки только в ForestCryptQA.").Value)
+                        forestFixture = gameObject.AddComponent<ForestFixture>();
+                }
                 if (Config.Bind("ClientFixture", "Enabled", false,
                         "Площадка и приватная диагностика только для DungeonClientRewards.").Value)
                     fixture = gameObject.AddComponent<ClientFixture>();
@@ -84,7 +97,10 @@ public sealed class Plugin : BaseUnityPlugin
             while (session != null && session == ZNet.instance && Ready(expectedWorld))
                 yield return new WaitForSeconds(1);
             if (fixture != null) Destroy(fixture);
+            if (forestFixture != null) Destroy(forestFixture);
             harmony?.UnpatchSelf();
+            if (Config.Bind("ForestCrypt", "Enabled", false).Value)
+                ForestRuntime.InstallTransforms(harmony!, expectedWorld);
             Logger.LogInfo("DUNGEON_REWARDS_SESSION_CLOSED");
         }
     }

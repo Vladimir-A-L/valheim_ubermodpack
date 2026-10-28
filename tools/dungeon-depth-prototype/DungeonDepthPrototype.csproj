@@ -4,10 +4,11 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>DungeonDepthPrototype</AssemblyName>
-    <Version>0.2.2</Version>
+    <Version>0.3.0</Version>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../.local/server-gameplay</GameDir>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />
     <Reference Include="EpicLoot"
                HintPath="$(GameDir)/BepInEx/plugins/RandyKnapp-EpicLoot/EpicLoot.dll" Private="false" />
     <Reference Include="BepInEx" HintPath="$(GameDir)/BepInEx/core/BepInEx.dll" Private="false" />
@@ -20,6 +21,10 @@
                HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="UnityEngine"
                HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.dll" Private="false" />
+    <Reference Include="UnityEngine.PhysicsModule"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.PhysicsModule.dll" Private="false" />
+    <Reference Include="SoftReferenceableAssets"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/SoftReferenceableAssets.dll" Private="false" />
     <Reference Include="Newtonsoft.Json"
                HintPath="$(GameDir)/BepInEx/plugins/ValheimModding-JsonDotNET/Newtonsoft.Json.dll" Private="false" />
   </ItemGroup>

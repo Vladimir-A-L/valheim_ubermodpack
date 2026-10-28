@@ -99,4 +99,5 @@ var branch = DungeonGeometryProbe.RoomGraph.Distances(4, new[] { (0, 1), (0, 2),
 Check(branch.Max() == 1, "Branching alone does not add depth");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
-Console.WriteLine($"Проверки групп, глобальных весов, журнала и графа комнат: {checks} OK");
+ForestPlanChecks.Run(Check);
+Console.WriteLine($"Проверки групп, весов, журнала, графа и лесного планировщика: {checks} OK");
