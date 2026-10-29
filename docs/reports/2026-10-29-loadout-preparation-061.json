@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-29T06:39:03.722470+00:00",
+  "scope": "ForestCryptQA first preparation 0.6.0 to 0.6.1",
+  "user_report": {
+    "game": "1.0.21",
+    "plugin": "0.6.0",
+    "error": "MANUAL_PREPARATION arrival position mismatch"
+  },
+  "qa_game": "1.0.20",
+  "server_game": "l-1.0.20",
+  "reproduction": {
+    "plugin": "0.6.0",
+    "arrival_failed": true,
+    "distance_to_target_m": 649.756,
+    "inventory_reset_not_reached": true
+  },
+  "fix": {
+    "plugin": "0.6.1",
+    "distant_teleport": true,
+    "distance_to_target_m": 0.0,
+    "quality_3_gear_items": 8,
+    "telemetry_ready": true,
+    "telemetry_pending": 0
+  },
+  "repeat_login_after_server_restart": {
+    "inventory_unchanged_except_native_durability_quantization": true,
+    "native_serialization_formula_verified": true,
+    "position_unchanged": true,
+    "no_second_preparation": true,
+    "different_private_loadout_ignored": true
+  },
+  "installer": {
+    "passed": true,
+    "save_untouched": true,
+    "files": 9,
+    "backup_restored": true,
+    "unknown_maps_rejected": true,
+    "unknown_version_rejected": true,
+    "installed_hash_verified": true
+  },
+  "repository_tests": 36,
+  "build_warnings": 0,
+  "build_errors": 0,
+  "handoff": {
+    "observed_at_utc": "2026-10-29T06:38:08.594851+00:00",
+    "previous_checkpoint_files": 494,
+    "native_drug_profiles_unchanged": 5,
+    "selected_dungeon_unchanged": true,
+    "server_version": "0.6.1",
+    "world_loaded": true,
+    "folder_policy_ready": true,
+    "previous_dll_preserved": true
+  },
+  "user_installation_061_confirmed": false,
+  "user_preparation_061_confirmed": false
+}

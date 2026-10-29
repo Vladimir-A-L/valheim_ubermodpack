@@ -125,14 +125,19 @@ internal sealed class ForestManual : MonoBehaviour
                 if ((float)AccessTools.Field(typeof(Player), "m_teleportCooldown").GetValue(player) < 2f)
                     return false;
                 ForestLoadout.Validate();
-                if (!player.TeleportTo(destination, Quaternion.Euler(0, settings.StartYaw, 0), false))
+                // При первом входе площадка может быть вне загруженных зон. Портальный режим
+                // способен вернуть игрока назад, если коллайдер пола ещё не готов.
+                Plugin.LogInfo("MANUAL_PREPARATION_TELEPORT id=" + settings.PreparationId + " distant=true");
+                if (!player.TeleportTo(destination, Quaternion.Euler(0, settings.StartYaw, 0), true))
                     throw new InvalidOperationException("Телепортация отклонена");
                 teleportStarted = true;
                 return false;
             }
             var offset = player.transform.position - destination;
             if (new Vector2(offset.x, offset.z).magnitude > 5 || Math.Abs(offset.y) > 12)
-                throw new InvalidOperationException("Персонаж не достиг ожидаемой площадки у входа");
+                throw new InvalidOperationException("Персонаж не достиг ожидаемой площадки у входа: " +
+                    $"смещение по горизонтали {new Vector2(offset.x, offset.z).magnitude:F1} м, " +
+                    $"по высоте {offset.y:F1} м");
             if (settings.ResetInventory || !player.m_customData.ContainsKey(ForestLoadout.Key))
                 ForestLoadout.Grant(player, settings.ResetInventory);
             player.m_customData[PreparedKey] = DateTime.UtcNow.ToString("O");
@@ -140,6 +145,7 @@ internal sealed class ForestManual : MonoBehaviour
             Record("preparation-complete", new { god = player.InGodMode(), ghost = player.InGhostMode(),
                 position = new[] { player.transform.position.x, player.transform.position.y,
                     player.transform.position.z }, excluded_from_attempts = true });
+            Plugin.LogInfo("MANUAL_PREPARATION_COMPLETE id=" + settings.PreparationId);
             return true;
         }
         catch (Exception e)
