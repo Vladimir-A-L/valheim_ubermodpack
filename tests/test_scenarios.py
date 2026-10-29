@@ -153,6 +153,8 @@ class ScenarioGuardsTests(unittest.TestCase):
                        {"kind": "key", "keys": [87], "hold_ms": 60000},
                        {"kind": "key", "keys": [91]}, {"kind": "key", "keys": [87, 87]},
                        {"kind": "key", "keys": [17, 27]}, {"kind": "key", "keys": [87.0]},
+                       {"kind": "key", "keys": [164, 115]}, {"kind": "key", "keys": [164, 9]},
+                       {"kind": "key", "keys": [164]}, {"kind": "key", "keys": [77, 164]},
                        {"kind": "text", "text": "line\ncommand"}, {"kind": "text", "text": "a" * 129}]:
             with self.subTest(action=action), self.assertRaises(ValueError):
                 scenario.inputs.validate_action(action, target)
@@ -163,6 +165,7 @@ class ScenarioGuardsTests(unittest.TestCase):
                        {"kind": "move", "x": 0, "y": 0},
                        {"kind": "look", "dx": 0, "dy": 100},
                        {"kind": "key", "keys": [87], "hold_ms": 500},
+                       {"kind": "key", "keys": [117]},
                        {"kind": "text", "text": "Automation"}]:
             scenario.inputs.validate_action(action, target)
 

@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-29T00:49:27.064847+00:00",
+  "scope": "forest-template-navigation-client-candidate",
+  "package": "OverDrive-DungeonMaps-1.1.2",
+  "source_url": "https://thunderstore.io/c/valheim/p/OverDrive/DungeonMaps/",
+  "download_url": "https://thunderstore.io/package/download/OverDrive/DungeonMaps/1.1.2/",
+  "archive_sha256": "8e4bb82273f985c304605036225f5acfce36598f8723fff16c4a757cb2c1ac98",
+  "dll_sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b",
+  "declared_dependency": "denikson-BepInExPack_Valheim-5.4.2350",
+  "candidate_dependency": "denikson-BepInExPack_Valheim-5.4.2351",
+  "client_only": true,
+  "servermanager_placement": "optional",
+  "configuration": "configs/navigation/zl.dungeonmaps.cfg",
+  "configuration_sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870",
+  "verification": {
+    "archive_and_dll_verified": true,
+    "standalone_windows_menu_started": true,
+    "full_candidate_navigation_test": true,
+    "full_map_toggle": "F6",
+    "fog_survives_rejoin": true,
+    "minimap_hidden_without_nomap": true
+  }
+}

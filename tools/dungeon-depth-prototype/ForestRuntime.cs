@@ -163,11 +163,12 @@ internal static class ForestRuntime
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
-                schema = 2, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                schema = 3, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
                 rooms = plan.Rooms.Select((r, i) => new { id = i, prefab = r.Template.Name,
                     position = new[] { r.Position.X, r.Position.Y, r.Position.Z }, turn = r.Turn,
                     depth = r.Depth, parent = r.Parent, endcap = r.Template.Endcap,
                     cores = r.GuaranteedCores, resource_count = r.ResourceCount, chest_count = r.ChestCount,
+                    rare_guard_count = r.RareGuardCount,
                     arena = r.Arena, branch = r.Branch,
                     sockets = Enumerable.Range(0, r.Template.Sockets.Length).Select(s => new
                     {
@@ -220,6 +221,14 @@ internal static class ForestRuntime
             objects.Add(view);
             return view;
         }
+        // Штатные ядра вне выбранных 2–4 комнат тоже входят в лимит и удаляются при новой генерации.
+        if (room.ResourceCount == 0)
+            foreach (var core in objects.Where(v =>
+                         v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore").ToArray())
+            {
+                core.gameObject.SetActive(false);
+                ZNetScene.instance.Destroy(core.gameObject); objects.Remove(core);
+            }
         if (room.ResourceCount > 0)
             foreach (var core in template.GetComponentsInChildren<Pickable>(true)
                          .Where(p => p.m_itemPrefab != null && p.m_itemPrefab.name == "SurtlingCore"))
@@ -297,6 +306,13 @@ internal static class ForestRuntime
         while (guards.Count < desired)
             guards.Add(Object.Instantiate(ZNetScene.instance.GetPrefab("Skeleton"), Slot(), rotation)
                 .GetComponent<Character>());
+        for (int i = 0; i < room.RareGuardCount; i++)
+        {
+            var ghost = Object.Instantiate(ZNetScene.instance.GetPrefab("Ghost"), Slot(), rotation)
+                .GetComponent<Character>();
+            ghost.SetLevel(1);
+            guards.Add(ghost);
+        }
         foreach (var guard in guards)
         {
             PovBridge.AssignIds(guard, modifiers);

@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-29T01:00:19.158753+00:00",
+  "scope": "ForestCryptQA 0.6.0; one Windows QA client",
+  "full_route_and_combat_accepted": false,
+  "model_assertions": 23978,
+  "repository_tests": 36,
+  "planner": {
+    "passed": 1000,
+    "resource_distribution": {
+      "2": 333,
+      "4": 333,
+      "3": 334
+    },
+    "geometry_rooms_and_attempts_unchanged_from_050": true,
+    "rare_guard_range": [
+      2,
+      11
+    ]
+  },
+  "dedicated": {
+    "generations": 12,
+    "passed": 12,
+    "actual_resource_rooms": [
+      2,
+      3,
+      4
+    ],
+    "arena_guards_observed": [
+      16,
+      20,
+      32
+    ],
+    "closed_sockets": true,
+    "rare_guards_and_density_verified": true,
+    "natural_arena_guard_counts": [
+      33,
+      33,
+      26,
+      16,
+      30,
+      22,
+      29,
+      23,
+      27
+    ]
+  },
+  "navigation": {
+    "version": "1.1.2",
+    "standalone_menu": true,
+    "full_candidate_native_entry": true,
+    "large_map": true,
+    "toggle": "F6",
+    "both_toggle_directions": true,
+    "fog_persisted_after_rejoin": true,
+    "no_map": false,
+    "minimap_visible": false
+  },
+  "final_client": {
+    "exact_release_dll": true,
+    "gear_quality": 3,
+    "gear_items": 8,
+    "god": true,
+    "ghost": false,
+    "telemetry_ready": true,
+    "telemetry_pending": 0
+  },
+  "installer": {
+    "passed": true,
+    "save_untouched": true,
+    "files": 9,
+    "backup_restored": true,
+    "unknown_maps_rejected": true,
+    "unknown_version_rejected": true,
+    "installed_hash_verified": true
+  },
+  "handoff": {
+    "observed_at_utc": "2026-10-29T00:54:43.447973+00:00",
+    "world_loaded": true,
+    "world_save_pending": 0,
+    "restart_preserved_layout_objects_and_rewards": true,
+    "native_drug_profiles_verified": 5,
+    "same_manual_endpoint": true,
+    "previous_state_checkpoint_files": 361,
+    "previous_release_preserved": true,
+    "initial_dungeon_objects": {
+      "object": 89,
+      "guard": 83,
+      "chest": 14,
+      "core": 14
+    },
+    "final_dll_matches_delivery": true
+  },
+  "initial_checkpoint_files_verified": 159,
+  "dungeon": {
+    "rooms_including_endcaps": 127,
+    "branches": 5,
+    "guards": 83,
+    "chests": 14,
+    "core_objects": 14,
+    "resource_rooms": [
+      {
+        "depth": 8,
+        "core_objects": 5,
+        "added_ghosts": 1,
+        "arena": false
+      },
+      {
+        "depth": 40,
+        "core_objects": 6,
+        "added_ghosts": 2,
+        "arena": true
+      },
+      {
+        "depth": 29,
+        "core_objects": 3,
+        "added_ghosts": 1,
+        "arena": false
+      }
+    ],
+    "added_ghosts": 4,
+    "modifier_count_distribution": {
+      "0": 21,
+      "1": 6,
+      "3": 1,
+      "4": 7,
+      "5": 1,
+      "6": 7,
+      "7": 5,
+      "8": 2,
+      "10": 33
+    }
+  },
+  "unverified": [
+    "full_route_walk",
+    "ghost_combat_balance",
+    "core_pickup_yield_x3",
+    "vegvisir",
+    "second_client",
+    "other_dungeon_adapters"
+  ],
+  "user_installation_060_verified": false,
+  "rollback": {
+    "observed_at_utc": "2026-10-29T00:59:14.876256+00:00",
+    "backup_files_verified": 361,
+    "previous_plugin_version": "0.5.0",
+    "world_loaded": true,
+    "all_layouts_and_objects_match_previous_snapshot": true,
+    "native_drug_profiles_verified": 5,
+    "isolated_endpoint": true
+  }
+}

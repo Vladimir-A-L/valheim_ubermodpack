@@ -48,7 +48,7 @@ try {
     if ($action.kind -eq 'key' -and ($action.hold_ms -lt 20 -or $action.hold_ms -gt 1500 -or
         @($action.keys).Count -lt 1 -or @($action.keys).Count -gt 2)) { throw 'invalid_key_action' }
     if ($action.kind -eq 'key') {
-        $allowed = @(8,9,13,16,17,27,32,37,38,39,40,112,113,114,115,116) + @(48..90)
+        $allowed = @(8,9,13,16,17,27,32,37,38,39,40,112,113,114,115,116,117) + @(48..90)
         foreach ($key in $action.keys) { if ($key -notin $allowed) { throw 'key_not_allowed' } }
         if (@($action.keys | Select-Object -Unique).Count -ne @($action.keys).Count) { throw 'duplicate_key' }
         if (17 -in $action.keys -and 27 -in $action.keys) { throw 'system_shortcut_not_allowed' }

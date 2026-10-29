@@ -25,7 +25,7 @@ def validate_action(action, target):
             raise ValueError("Поворот камеры ограничен 200 отсчётами по каждой оси")
     elif kind == "key":
         keys = action.get("keys", [])
-        allowed = {8, 9, 13, 16, 17, 27, 32, 37, 38, 39, 40, 112, 113, 114, 115, 116}
+        allowed = {8, 9, 13, 16, 17, 27, 32, 37, 38, 39, 40, 112, 113, 114, 115, 116, 117}
         allowed.update(range(48, 91))
         if (not 1 <= len(keys) <= 2 or len(set(keys)) != len(keys)
                 or any(type(k) is not int or k not in allowed for k in keys)

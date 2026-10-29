@@ -19,4 +19,8 @@ public static class EncounterPlan
     }
 
     public static string[] ForestSet(int depth) => ForestModifiers.Take(ForestPlan.ModifierCount(depth)).ToArray();
+
+    // Редкая охрана добавляется после основного расчёта, включая утроение арены.
+    public static int ResourceReinforcements(bool resources, int seed) =>
+        resources ? new Random(unchecked(seed ^ 0x4f1bbcdc)).Next(1, 4) : 0;
 }

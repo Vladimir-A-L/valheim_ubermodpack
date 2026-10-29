@@ -33,7 +33,8 @@ internal static class ForestPlanChecks
             Room("forestcrypt_Bend1", n, w), Room("forestcrypt_Bend2", n, e),
             Room("forestcrypt_Stairs1", n, s), Room("forestcrypt_new_Burialchamber05", n, s) };
         string Fingerprint(ForestPlan.Layout layout) => string.Join(";", layout.Rooms.Select(r =>
-            FormattableString.Invariant($"{r.Template.Name}:{r.Position.X},{r.Position.Y},{r.Position.Z}:{r.Turn}")));
+            FormattableString.Invariant($"{r.Template.Name}:{r.Position.X},{r.Position.Y},{r.Position.Z}:{r.Turn}") +
+            $":{r.ResourceCount}:{r.RareGuardCount}"));
         foreach (int seed in new[] { 0, 1, 1001, 1002, 1003, 1004, 1005, 1006 })
         {
             var center = new Point(64, 5000, -128);
@@ -42,8 +43,21 @@ internal static class ForestPlanChecks
             check(Fingerprint(a) == Fingerprint(b), "Повторяемость полного плана");
             check(a.BranchCount >= 2 && a.BranchCount <= 5, "От двух до пяти ветвей");
             check(a.Rooms.Single(r => r.Arena).ChestCount == 3, "Три сундука на арене");
+            check(a.Rooms.Count(r => r.ResourceCount > 0) is >= 2 and <= 4,
+                "Общий лимит ресурсных комнат включает арену");
+            check(a.Rooms.Where(r => r.ResourceCount > 0).All(r => r.RareGuardCount is >= 1 and <= 3),
+                "В каждой ресурсной комнате добавлены 1–3 редких охранника");
+            check(a.Rooms.Where(r => r.ResourceCount == 0).All(r => r.RareGuardCount == 0),
+                "Редкая добавка только у ресурсов");
             check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 16), "Начальные ресурсы без усиления");
             check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 2, "Основной конец и арена на глубине 40");
+            var empty = a.Rooms.First(r => !r.Template.Endcap && r.ResourceCount == 0);
+            empty.RareGuardCount = 1;
+            bool badRare = false;
+            try { ForestPlan.Validate(a); }
+            catch (InvalidOperationException) { badRare = true; }
+            check(badRare, "Редкая добавка без ресурсной комнаты отвергается");
+            empty.RareGuardCount = 0;
             var deep = a.Rooms.FindIndex(r => r.Depth == 40 && !r.Template.Endcap);
             a.Edges.Add((0, deep));
             bool rejected = false;

@@ -48,7 +48,7 @@ public static class ForestPlan
         public Point Position;
         public int Turn, Parent = -1, ParentSocket = -1, InSocket = -1, Depth;
         public bool GuaranteedCores;
-        public int ResourceCount, ChestCount, Branch;
+        public int ResourceCount, RareGuardCount, ChestCount, Branch;
         public bool Arena;
         public Point SocketPosition(int index) => Position + Template.Sockets[index].Position.Rotate(Turn);
         public int SocketTurn(int index) => (Turn + Template.Sockets[index].Turn) % 4;
@@ -149,8 +149,6 @@ public static class ForestPlan
                 if (!Fits(c)) continue;
                 c.Branch = branch;
                 c.Arena = arena && next == targetDepth;
-                c.ResourceCount = c.Arena ? 6 : next % 8 == 0 ? (next == 8 ? 5 : 3) : 0;
-                c.GuaranteedCores = c.ResourceCount > 0 && next <= SafeDepth;
                 c.ChestCount = c.Arena ? 3 : c.Template == Reward ? 1 : 0;
                 int index = Rooms.Count;
                 Rooms.Add(c);
@@ -200,12 +198,30 @@ public static class ForestPlan
             if (!branches) continue;
             var result = new Layout { Seed = seed, Attempts = attempt + 1, Rooms = search.Rooms,
                 BranchCount = branchCount };
+            AssignResources(result);
             result.Edges = result.Rooms.Select((r, i) => (r, i)).Where(x => x.r.Parent >= 0)
                 .Select(x => (x.r.Parent, x.i)).ToList();
             Validate(result);
             return result;
         }
         throw new InvalidOperationException($"Не удалось разместить полный лесной профиль за {MaxAttempts} попыток");
+    }
+
+    private static void AssignResources(Layout layout)
+    {
+        // Отдельный поток случайности сохраняет уже проверенную геометрию для того же seed.
+        var random = new Random(unchecked(layout.Seed ^ 0x27d4eb2d));
+        int quota = random.Next(2, 5);
+        var early = layout.Rooms.Single(r => r.Branch == 0 && r.Depth == 8 && !r.Template.Endcap);
+        early.ResourceCount = 5; early.GuaranteedCores = true;
+        layout.Rooms.Single(r => r.Arena).ResourceCount = 6;
+        var extra = layout.Rooms.Where(r => !r.Template.Endcap && !r.Arena &&
+            r.ChestCount > 0 && r.Depth > SafeDepth).OrderBy(_ => random.Next()).Take(quota - 2).ToArray();
+        if (extra.Length != quota - 2) throw new InvalidOperationException("Нет места для ресурсной квоты");
+        foreach (var room in extra) room.ResourceCount = 3;
+        for (int i = 0; i < layout.Rooms.Count; i++)
+            layout.Rooms[i].RareGuardCount = EncounterPlan.ResourceReinforcements(
+                layout.Rooms[i].ResourceCount > 0, unchecked(layout.Seed * 397 ^ i));
     }
 
     public static void Validate(Layout layout)
@@ -242,15 +258,11 @@ public static class ForestPlan
         if (rooms[firstArenaBranch.Parent].Depth < MaxDepth * .7 ||
             arena[0].Depth - rooms[firstArenaBranch.Parent].Depth < 5)
             throw new InvalidOperationException("Арена должна быть в конце длинного позднего ответвления");
-        foreach (var r in rooms.Where(r => !r.Template.Endcap))
-        {
-            int parent = r.Parent;
-            while (parent > 0 && rooms[parent].ResourceCount == 0) parent = rooms[parent].Parent;
-            int last = parent < 0 ? 0 : rooms[parent].Depth;
-            int gap = r.Depth - last;
-            if (gap > 10 || (r.ResourceCount > 0 && gap < 5))
-                throw new InvalidOperationException("Нарушен шаг ресурсных комнат 5–10 переходов");
-        }
+        int resourceRooms = rooms.Count(r => r.ResourceCount > 0);
+        if (resourceRooms < 2 || resourceRooms > 4 || rooms.Any(r => r.ResourceCount > 0 &&
+                (r.Template.Endcap || r.RareGuardCount < 1 || r.RareGuardCount > 3)) ||
+            rooms.Any(r => r.ResourceCount == 0 && r.RareGuardCount != 0))
+            throw new InvalidOperationException("Нарушена общая квота ресурсов или редкой охраны");
         foreach (var (a, b) in layout.Edges)
             if (Math.Abs(ModifierCount(rooms[a].Depth) - ModifierCount(rooms[b].Depth)) > 1)
                 throw new InvalidOperationException("Скачок числа модификаторов");

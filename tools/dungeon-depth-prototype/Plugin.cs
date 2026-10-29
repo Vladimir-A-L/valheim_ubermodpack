@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.5.0")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.6.0")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -23,6 +23,7 @@ public sealed class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Instance = this;
+        NavigationProfile.Install();
         ForestManual.Install(gameObject);
         bool probe = Config.Bind("Probe", "Enabled", false, "Автопроверки на отдельном сервере.").Value;
         bool enabled = Config.Bind("Runtime", "Enabled", false, "Механизм явно назначенных сундуков.").Value;
@@ -48,7 +49,7 @@ public sealed class Plugin : BaseUnityPlugin
             if (session == null || session != ZNet.instance || !Ready(expectedWorld)) continue;
             var report = new Dictionary<string, object>
             {
-                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.5.0",
+                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.6.0",
                 ["phase"] = phase, ["scope"] = probe ? "headless-real-container-probe" : "runtime-initialization",
                 ["gameplay_accepted"] = false, ["two_client_tested"] = false
             };
@@ -110,5 +111,9 @@ public sealed class Plugin : BaseUnityPlugin
         (ZNet.instance.IsServer() || Player.m_localPlayer != null) &&
         ZNet.instance.GetWorldName() == expectedWorld;
 
-    private void OnDestroy() => harmony?.UnpatchSelf();
+    private void OnDestroy()
+    {
+        harmony?.UnpatchSelf();
+        NavigationProfile.Uninstall();
+    }
 }

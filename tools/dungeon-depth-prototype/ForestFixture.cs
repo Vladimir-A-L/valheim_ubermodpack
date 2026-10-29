@@ -49,6 +49,19 @@ internal sealed class ForestFixture : MonoBehaviour
     {
         string action = command.Value<string>("action") ?? "";
         if (action == "loadout-check") return ForestLoadout.Validate();
+        if (action == "navigation-status")
+        {
+            var map = Minimap.instance;
+            var plugin = BepInEx.Bootstrap.Chainloader.PluginInfos.Values
+                .FirstOrDefault(p => p.Metadata.GUID == "zl.dungeonmaps");
+            var uiType = plugin?.Instance.GetType().Assembly.GetType("DungeonMaps.DungeonMapUI");
+            return new { map_exists = map != null, mode = map == null ? "" : map.m_mode.ToString(),
+                small_visible = map != null && map.m_smallRoot.activeInHierarchy,
+                large_visible = map != null && map.m_largeRoot.activeInHierarchy,
+                no_map = Game.m_noMap, dungeonmaps_version = plugin?.Metadata.Version.ToString(),
+                dungeon_overlay = uiType == null ? false :
+                    (bool)(AccessTools.Property(uiType, "CoversLargeMap").GetValue(null) ?? false) };
+        }
         if (action == "manual-god-probe") return ForestManual.Probe();
         if (action == "manual-telemetry-status") return ManualTelemetry.Status();
         if (action == "manual-telemetry-replay") return ManualTelemetry.ReplayProbe();
@@ -217,8 +230,10 @@ internal sealed class ForestFixture : MonoBehaviour
                     decimal budget = GuardedChestReward.Rules.Budget(EncounterPlan.ForestSet(x.r.Depth), 0,
                         x.r.Depth <= ForestPlan.SafeDepth).Value;
                     int expected = EncounterPlan.Guards(GuardedChestReward.Rules, budget,
-                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i));
+                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i)) + x.r.RareGuardCount;
                     return guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i) == expected &&
+                        guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i &&
+                            Utils.GetPrefabName(g.gameObject) == "Ghost") == x.r.RareGuardCount &&
                         chests.Count(c => ForestRuntime.Zdo(c).GetInt(ForestRuntime.RoomKey) == x.i) ==
                             x.r.ChestCount &&
                         cores.Count(c => c.GetZDO().GetInt(ForestRuntime.RoomKey) == x.i) >= x.r.ResourceCount;
@@ -226,13 +241,18 @@ internal sealed class ForestFixture : MonoBehaviour
                 string fingerprint = EpicLootBridge.Hash(ForestRuntime.Zdo(generator).GetByteArray(ZDOVars.s_roomData));
                 bool repeat = !fingerprints.TryGetValue(seed, out string previous) || previous == fingerprint;
                 fingerprints[seed] = fingerprint;
+                int actualResourceRooms = cores.Select(c => c.GetZDO().GetInt(ForestRuntime.RoomKey))
+                    .Distinct().Count();
+                bool quota = actualResourceRooms >= 2 && actualResourceRooms <= 4 &&
+                    actualResourceRooms == layout.Rooms.Count(r => r.ResourceCount > 0);
                 bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 &&
-                    repeat && density;
+                    repeat && density && quota;
                 results.Add(new { seed, passed, rooms = rooms.Length, open_sockets = open,
                     max_depth = layout.Rooms.Max(r => r.Depth), early_core_pickables = earlyCores,
                     guards = guards.Length, chests = chests.Length, depth_match = depthMatch,
                     guard_match = guardMatch, reward_match = rewardMatch, repeat_matches = repeat,
-                    density_match = density, branches = layout.BranchCount,
+                    density_match = density, resource_quota_match = quota, branches = layout.BranchCount,
+                    rare_guards = guards.Count(g => Utils.GetPrefabName(g.gameObject) == "Ghost"),
                     resource_rooms = layout.Rooms.Count(r => r.ResourceCount > 0),
                     arena_guards = guards.Count(g => layout.Rooms[ForestRuntime.Zdo(g)
                         .GetInt(ForestRuntime.RoomKey)].Arena),

@@ -30,16 +30,23 @@ if ($oldHash -notin $manifest.accepted_previous_dll_sha256 -and $oldHash -ne $ma
 $managerRelative = 'BepInEx\plugins\ServerManager\ServerManager.dll'
 $managerConfigRelative = 'BepInEx\config\sighsorry.ServerManager.cfg'
 $requiredFiles = @($dllRelative, $configRelative, $managerRelative, $managerConfigRelative)
-$allowed = $requiredFiles + @('BepInEx\config\dungeon-rewards.json', 'BepInEx\config\forest-loadout.json')
+$rewardFiles = @('BepInEx\config\dungeon-rewards.json', 'BepInEx\config\forest-loadout.json')
+$navigationFiles = @('BepInEx\plugins\DungeonMaps\DungeonMaps.dll',
+    'BepInEx\config\zl.dungeonmaps.cfg', 'BepInEx\config\forest-navigation.json')
+$allowed = $requiredFiles + $rewardFiles + $navigationFiles
 $sources = @($manifest.files | ForEach-Object {
     if ($_.relative -notin $allowed -or $_.source -ne [IO.Path]::GetFileName($_.source)) {
         throw 'Неожиданный файл в manifest обновления.'
     }
     @{relative=$_.relative; source=(Join-Path $payload $_.source); hash=$_.sha256}
 })
-if ($sources.Count -notin @(4, 6) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
+if ($sources.Count -notin @(4, 6, 9) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
     @($requiredFiles | Where-Object { $_ -notin $sources.relative }).Count -ne 0) {
     throw 'Неполный или повторяющийся набор файлов обновления.'
+}
+foreach ($group in @(@{files=$rewardFiles}, @{files=$navigationFiles})) {
+    $present = @($group.files | Where-Object { $_ -in $sources.relative }).Count
+    if ($present -ne 0 -and $present -ne $group.files.Count) { throw 'Неполная группа файлов обновления.' }
 }
 foreach ($item in $sources) {
     if ((Get-FileHash -LiteralPath $item.source -Algorithm SHA256).Hash -ne $item.hash) {
@@ -49,6 +56,16 @@ foreach ($item in $sources) {
 $manager = Join-Path $game $managerRelative
 if ((Test-Path $manager) -and (Get-FileHash $manager).Hash -ne $manifest.servermanager_sha256) {
     throw 'Уже установлена другая версия ServerManager. Требуется проверка перед заменой.'
+}
+$mapsSource = @($sources | Where-Object { $_.relative -eq $navigationFiles[0] })
+if ($mapsSource.Count -eq 1) {
+    $installedMaps = @(Get-ChildItem (Join-Path $game 'BepInEx\plugins') -Filter 'DungeonMaps.dll' -Recurse)
+    foreach ($installed in $installedMaps) {
+        if ($installed.FullName -ine (Join-Path $game $navigationFiles[0]) -or
+            (Get-FileHash $installed.FullName).Hash -ne $mapsSource[0].hash) {
+            throw 'Найдена другая установка DungeonMaps. Требуется проверка перед заменой.'
+        }
+    }
 }
 $manual = Get-Content (Join-Path $payload 'forest-manual-test.json') -Raw -Encoding UTF8 | ConvertFrom-Json
 if ($manual.PlayerName -ne $manifest.character -or -not $manual.Enabled -or -not $manual.Record) {

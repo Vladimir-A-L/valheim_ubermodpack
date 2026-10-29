@@ -50,6 +50,10 @@ internal static class IntervalChecks
             check(normal >= band.MinGuards && normal <= band.MaxGuards, "Плотность по интервалу");
             check(resource >= 5 && resource <= Math.Max(5, band.MaxGuards), "Минимум пять у ресурсов");
             check(arena == 3 * resource, "Арена втрое больше обычной комнаты этой ступени");
+            int rare = EncounterPlan.ResourceReinforcements(true, seed);
+            check(rare is >= 1 and <= 3 && EncounterPlan.ResourceReinforcements(false, seed) == 0,
+                "Редкая охрана 1–3 только в ресурсных комнатах");
+            check(arena + rare >= 16 && arena + rare <= 33, "Редкая добавка не утраивается на арене");
             check(EncounterPlan.Guards(rules, 176, false, false, seed) ==
                 EncounterPlan.Guards(rules, 175, false, false, seed), "После шкалы плотность не сбрасывается");
         }
