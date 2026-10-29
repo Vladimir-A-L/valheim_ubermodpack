@@ -7,10 +7,15 @@ namespace DungeonDepthPrototype;
 // Планирование без создания игровых объектов. Координаты берутся из загруженных штатных prefab.
 public static class ForestPlan
 {
-    public const int SafeDepth = 16, MaxDepth = 40;
+    public const int SafeDepth = 16, MaxDepth = 64, ArenaBranchDepth = 48;
+    private const int GrowthDepth = MaxDepth - SafeDepth;
     private const int MaxAttempts = 4096;
     public static int ModifierCount(int depth) => depth <= SafeDepth ? 0 :
-        depth >= MaxDepth ? 10 : (10 * (depth - SafeDepth) + 23) / 24;
+        depth >= MaxDepth ? 10 : (10 * (depth - SafeDepth) + GrowthDepth - 1) / GrowthDepth;
+
+    // Удлинение пути не удваивает частоту наград: прежний шаг 8 растянут после нулевого участка.
+    private static bool RewardDepth(int depth) => depth <= SafeDepth ? depth % 8 == 0 :
+        (depth - SafeDepth) % 16 == 0;
 
     public readonly struct Point
     {
@@ -141,7 +146,7 @@ public static class ForestPlan
             if (Tries >= Limit) return false;
             int next = Rooms[parent].Depth + 1;
             var pool = arena && next == targetDepth ? new[] { Arena } :
-                next % 8 == 0 || next == targetDepth || (branch == 0 && next == 12) ?
+                RewardDepth(next) || next == targetDepth || (branch == 0 && next == 12) ?
                     new[] { Reward } : Through;
             var candidates = (from s in FreeSockets(parent)
                 from t in pool from entry in Enumerable.Range(0, t.Sockets.Length)
@@ -179,18 +184,18 @@ public static class ForestPlan
             if (!search.Fits(first)) continue;
             search.Rooms.Add(first);
             // Сначала резервируем крупный зал, затем свободный конец основной ветви.
-            if (!search.Extend(0, 32, 0)) continue;
+            if (!search.Extend(0, ArenaBranchDepth, 0)) continue;
             int branchCount = new Random(seed).Next(2, 6);
-            // Поздний выход с основного пути: 32/40 = 80%, затем ещё восемь переходов до арены.
+            // После начальных 16 переходов оба поздних участка удлинены вдвое: отвод 48, арена 64.
             bool branches = true;
-            int arenaParent = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == 32);
+            int arenaParent = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == ArenaBranchDepth);
             if (!search.Extend(arenaParent, MaxDepth, 1, true)) continue;
             if (!search.Extend(arenaParent, MaxDepth, 0)) continue;
             int branch = 2;
-            foreach (int depth in new[] { 8, 12, 16, 24 }.OrderBy(_ => search.Random.Next()).Take(branchCount - 1))
+            foreach (int depth in new[] { 8, 12, 16, 32 }.OrderBy(_ => search.Random.Next()).Take(branchCount - 1))
             {
                 int parent = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == depth);
-                int length = search.Random.Next(5, 9);
+                int length = search.Random.Next(5, 9) * (depth >= SafeDepth ? 2 : 1);
                 if (!search.Extend(parent, depth + length, branch++)) { branches = false; break; }
             }
             if (!branches) continue;
@@ -258,7 +263,9 @@ public static class ForestPlan
         if (layout.BranchCount < 2 || layout.BranchCount > 5 || branchIds.Count() != layout.BranchCount)
             throw new InvalidOperationException("Неверное число ответвлений");
         var arena = rooms.Where(r => r.Arena).ToArray();
-        if (arena.Length != 1 || arena[0].ChestCount != 3 || arena[0].ResourceCount < 1)
+        if (arena.Length != 1 || arena[0].ChestCount != 3 || arena[0].ResourceCount < 1 ||
+            arena[0].Depth != MaxDepth ||
+            !rooms.Any(r => r.Branch == 0 && r.Depth == MaxDepth && r.ChestCount > 0))
             throw new InvalidOperationException("Нет полной арены");
         var firstArenaBranch = rooms.First(r => r.Branch == arena[0].Branch && !r.Template.Endcap);
         if (rooms[firstArenaBranch.Parent].Depth < MaxDepth * .7 ||

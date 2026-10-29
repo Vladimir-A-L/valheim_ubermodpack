@@ -255,14 +255,19 @@ internal sealed class ForestFixture : MonoBehaviour
                 int gates = views.Count(v => v.IsValid() && v.GetZDO().GetBool(ForestGates.GateKey));
                 bool gateMatch = !layout.StageGates || gates == EncounterGates.Edges(layout).Length &&
                     ForestGates.CheckClosedColliders();
+                var terminal = chests.Select(GuardedChestReward.Read).OfType<ChestRewardState>()
+                    .Where(s => s.Room.Depth == ForestPlan.MaxDepth).ToArray();
+                bool terminalMatch = terminal.Length == 4 &&
+                    terminal.All(s => s.Budget.Value >= 175 && s.Budget.Value <= 200);
                 bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 &&
-                    repeat && density && quota && gateMatch;
+                    repeat && density && quota && gateMatch && terminalMatch;
                 results.Add(new { seed, passed, rooms = rooms.Length, open_sockets = open,
                     max_depth = layout.Rooms.Max(r => r.Depth), early_core_pickables = earlyCores,
                     guards = guards.Length, chests = chests.Length, depth_match = depthMatch,
                     guard_match = guardMatch, reward_match = rewardMatch, repeat_matches = repeat,
                     density_match = density, resource_quota_match = quota, branches = layout.BranchCount,
-                    gates, gate_match = gateMatch,
+                    gates, gate_match = gateMatch, terminal_budget_match = terminalMatch,
+                    terminal_budgets = terminal.Select(s => s.Budget.Value).ToArray(),
                     rare_guards = guards.Count(g => Utils.GetPrefabName(g.gameObject) == "Ghost"),
                     resource_rooms = layout.Rooms.Count(r => r.ResourceCount > 0),
                     arena_guards = guards.Count(g => layout.Rooms[ForestRuntime.Zdo(g)

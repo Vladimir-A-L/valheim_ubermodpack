@@ -33,14 +33,16 @@ $requiredFiles = @($dllRelative, $configRelative, $managerRelative, $managerConf
 $rewardFiles = @('BepInEx\config\dungeon-rewards.json', 'BepInEx\config\forest-loadout.json')
 $navigationFiles = @('BepInEx\plugins\DungeonMaps\DungeonMaps.dll',
     'BepInEx\config\zl.dungeonmaps.cfg', 'BepInEx\config\forest-navigation.json')
-$allowed = $requiredFiles + $rewardFiles + $navigationFiles
+$runtimeConfig = 'BepInEx\config\ubermodpack.dungeon-depth-prototype.cfg'
+$allowed = $requiredFiles + $rewardFiles + $navigationFiles + @($runtimeConfig)
 $sources = @($manifest.files | ForEach-Object {
     if ($_.relative -notin $allowed -or $_.source -ne [IO.Path]::GetFileName($_.source)) {
         throw 'Неожиданный файл в manifest обновления.'
     }
     @{relative=$_.relative; source=(Join-Path $payload $_.source); hash=$_.sha256}
 })
-if ($sources.Count -notin @(4, 6, 9) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
+$baseCount = $sources.Count - [int]($runtimeConfig -in $sources.relative)
+if ($baseCount -notin @(4, 6, 9) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
     @($requiredFiles | Where-Object { $_ -notin $sources.relative }).Count -ne 0) {
     throw 'Неполный или повторяющийся набор файлов обновления.'
 }

@@ -135,6 +135,7 @@ internal static class ForestRuntime
         if (Utils.GetPrefabName(__instance.gameObject) != "DG_ForestCrypt") return true;
         if (!ZNet.instance.IsServer() || mode == ZoneSystem.SpawnMode.Client)
             throw new InvalidOperationException("Генерация полного лесного профиля требует сервера");
+        decimal terminalBudget = EncounterPlan.ForestTerminalBudget(GuardedChestReward.Rules);
         var data = ((List<DungeonDB.RoomData>)AccessTools.Field(typeof(DungeonGenerator), "m_availableRooms")
             .GetValue(null)).ToDictionary(d => d.m_prefab.Name);
         var plan = ForestPlan.Create(Catalog(data.Values), P(__instance.transform.position),
@@ -166,7 +167,9 @@ internal static class ForestRuntime
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
-                schema = 4, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                schema = 5, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                max_depth = ForestPlan.MaxDepth, safe_depth = ForestPlan.SafeDepth,
+                terminal_budget = terminalBudget,
                 stage_gates = plan.StageGates,
                 gates = plan.StageGates ? EncounterGates.Edges(plan).Select(e => new[] { e.A, e.B }).ToArray() :
                     Array.Empty<int[]>(),
@@ -184,7 +187,7 @@ internal static class ForestRuntime
                 edges = plan.Edges.Select(e => new[] { e.A, e.B })
             }));
             LastPlan = plan;
-            Plugin.LogInfo($"FOREST_GENERATED seed={plan.Seed} rooms={plan.Rooms.Count} depth=40");
+            Plugin.LogInfo($"FOREST_GENERATED seed={plan.Seed} rooms={plan.Rooms.Count} depth={ForestPlan.MaxDepth}");
         }
         catch
         {

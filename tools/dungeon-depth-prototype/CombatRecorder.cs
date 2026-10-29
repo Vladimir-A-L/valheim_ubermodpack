@@ -83,7 +83,7 @@ internal sealed class CombatRecorder : MonoBehaviour
                 writer = new StreamWriter(new FileStream(Path.Combine(folder,
                     DateTime.UtcNow.ToString("yyyyMMddTHHmmssZ") + "-" + stream + ".jsonl"),
                     FileMode.CreateNew, FileAccess.Write, FileShare.Read), new UTF8Encoding(false));
-                Write("start", new { version = "0.7.0", world = expectedWorld,
+                Write("start", new { version = Plugin.Instance.Info.Metadata.Version.ToString(), world = expectedWorld,
                     role = session.IsServer() ? "server" : "client", max_bytes = MaxBytes,
                     coverage = "damage-and-heal-on-target-owner; nearby-snapshots-may-be-replicas" });
             }

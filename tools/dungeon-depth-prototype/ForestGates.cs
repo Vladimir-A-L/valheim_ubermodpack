@@ -24,6 +24,16 @@ internal static class ForestGates
             prefix: new HarmonyMethod(typeof(ForestGates), nameof(Damage)) { priority = Priority.First });
         harmony.Patch(AccessTools.Method(typeof(WearNTear), "RPC_Damage"),
             prefix: new HarmonyMethod(typeof(ForestGates), nameof(Damage)) { priority = Priority.First });
+        harmony.Patch(AccessTools.Method(typeof(ZDO), "Deserialize"),
+            postfix: new HarmonyMethod(typeof(ForestGates), nameof(Received)));
+    }
+
+    private static void Received(ZDO __instance)
+    {
+        // В 1.0.20 получение данных неподвижной двери от клиента не помечает chunk для записи.
+        // Без этого сервер видит открытие, но после перезапуска читает прежнее состояние двери.
+        if (ZNet.instance != null && ZNet.instance.IsServer() && __instance.GetBool(GateKey))
+            ZDOMan.instance.SetDirtySector(__instance);
     }
 
     private static ZDO? Gate(Component value)

@@ -7,13 +7,18 @@ internal static class ForestPlanChecks
     {
         for (int depth = 0; depth <= 16; depth++)
             check(ForestPlan.ModifierCount(depth) == 0, "Начальный участок без модификаторов");
-        for (int depth = 17; depth <= 40; depth++)
+        for (int depth = 17; depth <= 64; depth++)
         {
             int count = ForestPlan.ModifierCount(depth);
             check(count >= 1 && count <= 10, "Диапазон глубокой охраны");
             check(count - ForestPlan.ModifierCount(depth - 1) is 0 or 1, "Постепенное усиление");
         }
-        check(ForestPlan.ModifierCount(40) == 10, "Десять модификаторов на глубине 40");
+        check(ForestPlan.ModifierCount(40) == 5, "Вдвое более медленный рост до глубины 40");
+        check(ForestPlan.ModifierCount(59) == 9 && ForestPlan.ModifierCount(60) == 10 &&
+            ForestPlan.ModifierCount(64) == 10, "Предельная ступень начинается на глубине 60");
+        for (int count = 1; count <= 10; count++)
+            check(Enumerable.Range(17, 48).Count(d => ForestPlan.ModifierCount(d) == count) is 4 or 5,
+                "Каждая ступень занимает четыре-пять переходов");
         foreach (var (left, right) in new[] { (0, 1), (2, 3), (4, 5), (5, 6), (6, 7), (10, 11), (25, 26) })
             check(EncounterGates.Required(left, right), "Обязательное разделение ступеней");
         check(!EncounterGates.Required(1, 2) && !EncounterGates.Required(3, 4), "Младшие ступени попарно");
@@ -22,6 +27,20 @@ internal static class ForestPlanChecks
         densityRules = System.Text.Json.JsonSerializer.Deserialize<RewardRules>(
             File.ReadAllText("configs/dungeon-rewards.json"),
             new System.Text.Json.JsonSerializerOptions { IncludeFields = true })!;
+        decimal terminal = EncounterPlan.ForestTerminalBudget(densityRules);
+        check(terminal >= 175 && terminal <= 200, "Конечный бюджет в согласованном диапазоне");
+        check(densityRules.Budget(EncounterPlan.ForestSet(59), 0, false).Value < 175,
+            "До последней ступени нижний порог ещё не достигнут");
+        decimal divisor = densityRules.GrowthDivisor;
+        foreach (decimal outside in new[] { 10000m, 20m })
+        {
+            densityRules.GrowthDivisor = outside;
+            bool rejectedBudget = false;
+            try { EncounterPlan.ForestTerminalBudget(densityRules); }
+            catch (InvalidOperationException) { rejectedBudget = true; }
+            check(rejectedBudget, "Изменённые веса не выпускают данж вне конечного диапазона");
+        }
+        densityRules.GrowthDivisor = divisor;
         for (int seed = 0; seed < 30; seed++)
             check(EncounterPlan.Guards(densityRules, 0, true, false, seed, true) ==
                 EncounterPlan.Guards(densityRules, 0, true, false, seed) + 2, "Ровно две добавки у начальных ядер");
@@ -61,8 +80,13 @@ internal static class ForestPlanChecks
             check(a.Rooms.Where(r => r.ResourceCount == 0).All(r => r.RareGuardCount == 0),
                 "Редкая добавка только у ресурсов");
             check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 16), "Начальные ресурсы без усиления");
-            check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 2,
-                "Основной конец и арена на глубине 40");
+            check(a.Rooms.Count(r => r.Depth == 64 && !r.Template.Endcap) == 2,
+                "Основной конец и арена на глубине 64");
+            check(a.Rooms.Where(r => r.Branch == 0 && r.ChestCount > 0).Select(r => r.Depth)
+                .SequenceEqual(new[] { 8, 12, 16, 32, 48, 64 }),
+                "Удлинение сохраняет шесть основных комнат наград");
+            check(a.Rooms[a.Rooms.First(r => r.Branch == 1).Parent].Depth == 48,
+                "Отвод арены перенесён на глубину 48");
             var gated = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed, true);
             EncounterGates.Validate(gated);
             check(EncounterGates.Edges(gated).Any(e => gated.Rooms[e.B].Arena), "Вход арены закрыт");
@@ -83,7 +107,7 @@ internal static class ForestPlanChecks
             catch (InvalidOperationException) { badRare = true; }
             check(badRare, "Редкая добавка без ресурсной комнаты отвергается");
             empty.RareGuardCount = 0;
-            var deep = a.Rooms.FindIndex(r => r.Depth == 40 && !r.Template.Endcap);
+            var deep = a.Rooms.FindIndex(r => r.Depth == 64 && !r.Template.Endcap);
             a.Edges.Add((0, deep));
             bool rejected = false;
             try { ForestPlan.Validate(a); }
