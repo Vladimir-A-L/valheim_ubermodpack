@@ -105,6 +105,7 @@ internal static class ForestRuntime
 
     internal static void Install(Harmony harmony)
     {
+        ForestGates.Install(harmony);
         harmony.Patch(AccessTools.Method(typeof(DungeonGenerator), "GenerateDungeon"),
             prefix: new HarmonyMethod(typeof(ForestRuntime), nameof(Generate)));
         harmony.Patch(AccessTools.Method(typeof(ZNetView), "Awake"),
@@ -124,7 +125,8 @@ internal static class ForestRuntime
             Sockets = room.GetConnections().Select(c => new ForestPlan.Socket
             {
                 Position = P(c.transform.localPosition), Turn = Turn(c.transform.localRotation),
-                Entrance = c.m_entrance, Type = c.m_type
+                Entrance = c.m_entrance, Type = c.m_type, AllowDoor = c.m_allowDoor,
+                DoorRequiresBoth = c.m_doorOnlyIfOtherAlsoAllowsDoor
             }).ToArray() };
     }).ToArray();
 
@@ -137,7 +139,7 @@ internal static class ForestRuntime
             .GetValue(null)).ToDictionary(d => d.m_prefab.Name);
         var plan = ForestPlan.Create(Catalog(data.Values), P(__instance.transform.position),
             Turn(__instance.transform.rotation), P(__instance.m_zoneCenter), P(__instance.m_zoneSize),
-            __instance.m_generatedSeed);
+            __instance.m_generatedSeed, ForestGates.Enabled);
         string token = Guid.NewGuid().ToString("N");
         Active = __instance; Spawned.Clear(); LastPlan = null;
         try
@@ -159,11 +161,15 @@ internal static class ForestRuntime
                 var objects = Spawned.Skip(first).Where(v => v != null).ToList();
                 Populate(source.RoomInPrefab, r, token, i, plan.Seed, objects, mode);
             }
+            ForestGates.Place(__instance, plan, token);
             var zdo = Zdo(__instance);
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
-                schema = 3, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                schema = 4, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                stage_gates = plan.StageGates,
+                gates = plan.StageGates ? EncounterGates.Edges(plan).Select(e => new[] { e.A, e.B }).ToArray() :
+                    Array.Empty<int[]>(),
                 rooms = plan.Rooms.Select((r, i) => new { id = i, prefab = r.Template.Name,
                     position = new[] { r.Position.X, r.Position.Y, r.Position.Z }, turn = r.Turn,
                     depth = r.Depth, parent = r.Parent, endcap = r.Template.Endcap,
@@ -281,7 +287,7 @@ internal static class ForestRuntime
         var budget = GuardedChestReward.Rules.Budget(modifiers, 0, room.Depth <= ForestPlan.SafeDepth);
         bool planned = hasChest || room.ResourceCount > 0 || room.Arena;
         int desired = planned ? EncounterPlan.Guards(GuardedChestReward.Rules, budget.Value,
-            room.ResourceCount > 0, room.Arena, unchecked(seed * 397 ^ index)) : 0;
+            room.ResourceCount > 0, room.Arena, unchecked(seed * 397 ^ index), room.GuaranteedCores) : 0;
         var guards = new List<Character>();
         foreach (var view in objects.ToArray())
         {
@@ -317,6 +323,7 @@ internal static class ForestRuntime
         {
             PovBridge.AssignIds(guard, modifiers);
             TagObject(guard.GetComponent<ZNetView>(), token, index, room.Depth, "guard");
+            Zdo(guard).Set(CombatRecorder.EntityKey, Guid.NewGuid().ToString("N"));
         }
         int guardIndex = 0;
         foreach (var view in objects)

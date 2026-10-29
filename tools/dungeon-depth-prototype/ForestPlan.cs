@@ -31,6 +31,7 @@ public static class ForestPlan
         public Point Position;
         public int Turn;
         public bool Entrance;
+        public bool AllowDoor = true, DoorRequiresBoth;
         public string Type = "";
     }
 
@@ -67,6 +68,7 @@ public static class ForestPlan
         public List<Placement> Rooms = new List<Placement>();
         public int Seed, Attempts;
         public int BranchCount;
+        public bool StageGates;
         public List<(int A, int B)> Edges = new List<(int, int)>();
     }
 
@@ -78,11 +80,13 @@ public static class ForestPlan
         internal readonly Template Reward, Arena, Wall;
         internal readonly Point Center, Size;
         internal int Tries;
+        internal readonly bool StageGates;
         internal const int Limit = 100000;
 
-        internal Search(Template[] templates, int seed, Point center, Point size)
+        internal Search(Template[] templates, int seed, Point center, Point size, bool stageGates)
         {
             Random = new Random(seed); Center = center; Size = size;
+            StageGates = stageGates;
             Template Get(string name) => templates.Single(t => t.Name == name);
             Reward = Get("forestcrypt_room1");
             Arena = Get("forestcrypt_new_Burialchamber05");
@@ -149,6 +153,8 @@ public static class ForestPlan
                 if (!Fits(c)) continue;
                 c.Branch = branch;
                 c.Arena = arena && next == targetDepth;
+                if (StageGates && EncounterGates.Required(Rooms[parent], c) &&
+                    !EncounterGates.Fits(Rooms[parent], c.ParentSocket, c)) continue;
                 c.ChestCount = c.Arena ? 3 : c.Template == Reward ? 1 : 0;
                 int index = Rooms.Count;
                 Rooms.Add(c);
@@ -160,11 +166,11 @@ public static class ForestPlan
     }
 
     public static Layout Create(Template[] templates, Point entrance, int entranceTurn,
-        Point center, Point size, int seed)
+        Point center, Point size, int seed, bool stageGates = false)
     {
         for (int attempt = 0; attempt < MaxAttempts; attempt++)
         {
-            var search = new Search(templates, unchecked(seed + attempt * 104729), center, size);
+            var search = new Search(templates, unchecked(seed + attempt * 104729), center, size, stageGates);
             var start = templates.Single(t => t.Entrance);
             int entry = Array.FindIndex(start.Sockets, s => s.Entrance);
             int turn = (entranceTurn + 4 - start.Sockets[entry].Turn) % 4;
@@ -197,7 +203,7 @@ public static class ForestPlan
                 }
             if (!branches) continue;
             var result = new Layout { Seed = seed, Attempts = attempt + 1, Rooms = search.Rooms,
-                BranchCount = branchCount };
+                BranchCount = branchCount, StageGates = stageGates };
             AssignResources(result);
             result.Edges = result.Rooms.Select((r, i) => (r, i)).Where(x => x.r.Parent >= 0)
                 .Select(x => (x.r.Parent, x.i)).ToList();
@@ -266,5 +272,6 @@ public static class ForestPlan
         foreach (var (a, b) in layout.Edges)
             if (Math.Abs(ModifierCount(rooms[a].Depth) - ModifierCount(rooms[b].Depth)) > 1)
                 throw new InvalidOperationException("Скачок числа модификаторов");
+        if (layout.StageGates) EncounterGates.Validate(layout);
     }
 }

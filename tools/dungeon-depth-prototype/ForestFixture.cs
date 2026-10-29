@@ -85,6 +85,9 @@ internal sealed class ForestFixture : MonoBehaviour
             return PlayerState();
         }
         if (action == "snapshot") return Snapshot();
+        if (action == "gate-catalog") return ForestGates.Catalog();
+        if (action == "gate-probe") return ForestGates.Probe();
+        if (action == "combat-analysis-probe") return CombatAnalysisProbe.Run();
         if (action == "portals")
             return Object.FindObjectsByType<Teleport>(FindObjectsSortMode.None).Where(t => t.m_targetPoint != null)
                 .Select(t => new { position = V(t.transform.position), forward = V(t.transform.forward),
@@ -178,9 +181,12 @@ internal sealed class ForestFixture : MonoBehaviour
             .Select(z => new
             {
                 token = z.GetString(ForestRuntime.Tag), kind = z.GetString(ForestRuntime.KindKey),
+                entity = z.GetString(CombatRecorder.EntityKey),
                 room = z.GetInt(ForestRuntime.RoomKey), depth = z.GetInt(ForestRuntime.DepthKey),
                 position = V(z.GetPosition()), prefab = z.GetPrefab(), picked = z.GetBool(ZDOVars.s_picked),
                 mods = z.GetInt(PovBridge.ModsKey), reward = z.GetString(GuardedChestReward.StateKey),
+                gate_from = z.GetInt(ForestGates.FromKey, -1), gate_released = z.GetBool(ForestGates.ReleasedKey),
+                door_state = z.GetInt(ZDOVars.s_state),
                 inventory = Convert.ToBase64String(z.GetByteArray(ZDOVars.s_items) ?? Array.Empty<byte>())
             }).ToArray()
     };
@@ -230,7 +236,8 @@ internal sealed class ForestFixture : MonoBehaviour
                     decimal budget = GuardedChestReward.Rules.Budget(EncounterPlan.ForestSet(x.r.Depth), 0,
                         x.r.Depth <= ForestPlan.SafeDepth).Value;
                     int expected = EncounterPlan.Guards(GuardedChestReward.Rules, budget,
-                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i)) + x.r.RareGuardCount;
+                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i), x.r.GuaranteedCores) +
+                        x.r.RareGuardCount;
                     return guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i) == expected &&
                         guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i &&
                             Utils.GetPrefabName(g.gameObject) == "Ghost") == x.r.RareGuardCount &&
@@ -245,13 +252,17 @@ internal sealed class ForestFixture : MonoBehaviour
                     .Distinct().Count();
                 bool quota = actualResourceRooms >= 2 && actualResourceRooms <= 4 &&
                     actualResourceRooms == layout.Rooms.Count(r => r.ResourceCount > 0);
+                int gates = views.Count(v => v.IsValid() && v.GetZDO().GetBool(ForestGates.GateKey));
+                bool gateMatch = !layout.StageGates || gates == EncounterGates.Edges(layout).Length &&
+                    ForestGates.CheckClosedColliders();
                 bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 &&
-                    repeat && density && quota;
+                    repeat && density && quota && gateMatch;
                 results.Add(new { seed, passed, rooms = rooms.Length, open_sockets = open,
                     max_depth = layout.Rooms.Max(r => r.Depth), early_core_pickables = earlyCores,
                     guards = guards.Length, chests = chests.Length, depth_match = depthMatch,
                     guard_match = guardMatch, reward_match = rewardMatch, repeat_matches = repeat,
                     density_match = density, resource_quota_match = quota, branches = layout.BranchCount,
+                    gates, gate_match = gateMatch,
                     rare_guards = guards.Count(g => Utils.GetPrefabName(g.gameObject) == "Ghost"),
                     resource_rooms = layout.Rooms.Count(r => r.ResourceCount > 0),
                     arena_guards = guards.Count(g => layout.Rooms[ForestRuntime.Zdo(g)

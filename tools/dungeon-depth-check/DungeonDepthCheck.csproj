@@ -11,6 +11,7 @@
     <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />
     <Compile Include="../dungeon-depth-prototype/ForestPlan.cs" Link="ForestPlan.cs" />
     <Compile Include="../dungeon-depth-prototype/EncounterPlan.cs" Link="EncounterPlan.cs" />
+    <Compile Include="../dungeon-depth-prototype/EncounterGates.cs" Link="EncounterGates.cs" />
     <Compile Include="../dungeon-depth-prototype/ManualDeathCounter.cs" Link="ManualDeathCounter.cs" />
     <Compile Include="../dungeon-depth-prototype/ManualLedger.cs" Link="ManualLedger.cs" />
   </ItemGroup>

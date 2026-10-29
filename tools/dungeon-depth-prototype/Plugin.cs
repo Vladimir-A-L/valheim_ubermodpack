@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.6.1")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.7.0")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -49,7 +49,7 @@ public sealed class Plugin : BaseUnityPlugin
             if (session == null || session != ZNet.instance || !Ready(expectedWorld)) continue;
             var report = new Dictionary<string, object>
             {
-                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.6.1",
+                ["observed_at_utc"] = DateTime.UtcNow.ToString("O"), ["prototype_version"] = "0.7.0",
                 ["phase"] = phase, ["scope"] = probe ? "headless-real-container-probe" : "runtime-initialization",
                 ["gameplay_accepted"] = false, ["two_client_tested"] = false
             };
@@ -65,6 +65,7 @@ public sealed class Plugin : BaseUnityPlugin
                 EpicLootBridge.Verify();
                 EpicLootBridge.Install(harmony!);
                 PovBridge.Install(harmony!);
+                CombatRecorder.Install(gameObject, harmony!, expectedWorld);
                 GuardedChestReward.Install(harmony!);
                 if (Config.Bind("ForestCrypt", "Enabled", false,
                         "Полный лесной профиль только в отдельном ExpectedWorld.").Value)
@@ -99,6 +100,7 @@ public sealed class Plugin : BaseUnityPlugin
                 yield return new WaitForSeconds(1);
             if (fixture != null) Destroy(fixture);
             if (forestFixture != null) Destroy(forestFixture);
+            CombatRecorder.Close();
             harmony?.UnpatchSelf();
             if (Config.Bind("ForestCrypt", "Enabled", false).Value)
                 ForestRuntime.InstallTransforms(harmony!, expectedWorld);
@@ -113,6 +115,7 @@ public sealed class Plugin : BaseUnityPlugin
 
     private void OnDestroy()
     {
+        CombatRecorder.Close();
         harmony?.UnpatchSelf();
         NavigationProfile.Uninstall();
     }

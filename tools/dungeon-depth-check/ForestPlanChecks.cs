@@ -14,6 +14,17 @@ internal static class ForestPlanChecks
             check(count - ForestPlan.ModifierCount(depth - 1) is 0 or 1, "Постепенное усиление");
         }
         check(ForestPlan.ModifierCount(40) == 10, "Десять модификаторов на глубине 40");
+        foreach (var (left, right) in new[] { (0, 1), (2, 3), (4, 5), (5, 6), (6, 7), (10, 11), (25, 26) })
+            check(EncounterGates.Required(left, right), "Обязательное разделение ступеней");
+        check(!EncounterGates.Required(1, 2) && !EncounterGates.Required(3, 4), "Младшие ступени попарно");
+        check(EncounterGates.Required(10, 10, false, true), "Арена отделена даже при одинаковом усилении");
+        var densityRules = new RewardRules();
+        densityRules = System.Text.Json.JsonSerializer.Deserialize<RewardRules>(
+            File.ReadAllText("configs/dungeon-rewards.json"),
+            new System.Text.Json.JsonSerializerOptions { IncludeFields = true })!;
+        for (int seed = 0; seed < 30; seed++)
+            check(EncounterPlan.Guards(densityRules, 0, true, false, seed, true) ==
+                EncounterPlan.Guards(densityRules, 0, true, false, seed) + 2, "Ровно две добавки у начальных ядер");
         // Искусственные комнаты для проверки алгоритма; это не выгрузка игровых ресурсов.
         ForestPlan.Socket Socket(float x, float z, int turn, bool entrance = false) =>
             new() { Position = new Point(x, 0, z), Turn = turn, Entrance = entrance };
@@ -50,7 +61,21 @@ internal static class ForestPlanChecks
             check(a.Rooms.Where(r => r.ResourceCount == 0).All(r => r.RareGuardCount == 0),
                 "Редкая добавка только у ресурсов");
             check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 16), "Начальные ресурсы без усиления");
-            check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 2, "Основной конец и арена на глубине 40");
+            check(a.Rooms.Count(r => r.Depth == 40 && !r.Template.Endcap) == 2,
+                "Основной конец и арена на глубине 40");
+            var gated = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed, true);
+            EncounterGates.Validate(gated);
+            check(EncounterGates.Edges(gated).Any(e => gated.Rooms[e.B].Arena), "Вход арены закрыт");
+            check(EncounterGates.Edges(gated).Any(e => gated.Rooms[e.A].Depth == 16),
+                "Граница нулевых свойств закрыта");
+            var blocked = EncounterGates.Edges(gated).First();
+            var socket = gated.Rooms[blocked.A].Template.Sockets[gated.Rooms[blocked.B].ParentSocket];
+            bool allowed = socket.AllowDoor; socket.AllowDoor = false;
+            bool refusedDoor = false;
+            try { EncounterGates.Validate(gated); }
+            catch (InvalidOperationException) { refusedDoor = true; }
+            socket.AllowDoor = allowed;
+            check(refusedDoor, "Непригодный для двери обязательный стык отвергается");
             var empty = a.Rooms.First(r => !r.Template.Endcap && r.ResourceCount == 0);
             empty.RareGuardCount = 1;
             bool badRare = false;
