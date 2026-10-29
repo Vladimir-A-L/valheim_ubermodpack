@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "scope": "isolated-six-miniboss-trials",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "unchanged_dependencies": [
+    "forest-gated-080-20261029.lock.json"
+  ],
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.9.0",
+    "dll_sha256": "15f6a7914a82a1e02ce42161396fa049e93fd945f06ff10631c09bcbb1969045"
+  },
+  "configuration": {
+    "configs/miniboss-trial/README.txt": "4556f7ac103f1fe577a8cb37b16f8979f3f43a387afa3eddd64d780b9118ec76",
+    "configs/miniboss-trial/candidate.cfg": "f9d3ab6ef7323277d73c790332ffdd2277feabbf2106c06a326eb02679457381",
+    "configs/miniboss-trial/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/miniboss-trial/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/miniboss-trial/forest-manual-test.json": "e87130c65ce3a749723c044fdf1b1bb06db2082e0009a1f5a8d0c7fb8c1336cc"
+  },
+  "preparation_id": "miniboss-090",
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.9.0.zip",
+    "sha256": "8e874b87007710c30ee47afacf965cc7e41e91d15c524f3dafca3ecbbf649e0e",
+    "bytes": 1052180,
+    "payload_files": 10,
+    "dll_sha256": "15f6a7914a82a1e02ce42161396fa049e93fd945f06ff10631c09bcbb1969045"
+  },
+  "trial": {
+    "count": 6,
+    "bosses": [
+      "Skeleton",
+      "Ghost"
+    ],
+    "initial_helpers": [
+      0,
+      1,
+      2
+    ],
+    "helper_prefabs": [
+      "Ghost",
+      "Skeleton",
+      "Skeleton_Poison"
+    ],
+    "helper_weights": [
+      1,
+      1,
+      1
+    ],
+    "random_modifiers_per_trial": 10,
+    "different_sets": true,
+    "model_scale": 1.8,
+    "health_factor": 12,
+    "damage_factor": 5,
+    "combat_profile_depth": 64,
+    "physical_depth": 5,
+    "branches": 1,
+    "room": "forestcrypt_new_BurialChamber02",
+    "minimum_measured_clear_width": 5.5,
+    "reward_items": 2,
+    "reward_quality": "Mythic",
+    "gold_inclusive": [
+      300,
+      900
+    ],
+    "normal_generation_enabled": false
+  },
+  "checks": {
+    "model_assertions": 28967,
+    "tool_tests": 44,
+    "native_multiplier_comparisons": 18,
+    "client_gameplay_acceptance": false,
+    "native_door_removal": true,
+    "rune_read_preserves_points": true,
+    "client_door_crossing": true,
+    "final_clean_world_restart": true,
+    "prepared_profile_preserved": true,
+    "installer_and_backup_restore": true,
+    "previous_release_rollback": true
+  },
+  "observed_at_utc": "2026-10-29T22:19:50.993575+00:00"
+}

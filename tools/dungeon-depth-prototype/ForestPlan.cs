@@ -8,6 +8,7 @@ namespace DungeonDepthPrototype;
 public static class ForestPlan
 {
     public const int SafeDepth = 16, MaxDepth = 64, ArenaBranchDepth = 48;
+    public const string TrialArena = "forestcrypt_new_BurialChamber02";
     private const int GrowthDepth = MaxDepth - SafeDepth;
     private const int MaxAttempts = 4096;
     public static int ModifierCount(int depth) => depth <= SafeDepth ? 0 :
@@ -88,13 +89,14 @@ public static class ForestPlan
         internal readonly bool StageGates;
         internal const int Limit = 100000;
 
-        internal Search(Template[] templates, int seed, Point center, Point size, bool stageGates)
+        internal Search(Template[] templates, int seed, Point center, Point size, bool stageGates,
+            string arena = "forestcrypt_new_Burialchamber05")
         {
             Random = new Random(seed); Center = center; Size = size;
             StageGates = stageGates;
             Template Get(string name) => templates.Single(t => t.Name == name);
             Reward = Get("forestcrypt_room1");
-            Arena = Get("forestcrypt_new_Burialchamber05");
+            Arena = Get(arena);
             Wall = Get("forestcrypt_EndCap");
             var names = new HashSet<string> { "forestcrypt_Corridor1", "forestcrypt_Corridor2",
                 "forestcrypt_Bend1", "forestcrypt_Bend2", "forestcrypt_Stairs1" };
@@ -216,6 +218,43 @@ public static class ForestPlan
             return result;
         }
         throw new InvalidOperationException($"Не удалось разместить полный лесной профиль за {MaxAttempts} попыток");
+    }
+
+    // Короткий стенд боя: один основной тупик и ровно одно ответвление к залу босса.
+    // Физическая глубина не выдаётся за глубину боевого профиля испытания.
+    public static Layout CreateTrial(Template[] templates, Point entrance, int entranceTurn,
+        Point center, Point size, int seed)
+    {
+        for (int attempt = 0; attempt < 256; attempt++)
+        {
+            var search = new Search(templates, unchecked(seed + attempt * 104729), center, size, false, TrialArena);
+            var start = templates.Single(t => t.Entrance);
+            int entry = Array.FindIndex(start.Sockets, s => s.Entrance);
+            int turn = (entranceTurn + 4 - start.Sockets[entry].Turn) % 4;
+            var first = new Placement { Template = start, Turn = turn, InSocket = entry,
+                Position = entrance - start.Sockets[entry].Position.Rotate(turn) };
+            if (!search.Fits(first)) continue;
+            search.Rooms.Add(first);
+            if (!search.Extend(0, 2, 0)) continue;
+            int junction = search.Rooms.FindIndex(r => r.Depth == 2);
+            if (!search.Extend(junction, 5, 1, true) || !search.Extend(junction, 3, 0)) continue;
+            bool fits = true;
+            for (int i = 0; i < search.Rooms.Count; i++)
+                foreach (int socket in search.FreeSockets(i).ToArray())
+                {
+                    var cap = search.Attach(i, socket, search.Wall, 0);
+                    if (!search.Fits(cap)) { fits = false; break; }
+                    search.Rooms.Add(cap);
+                }
+            if (!fits) continue;
+            foreach (var room in search.Rooms) room.ChestCount = 0;
+            var layout = new Layout { Seed = seed, Attempts = attempt + 1, BranchCount = 1,
+                Rooms = search.Rooms };
+            layout.Edges = layout.Rooms.Select((r, i) => (r, i)).Where(x => x.r.Parent >= 0)
+                .Select(x => (x.r.Parent, x.i)).ToList();
+            return layout;
+        }
+        throw new InvalidOperationException("Не удалось разместить склеп испытания");
     }
 
     private static void AssignResources(Layout layout)

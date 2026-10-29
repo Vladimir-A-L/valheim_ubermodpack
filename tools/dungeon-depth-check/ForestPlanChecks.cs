@@ -61,10 +61,37 @@ internal static class ForestPlanChecks
             Room("forestcrypt_new_BurialChamber01", n), Room("forestcrypt_room1", n, s, w, e),
             Room("forestcrypt_Corridor1", n, s, w), Room("forestcrypt_Corridor2", n, s, e),
             Room("forestcrypt_Bend1", n, w), Room("forestcrypt_Bend2", n, e),
-            Room("forestcrypt_Stairs1", n, s), Room("forestcrypt_new_Burialchamber05", n, s) };
+            Room("forestcrypt_Stairs1", n, s), Room("forestcrypt_new_Burialchamber05", n, s),
+            Room(ForestPlan.TrialArena, n, s) };
         string Fingerprint(ForestPlan.Layout layout) => string.Join(";", layout.Rooms.Select(r =>
             FormattableString.Invariant($"{r.Template.Name}:{r.Position.X},{r.Position.Y},{r.Position.Z}:{r.Turn}") +
             $":{r.ResourceCount}:{r.RareGuardCount}"));
+        for (int seed = 0; seed < 100; seed++)
+        {
+            var trial = ForestPlan.CreateTrial(templates, new Point(0, 0, -1), 0,
+                new Point(0, 0, 0), new Point(64, 64, 64), seed);
+            check(trial.BranchCount == 1 && trial.Rooms.Count(r => r.Arena) == 1,
+                "Одна ветвь с одним боссом");
+            check(trial.Rooms.Single(r => r.Arena).Depth == 5 && trial.Rooms.Max(r => r.Depth) == 5,
+                "Короткая проба явно имеет глубину 5");
+            check(trial.Rooms.All(r => r.ResourceCount == 0 && r.ChestCount == 0 && r.RareGuardCount == 0),
+                "Проба не наследует ресурсную охрану и сундуки");
+            var depths = DungeonGeometryProbe.RoomGraph.Distances(trial.Rooms.Count, trial.Edges, 0);
+            for (int i = 0; i < trial.Rooms.Count; i++)
+            {
+                var room = trial.Rooms[i];
+                check(room.Depth == (room.Template.Endcap ? depths[room.Parent] : depths[i]),
+                    "Кратчайшая глубина пробного склепа");
+                for (int socket = 0; socket < room.Template.Sockets.Length; socket++)
+                    if (!room.Template.Sockets[socket].Entrance)
+                        check((room.InSocket == socket ? 1 : 0) +
+                            trial.Rooms.Count(r => r.Parent == i && r.ParentSocket == socket) == 1,
+                            "Каждый стык пробного склепа закрыт ровно один раз");
+            }
+            check(Fingerprint(trial) == Fingerprint(ForestPlan.CreateTrial(templates,
+                new Point(0, 0, -1), 0, new Point(0, 0, 0), new Point(64, 64, 64), seed)),
+                "Воспроизводимость короткого склепа");
+        }
         foreach (int seed in new[] { 0, 1, 1001, 1002, 1003, 1004, 1005, 1006 })
         {
             var center = new Point(64, 5000, -128);

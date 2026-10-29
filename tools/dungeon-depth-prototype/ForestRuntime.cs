@@ -138,7 +138,10 @@ internal static class ForestRuntime
         decimal terminalBudget = EncounterPlan.ForestTerminalBudget(GuardedChestReward.Rules);
         var data = ((List<DungeonDB.RoomData>)AccessTools.Field(typeof(DungeonGenerator), "m_availableRooms")
             .GetValue(null)).ToDictionary(d => d.m_prefab.Name);
-        var plan = ForestPlan.Create(Catalog(data.Values), P(__instance.transform.position),
+        bool trial = MiniBossTrial.Enabled && Zdo(__instance).GetInt(MiniBossTrial.IndexKey, -1) >= 0;
+        var plan = trial ? ForestPlan.CreateTrial(Catalog(data.Values), P(__instance.transform.position),
+            Turn(__instance.transform.rotation), P(__instance.m_zoneCenter), P(__instance.m_zoneSize),
+            __instance.m_generatedSeed) : ForestPlan.Create(Catalog(data.Values), P(__instance.transform.position),
             Turn(__instance.transform.rotation), P(__instance.m_zoneCenter), P(__instance.m_zoneSize),
             __instance.m_generatedSeed, ForestGates.Enabled);
         string token = Guid.NewGuid().ToString("N");
@@ -160,15 +163,18 @@ internal static class ForestRuntime
                 var room = (Room)Place.Invoke(__instance, new object?[] { source, position, rotation, from, mode });
                 placed.Add(room);
                 var objects = Spawned.Skip(first).Where(v => v != null).ToList();
-                Populate(source.RoomInPrefab, r, token, i, plan.Seed, objects, mode);
+                if (trial) MiniBossTrial.ClearNative(objects);
+                else Populate(source.RoomInPrefab, r, token, i, plan.Seed, objects, mode);
             }
-            ForestGates.Place(__instance, plan, token);
+            if (trial) MiniBossTrial.Populate(__instance, plan, token);
+            else ForestGates.Place(__instance, plan, token);
             var zdo = Zdo(__instance);
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
                 schema = 5, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
-                max_depth = ForestPlan.MaxDepth, safe_depth = ForestPlan.SafeDepth,
+                max_depth = trial ? 5 : ForestPlan.MaxDepth, safe_depth = trial ? 0 : ForestPlan.SafeDepth,
+                miniboss_trial = trial, combat_profile_depth = trial ? 64 : 0,
                 terminal_budget = terminalBudget,
                 stage_gates = plan.StageGates,
                 gates = plan.StageGates ? EncounterGates.Edges(plan).Select(e => new[] { e.A, e.B }).ToArray() :
@@ -187,7 +193,8 @@ internal static class ForestRuntime
                 edges = plan.Edges.Select(e => new[] { e.A, e.B })
             }));
             LastPlan = plan;
-            Plugin.LogInfo($"FOREST_GENERATED seed={plan.Seed} rooms={plan.Rooms.Count} depth={ForestPlan.MaxDepth}");
+            Plugin.LogInfo($"FOREST_GENERATED seed={plan.Seed} rooms={plan.Rooms.Count} " +
+                $"depth={plan.Rooms.Max(r => r.Depth)} trial={trial}");
         }
         catch
         {

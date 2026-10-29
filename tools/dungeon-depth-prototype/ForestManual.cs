@@ -14,6 +14,7 @@ internal sealed class ForestManual : MonoBehaviour
     {
         public bool Enabled = false, Record = false, StartFullOnce = false, AutoPrepareOnce = false;
         public bool ResetInventory = false;
+        public bool ResetPov = false;
         public string PreparationId = "v1";
         public float StartYaw = 180;
         public string PlayerName = "RewardQA";
@@ -140,6 +141,11 @@ internal sealed class ForestManual : MonoBehaviour
                     $"по высоте {offset.y:F1} м");
             if (settings.ResetInventory || !player.m_customData.ContainsKey(ForestLoadout.Key))
                 ForestLoadout.Grant(player, settings.ResetInventory);
+            if (settings.ResetPov)
+            {
+                PovRespec.Refund();
+                player.Heal(player.GetMaxHealth(), false);
+            }
             player.m_customData[PreparedKey] = DateTime.UtcNow.ToString("O");
             Game.instance.SavePlayerProfile(true);
             Record("preparation-complete", new { god = player.InGodMode(), ghost = player.InGhostMode(),

@@ -48,6 +48,9 @@ internal sealed class ForestFixture : MonoBehaviour
     private object Execute(JObject command)
     {
         string action = command.Value<string>("action") ?? "";
+        if (action.StartsWith("miniboss-", StringComparison.Ordinal)) return MiniBossTrial.Execute(command);
+        if (action == "pov-status") return PovRespec.Status();
+        if (action == "pov-refund") return PovRespec.Refund();
         if (action == "loadout-check") return ForestLoadout.Validate();
         if (action == "navigation-status")
         {

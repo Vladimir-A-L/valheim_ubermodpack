@@ -4,7 +4,7 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>DungeonDepthPrototype</AssemblyName>
-    <Version>0.8.0</Version>
+    <Version>0.9.0</Version>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../.local/server-gameplay</GameDir>
   </PropertyGroup>
   <ItemGroup>
@@ -17,6 +17,8 @@
                HintPath="$(GameDir)/valheim_server_Data/Managed/assembly_valheim.dll" Private="false" />
     <Reference Include="assembly_utils"
                HintPath="$(GameDir)/valheim_server_Data/Managed/assembly_utils.dll" Private="false" />
+    <Reference Include="assembly_guiutils"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/assembly_guiutils.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule"
                HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.CoreModule.dll" Private="false" />
     <Reference Include="UnityEngine"
