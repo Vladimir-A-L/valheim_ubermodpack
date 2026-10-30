@@ -4,8 +4,8 @@
   "StartFullOnce": true,
   "AutoPrepareOnce": true,
   "ResetInventory": true,
-  "ResetPov": true,
-  "PreparationId": "miniboss-090",
+  "ResetPov": false,
+  "PreparationId": "miniboss-092",
   "PlayerName": "Drug",
   "StartPosition": [
     2048,

@@ -14,5 +14,6 @@
     <Compile Include="../dungeon-depth-prototype/EncounterGates.cs" Link="EncounterGates.cs" />
     <Compile Include="../dungeon-depth-prototype/ManualDeathCounter.cs" Link="ManualDeathCounter.cs" />
     <Compile Include="../dungeon-depth-prototype/ManualLedger.cs" Link="ManualLedger.cs" />
+    <Compile Include="../dungeon-depth-prototype/MiniBossRules.cs" Link="MiniBossRules.cs" />
   </ItemGroup>
 </Project>

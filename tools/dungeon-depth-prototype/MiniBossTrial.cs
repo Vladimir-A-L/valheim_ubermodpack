@@ -9,7 +9,7 @@ using Object = UnityEngine.Object;
 
 namespace DungeonDepthPrototype;
 
-// Шесть явно создаваемых опытов. Короткая геометрия не меняет обычный профиль глубины.
+// Четыре явно создаваемых опыта. Короткая геометрия не меняет обычный профиль глубины.
 internal static class MiniBossTrial
 {
     internal const string IndexKey = "uberdungeon.miniboss.trial";
@@ -29,7 +29,7 @@ internal static class MiniBossTrial
             throw new InvalidOperationException("Площадка вне высотного диапазона штатной навигации");
     }
     internal static bool Enabled => Plugin.Instance.Config.Bind("MiniBossTrial", "Enabled", false,
-        "Шесть склепов только для изолированного ручного испытания.").Value;
+        "Четыре склепа только для изолированного ручного испытания.").Value;
     internal static bool Ready => Enabled && ZNet.instance != null && ZNetScene.instance != null &&
         ZNet.instance.GetWorldName() == "ForestCryptQA" && PovBridge.Assembly != null;
     private static readonly string[] FirstNames = { "Харальд", "Эйрик", "Ульф", "Бьёрн", "Ивар", "Сигурд",
@@ -297,7 +297,7 @@ internal static class MiniBossTrial
         for (int z = -12; z <= 12; z += 2)
         foreach (int x in new[] { -17, 17 })
             Spawn("stone_wall_2x1", Hub + new Vector3(x, .5f, z), Quaternion.Euler(0, 90, 0), "parapet");
-        for (int i = 0; i < 6; i++)
+        for (int i = 0; i < MiniBossRules.TrialCount; i++)
         {
             // Кратность 64 сохраняет положение входа относительно штатной границы зоны.
             var entrance = Hub + new Vector3(192 + i * 128, 0, 0);
@@ -314,13 +314,13 @@ internal static class MiniBossTrial
             var inside = slots.OrderBy(p => Vector3.Distance(p, entrance)).First();
             string tag = "Испытание " + (i + 1);
             Portal(inside, Quaternion.identity, tag);
-            var hubPortal = Hub + new Vector3(-10 + (i % 3) * 10, .5f, i < 3 ? 6 : -6);
-            Portal(hubPortal, Quaternion.Euler(0, i < 3 ? 180 : 0, 0), tag);
+            var hubPortal = Hub + new Vector3(-7 + (i % 2) * 14, .5f, i < 2 ? 6 : -6);
+            Portal(hubPortal, Quaternion.Euler(0, i < 2 ? 180 : 0, 0), tag);
             var sign = Spawn("sign", hubPortal + new Vector3(2, 1.2f, 0),
-                Quaternion.Euler(0, i < 3 ? 180 : 0, 0), "sign");
+                Quaternion.Euler(0, i < 2 ? 180 : 0, 0), "sign");
             string species = i % 2 == 0 ? "Скелет" : "Призрак";
             MiniBossRuntime.Data(sign.transform)!.Set(ZDOVars.s_text,
-                $"{i + 1}. {species}\nПомощников: {i / 2}\n10 свойств · ×1,8");
+                $"{i + 1}. {species}\nПомощников: {MiniBossRules.TrialHelpers(i)}\n10 свойств · ×1,8");
         }
         return Status();
     }
@@ -405,7 +405,7 @@ internal static class MiniBossTrial
         var pool = Pool(); var random = new System.Random(unchecked(seed ^ 0x5f3759df));
         var assistants = new List<string>(); var occupied = new List<Vector3> { bossPosition };
         var helperSlots = Slots(room, .45f, 2.2f).OrderBy(p => Vector3.Distance(p, bossPosition)).ToArray();
-        for (int i = 0; i < index / 2; i++)
+        for (int i = 0; i < MiniBossRules.TrialHelpers(index); i++)
         {
             var choices = helperSlots.Where(p => occupied.All(v => Vector3.Distance(p, v) > 2.2f)).ToArray();
             if (choices.Length == 0) throw new InvalidOperationException("Нет места для помощника");
@@ -468,7 +468,9 @@ internal static class MiniBossTrial
             modifiers, assistants, pool, combat_depth = 64, physical_depth = 5,
             boss_position = new[] { bossPosition.x, bossPosition.y, bossPosition.z },
             door_position = new[] { doorPosition.x, doorPosition.y, doorPosition.z },
-            room = room.Template.Name, clear_width = clearWidth, scale = 1.8, health = 12, damage = 5,
+            room = room.Template.Name, clear_width = clearWidth, scale = 1.8,
+            health = MiniBossRules.HealthFactor, damage = MiniBossRules.DamageFactor,
+            helper_chance_percent = MiniBossRules.HelperChancePercent, forced_test_variant = true,
             rune_check = runeCheck }));
     }
 
@@ -557,10 +559,11 @@ internal static class MiniBossTrial
                 }
                 float normalLoss = Hit(normal), bossLoss = Hit(boss);
                 PovBridge.Method("PassiveTree.EnemyDifficulty", "Ensure").Invoke(null, new object[] { boss });
-                bool passed = Math.Abs(bossMax / normalMax - 12) < .001 &&
-                    Math.Abs(bossDamage / normalDamage - 5) < .001 &&
-                    Math.Abs(bossWard - 12 * normalWard) < .01 && Math.Abs(boss.GetMaxHealth() - bossMax) < .01 &&
-                    normalLoss > 0 && Math.Abs(bossLoss / normalLoss - 5) < .01;
+                bool passed = Math.Abs(bossMax / normalMax - MiniBossRules.HealthFactor) < .001 &&
+                    Math.Abs(bossDamage / normalDamage - MiniBossRules.DamageFactor) < .001 &&
+                    Math.Abs(bossWard - MiniBossRules.HealthFactor * normalWard) < .01 &&
+                    Math.Abs(boss.GetMaxHealth() - bossMax) < .01 && normalLoss > 0 &&
+                    Math.Abs(bossLoss / normalLoss - MiniBossRules.DamageFactor) < .01;
                 rows.Add(new { prefab, modifiers, normalMax, bossMax, normalWard, bossWard,
                     normalDamage, bossDamage, normalLoss, bossLoss, passed });
                 if (!passed) throw new InvalidOperationException("Множители не прошли контроль " + prefab);

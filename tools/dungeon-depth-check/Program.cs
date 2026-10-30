@@ -102,6 +102,14 @@ Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1),
 ForestPlanChecks.Run(Check);
 IntervalChecks.Run(Check);
 ManualLedgerChecks.Run(Check);
+var helperOutcomes = Enumerable.Range(0, 100).Select(MiniBossRules.Helpers).ToArray();
+Check(helperOutcomes.Count(n => n == 0) == 85 && helperOutcomes.Count(n => n == 1) == 15,
+    "Мини-босс: 85% без помощника, 15% с одним; два помощника исключены");
+Check(Enumerable.Range(0, MiniBossRules.TrialCount).Select(MiniBossRules.TrialHelpers)
+    .SequenceEqual(new[] { 0, 0, 1, 1 }), "Четыре пробы покрывают оба вида и оба числа помощников");
+Refuses(() => MiniBossRules.Helpers(-1), "Отрицательный бросок помощника");
+Refuses(() => MiniBossRules.Helpers(100), "Верхняя граница броска помощника исключена");
+Refuses(() => MiniBossRules.TrialHelpers(4), "Пятая проба с двумя помощниками исключена");
 Check(ManualDeathCounter.ReachedFloor(100, 1), "First conditional death");
 Check(!ManualDeathCounter.ReachedFloor(1, 1), "Hits at floor do not add deaths");
 Check(!ManualDeathCounter.ReachedFloor(1, 8), "Healing is not a death");

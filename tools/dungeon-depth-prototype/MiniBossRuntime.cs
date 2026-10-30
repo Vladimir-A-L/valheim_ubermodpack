@@ -39,7 +39,7 @@ internal sealed class MiniBossRuntime : MonoBehaviour
 
     private static void Factor(Character c, bool hp, ref float __result)
     {
-        if (IsBoss(c)) __result *= hp ? 12f : 5f;
+        if (IsBoss(c)) __result *= hp ? MiniBossRules.HealthFactor : MiniBossRules.DamageFactor;
     }
 
     private static bool Wear(WearNTear __instance) =>
