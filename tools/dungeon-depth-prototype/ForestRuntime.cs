@@ -133,9 +133,17 @@ internal static class ForestRuntime
     private static bool Generate(DungeonGenerator __instance, ZoneSystem.SpawnMode mode)
     {
         if (Utils.GetPrefabName(__instance.gameObject) != "DG_ForestCrypt") return true;
+        bool isolated = Zdo(__instance).GetBool(MiniBossConnection.CandidateKey);
+        bool legacyTrial = Zdo(__instance).GetInt(MiniBossTrial.IndexKey, -1) >= 0 && MiniBossTrial.Enabled;
+        if (!isolated && !legacyTrial && !Plugin.Instance.Config.Bind("ForestCrypt", "IntegratedEncounters", false,
+                "Создание соединённых данжей вне явно вызванного кандидата.").Value) return true;
         if (!ZNet.instance.IsServer() || mode == ZoneSystem.SpawnMode.Client)
             throw new InvalidOperationException("Генерация полного лесного профиля требует сервера");
-        decimal terminalBudget = EncounterPlan.ForestTerminalBudget(GuardedChestReward.Rules);
+        if (Zdo(__instance).GetString(LayoutKey).Length > 0)
+            throw new InvalidOperationException("Сохранённый данж нельзя перестраивать генерацией");
+        int routeLength = Plugin.Instance.Config.Bind("ForestCrypt", "RouteLength", ForestPlan.MaxDepth,
+            "Длина основного маршрута нового кандидата, отдельно от шкалы сложности.").Value;
+        decimal terminalBudget = EncounterPlan.ForestTerminalBudget(GuardedChestReward.Rules, routeLength);
         var data = ((List<DungeonDB.RoomData>)AccessTools.Field(typeof(DungeonGenerator), "m_availableRooms")
             .GetValue(null)).ToDictionary(d => d.m_prefab.Name);
         bool trial = MiniBossTrial.Enabled && Zdo(__instance).GetInt(MiniBossTrial.IndexKey, -1) >= 0;
@@ -143,22 +151,41 @@ internal static class ForestRuntime
             Turn(__instance.transform.rotation), P(__instance.m_zoneCenter), P(__instance.m_zoneSize),
             __instance.m_generatedSeed) : ForestPlan.Create(Catalog(data.Values), P(__instance.transform.position),
             Turn(__instance.transform.rotation), P(__instance.m_zoneCenter), P(__instance.m_zoneSize),
-            __instance.m_generatedSeed, ForestGates.Enabled);
+            __instance.m_generatedSeed, ForestGates.Enabled, routeLength);
         string token = Guid.NewGuid().ToString("N");
         Active = __instance; Spawned.Clear(); LastPlan = null;
         try
         {
-            var placed = new List<Room>();
+            var placed = new List<Room?>();
+            GameObject? section = null;
             for (int i = 0; i < plan.Rooms.Count; i++)
             {
                 var r = plan.Rooms[i];
+                if (r.MiniBoss)
+                {
+                    int encounterSeed = unchecked(plan.Seed * 397 ^ i);
+                    var encounter = MiniBossEncounter.Create(encounterSeed, r.CombatDepth,
+                        GuardedChestReward.Rules, MiniBossTrial.Name(encounterSeed));
+                    section = MiniBossArenaSection.Create(V(r.Position), Quaternion.Euler(0, r.Turn * 90, 0),
+                        encounter, token, i);
+                    var parent = plan.Rooms[r.Parent];
+                    string link = JsonConvert.SerializeObject(new MiniBossLink {
+                        Seed = encounterSeed, Depth = r.CombatDepth, Room = r.Parent, Socket = r.ParentSocket,
+                        Turn = r.Turn, Token = token, ParentPrefab = parent.Template.Name,
+                        ParentPosition = ForestFixture.V(V(parent.Position)),
+                        Origin = ForestFixture.V(V(r.Position)) });
+                    var rootData = Zdo(section.transform); var generatorData = Zdo(__instance);
+                    rootData.Set(MiniBossConnection.LinkKey, link);
+                    generatorData.Set(MiniBossConnection.LinkKey, link);
+                    placed.Add(null); continue;
+                }
                 var source = data[r.Template.Name];
                 var position = V(r.Position); var rotation = Quaternion.Euler(0, r.Turn * 90, 0);
                 if (r.Template.Size.X > 0 && r.Template.Size.Z > 0 &&
                     (bool)AccessTools.Method(typeof(DungeonGenerator), "TestCollision").Invoke(__instance,
                         new object[] { source.RoomInPrefab, position, rotation }))
                     throw new InvalidOperationException("Штатная проверка коллизий отклонила комнату " + i);
-                RoomConnection? from = r.Parent < 0 ? null : placed[r.Parent].GetConnections()[r.ParentSocket];
+                RoomConnection? from = r.Parent < 0 ? null : placed[r.Parent]!.GetConnections()[r.ParentSocket];
                 int first = Spawned.Count;
                 var room = (Room)Place.Invoke(__instance, new object?[] { source, position, rotation, from, mode });
                 placed.Add(room);
@@ -172,8 +199,9 @@ internal static class ForestRuntime
             zdo.Set(Tag, token);
             zdo.Set(LayoutKey, JsonConvert.SerializeObject(new
             {
-                schema = 5, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
-                max_depth = trial ? 5 : ForestPlan.MaxDepth, safe_depth = trial ? 0 : ForestPlan.SafeDepth,
+                schema = 6, seed = plan.Seed, attempts = plan.Attempts, branches = plan.BranchCount,
+                max_depth = plan.Rooms.Max(r => r.Depth), route_length = plan.RouteLength,
+                safe_depth = trial ? 0 : ForestPlan.SafeDepth,
                 miniboss_trial = trial, combat_profile_depth = trial ? 64 : 0,
                 terminal_budget = terminalBudget,
                 stage_gates = plan.StageGates,
@@ -181,10 +209,14 @@ internal static class ForestRuntime
                     Array.Empty<int[]>(),
                 rooms = plan.Rooms.Select((r, i) => new { id = i, prefab = r.Template.Name,
                     position = new[] { r.Position.X, r.Position.Y, r.Position.Z }, turn = r.Turn,
-                    depth = r.Depth, parent = r.Parent, endcap = r.Template.Endcap,
+                    depth = r.Depth, combat_depth = r.ProfileDepth, parent = r.Parent,
+                    parent_socket = r.ParentSocket, in_socket = r.InSocket, endcap = r.Template.Endcap,
                     cores = r.GuaranteedCores, resource_count = r.ResourceCount, chest_count = r.ChestCount,
                     rare_guard_count = r.RareGuardCount,
-                    arena = r.Arena, branch = r.Branch,
+                    arena = r.Arena, miniboss = r.MiniBoss, branch = r.Branch,
+                    attachment = r.Attachment, route_end = r.RouteEnd,
+                    volumes = r.Bounds.Select(v => new { center = ForestFixture.V(V(v.Center)),
+                        size = ForestFixture.V(V(v.Size)) }),
                     sockets = Enumerable.Range(0, r.Template.Sockets.Length).Select(s => new
                     {
                         position = new[] { r.SocketPosition(s).X, r.SocketPosition(s).Y, r.SocketPosition(s).Z },
@@ -192,12 +224,17 @@ internal static class ForestRuntime
                     }) }),
                 edges = plan.Edges.Select(e => new[] { e.A, e.B })
             }));
+            if (section != null) Zdo(section.transform).Set(MiniBossConnection.CompleteKey, true);
+            if (mode == ZoneSystem.SpawnMode.Ghost)
+                foreach (var view in Spawned.Where(v => v != null)) Object.Destroy(view.gameObject);
             LastPlan = plan;
             Plugin.LogInfo($"FOREST_GENERATED seed={plan.Seed} rooms={plan.Rooms.Count} " +
                 $"depth={plan.Rooms.Max(r => r.Depth)} trial={trial}");
         }
         catch
         {
+            Zdo(__instance).Set(MiniBossConnection.LinkKey, "");
+            Zdo(__instance).Set(LayoutKey, "");
             foreach (var view in Spawned)
                 if (view != null && view.IsValid() && view.IsOwner())
                 {

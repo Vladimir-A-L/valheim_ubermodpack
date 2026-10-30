@@ -1,0 +1,281 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-30T19:30:21.493698+00:00",
+  "scope": "miniboss-dungeon-connection-manual-candidate",
+  "base_lock": "miniboss-values-0122-20261030.lock.json",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "game_managed_assembly_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.13.0",
+    "dll_sha256": "2316df941a670b96f1a6fab855650d78fd36b2fc79699bf5beebb73d5e6e572c"
+  },
+  "unchanged_dependencies": [
+    "miniboss-values-0122-20261030.lock.json",
+    "dungeon-navigation-20261029.lock.json"
+  ],
+  "observed_server_plugins": [
+    {
+      "name": "Conditional Config Sync",
+      "version": "1.0.11",
+      "guid": "_shudnal.ConditionalConfigSync"
+    },
+    {
+      "name": "Jotunn",
+      "version": "2.30.2",
+      "guid": "com.jotunn.jotunn"
+    },
+    {
+      "name": "Newtonsoft.Json Detector",
+      "version": "1.0.0",
+      "guid": "com.ValheimModding.NewtonsoftJsonDetector"
+    },
+    {
+      "name": "YamlDotNet Detector",
+      "version": "1.0.0",
+      "guid": "com.ValheimModding.YamlDotNetDetector"
+    },
+    {
+      "name": "Epic Loot",
+      "version": "0.15.3",
+      "guid": "randyknapp.mods.epicloot"
+    },
+    {
+      "name": "ServerManager",
+      "version": "1.2.5",
+      "guid": "sighsorry.ServerManager"
+    },
+    {
+      "name": "Path of Valheiman",
+      "version": "5.3.6",
+      "guid": "treextr.pathofvalheiman"
+    }
+  ],
+  "server_manager": {
+    "package": "sighsorry-ServerManager",
+    "version": "1.2.5",
+    "modified": false,
+    "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38",
+    "fix_location": "DungeonDepthPrototype.ServerExitRepair"
+  },
+  "configuration": {
+    "configs/miniboss-connection/README.txt": "1a77391cdbdc7eced3d25df350f111c89e346d935910b258d02d90d2a41887f9",
+    "configs/miniboss-connection/candidate.cfg": "6e6219cd59b966bdc500645df9069a8f0934bd2bbf160fa6d2d26ef8dfbbe55e",
+    "configs/miniboss-connection/dungeon-rewards.json":
+      "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/miniboss-connection/forest-loadout.json":
+      "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/miniboss-connection/forest-manual-test.json":
+      "f9b32eb74acacfe00b8fb29cacfec49c0629415e7f2b1b75a38a73324418ddf6"
+  },
+  "preparation_id": "miniboss-arena-0100",
+  "reset_pov": false,
+  "automatic_preparation": false,
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.13.0.zip",
+    "sha256": "ff61604b00b0fa5a4e222654162081860cde4485698c7259f52137b87a3856ee",
+    "bytes": 1148819,
+    "payload_files": 10,
+    "dll_sha256": "2316df941a670b96f1a6fab855650d78fd36b2fc79699bf5beebb73d5e6e572c",
+    "version": "0.13.0",
+    "directory": "installers",
+    "installer_revision": 2
+  },
+  "payload_files": [
+    {
+      "source": "DungeonDepthPrototype.dll",
+      "relative": "BepInEx\\plugins\\DungeonDepthPrototype\\DungeonDepthPrototype.dll",
+      "sha256": "2316df941a670b96f1a6fab855650d78fd36b2fc79699bf5beebb73d5e6e572c"
+    },
+    {
+      "source": "ServerManager.dll",
+      "relative": "BepInEx\\plugins\\ServerManager\\ServerManager.dll",
+      "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    },
+    {
+      "source": "sighsorry.ServerManager.cfg",
+      "relative": "BepInEx\\config\\sighsorry.ServerManager.cfg",
+      "sha256": "c3888ee5e00153af7bc6c273318d0e33e0f5936f0f27dcca3488d8ac57becbda"
+    },
+    {
+      "source": "dungeon-rewards.json",
+      "relative": "BepInEx\\config\\dungeon-rewards.json",
+      "sha256": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832"
+    },
+    {
+      "source": "forest-loadout.json",
+      "relative": "BepInEx\\config\\forest-loadout.json",
+      "sha256": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3"
+    },
+    {
+      "source": "DungeonMaps.dll",
+      "relative": "BepInEx\\plugins\\DungeonMaps\\DungeonMaps.dll",
+      "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+    },
+    {
+      "source": "zl.dungeonmaps.cfg",
+      "relative": "BepInEx\\config\\zl.dungeonmaps.cfg",
+      "sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870"
+    },
+    {
+      "source": "forest-navigation.json",
+      "relative": "BepInEx\\config\\forest-navigation.json",
+      "sha256": "d218cc05c566982cd2e7914b011bd81bd418264355c48d202848ede5b8ad11b2"
+    },
+    {
+      "source": "forest-manual-test.json",
+      "relative": "BepInEx\\config\\forest-manual-test.json",
+      "sha256": "f9b32eb74acacfe00b8fb29cacfec49c0629415e7f2b1b75a38a73324418ddf6"
+    },
+    {
+      "source": "ubermodpack.dungeon-depth-prototype.cfg",
+      "relative": "BepInEx\\config\\ubermodpack.dungeon-depth-prototype.cfg",
+      "sha256": "6e6219cd59b966bdc500645df9069a8f0934bd2bbf160fa6d2d26ef8dfbbe55e"
+    }
+  ],
+  "candidate": {
+    "seed": 13001,
+    "route_length": 64,
+    "zone_size_m": [
+      128,
+      64,
+      128
+    ],
+    "graph_nodes": 170,
+    "native_rooms": 169,
+    "miniboss_sections": 1,
+    "resource_arenas": 1,
+    "branches": 5,
+    "resource_rooms": 4,
+    "chests": 14,
+    "gates": 17,
+    "combat_depth": 56,
+    "modifiers": [
+      "keen",
+      "warded",
+      "furious",
+      "swift",
+      "hardy",
+      "steadfast",
+      "greedy",
+      "armored",
+      "piercing"
+    ],
+    "reward_budget": 123.62934115765566,
+    "reward_items": 2,
+    "reward_quality": "Legendary",
+    "coins": 711,
+    "boss_prefab": "Ghost",
+    "helpers": 0,
+    "boss_scale": 1.8,
+    "boss_hp_multiplier": 12,
+    "boss_damage_multiplier": 3,
+    "ordinary_generation_enabled": false,
+    "forced_trial": false,
+    "test_chests": 0
+  },
+  "checks": {
+    "build_errors": 0,
+    "build_warnings": 0,
+    "tool_tests": 44,
+    "model_assertions": 39185,
+    "native_plan_cases": 12,
+    "native_plan_all_passed": true,
+    "native_plan_lengths": [
+      40,
+      64,
+      80
+    ],
+    "native_plan_rotations": 4,
+    "native_plan_attempts_min": 3,
+    "native_plan_attempts_max": 73,
+    "native_plan_ms_min": 74,
+    "native_plan_ms_max": 1056,
+    "floor_capsule_samples": 21,
+    "nav_path_found": true,
+    "shell_rays": 756,
+    "shell_leaks": 0,
+    "shell_other_socket_exits": 5,
+    "map_regions": 10,
+    "unload_reload": true,
+    "both_load_orders": true,
+    "owner_check_scope": "native-owner-reset-without-second-client",
+    "reward_exactly_once": true,
+    "picked_value_exact": true,
+    "dead_boss_absent_after_restart": true,
+    "destroyed_gate_absent_after_restart": true,
+    "picked_value_absent_after_restart": true,
+    "new_dungeon_objects_persisted": 240,
+    "chests_after_restart": 14,
+    "values_after_restart": 6,
+    "rollback_0122": true,
+    "windows_installer_upgrade_0122_and_restore": true,
+    "installed_files": 10,
+    "restored_files": 10,
+    "previous_zip_unchanged": true,
+    "client_run_by_agent": false,
+    "actual_client_map_verified": false,
+    "two_real_clients_verified": false
+  },
+  "manual_handoff": {
+    "at_utc": "2026-10-30T19:29:38.462673+00:00",
+    "active": true,
+    "version": "0.13.0",
+    "unit": "valheim-forest-crypt",
+    "backup_files": 1230,
+    "checkpoint_files": 1253,
+    "character_files": 11,
+    "character_files_unchanged": true,
+    "previous_arenas": 5,
+    "previous_values": 30,
+    "new_dungeons": 1,
+    "new_values": 6,
+    "new_bosses": 1,
+    "ready_peers": 0,
+    "diagnostic_state_used": false,
+    "automatic_character_relocation": false,
+    "inventory_reset": false,
+    "pov_reset": false,
+    "previous_delivery_preserved": true,
+    "diagnostic_server_stopped": true,
+    "restart": true,
+    "access_portals": 2
+  },
+  "manual_acceptance": {
+    "source": "user_report_before_this_task",
+    "G1_0122_values": true,
+    "F1_0121_shell": true,
+    "E2_E3_0120_exit_and_deleted_door": true,
+    "C1_0130_connection_and_map": false
+  },
+  "open_checks": [
+    "C1: проход из обычной комнаты до арены и обратно, постепенное исследование карты",
+    "U9: совместная игра со вторым человеком"
+  ]
+}

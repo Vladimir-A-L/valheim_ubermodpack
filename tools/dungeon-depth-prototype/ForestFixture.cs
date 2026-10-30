@@ -48,6 +48,7 @@ internal sealed class ForestFixture : MonoBehaviour
     private object Execute(JObject command)
     {
         string action = command.Value<string>("action") ?? "";
+        if (action == "connection-probe") return MiniBossConnectionProbe.Run(command);
         if (action == "exit-status") return ServerExitRepair.Status();
         if (action == "exit-drain-probe") return ServerExitProbe.Run();
         if (action.StartsWith("miniboss-", StringComparison.Ordinal)) return MiniBossTrial.Execute(command);
@@ -107,7 +108,7 @@ internal sealed class ForestFixture : MonoBehaviour
         if (action == "probe")
         {
             if (!ZNet.instance.IsServer()) throw new InvalidOperationException("Нужен сервер");
-            return Probe();
+            return MiniBossConnectionProbe.Run(new JObject { ["phase"] = "plan" });
         }
         if (action == "locations")
             return ZoneSystem.instance.m_locationInstances.Values
@@ -196,103 +197,4 @@ internal sealed class ForestFixture : MonoBehaviour
             }).ToArray()
     };
 
-    private object Probe()
-    {
-        var results = new List<object>();
-        var fingerprints = new Dictionary<int, string>();
-        var template = ZNetScene.instance.GetPrefab("DG_ForestCrypt");
-        foreach (int seed in new[] { 1001, 1002, 1003, 1004, 1005, 1006, 1001, 1002, 1003, 1004, 1005, 1006 })
-        {
-            var generator = Object.Instantiate(template, new Vector3(0, 5000, -1), Quaternion.identity)
-                .GetComponent<DungeonGenerator>();
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            try
-            {
-                generator.Generate(seed, ZoneSystem.SpawnMode.Full);
-                var layout = ForestRuntime.LastPlan ?? throw new InvalidOperationException("Нет плана");
-                var rooms = generator.GetComponentsInChildren<Room>();
-                var sockets = rooms.SelectMany((r, i) => r.GetConnections().Select(s => (room: i, s))).ToArray();
-                var edges = new HashSet<(int, int)>();
-                int open = 0;
-                foreach (var a in sockets.Where(s => !s.s.m_entrance))
-                {
-                    var matches = sockets.Where(b => b.room != a.room && !b.s.m_entrance &&
-                        a.s.TestContact(b.s) && a.s.m_type == b.s.m_type &&
-                        Vector3.Dot(a.s.transform.forward, b.s.transform.forward) < -.99f).ToArray();
-                    if (matches.Length != 1) open++;
-                    foreach (var b in matches) edges.Add((Math.Min(a.room, b.room), Math.Max(a.room, b.room)));
-                }
-                var depths = DungeonGeometryProbe.RoomGraph.Distances(rooms.Length, edges, 0);
-                var views = ForestRuntime.Spawned.Where(v => v != null && v.IsValid()).ToArray();
-                var cores = views.Where(v => v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore").ToArray();
-                var guards = views.Select(v => v.GetComponent<Character>()).Where(c => c != null).ToArray();
-                var chests = views.Select(v => v.GetComponent<Container>()).Where(c => c != null).ToArray();
-                bool depthMatch = Enumerable.Range(0, rooms.Length).All(i => rooms[i].m_endCap ||
-                    depths[i] == layout.Rooms[i].Depth);
-                bool guardMatch = guards.All(c => PovBridge.Count(PovBridge.Read(c)) ==
-                    ForestPlan.ModifierCount(ForestRuntime.Zdo(c).GetInt(ForestRuntime.DepthKey)));
-                bool rewardMatch = chests.All(c => GuardedChestReward.Read(c) is ChestRewardState state &&
-                    state.GuardModifiers.Length == ForestPlan.ModifierCount(state.Room.Depth) &&
-                    (state.Room.Depth > 16 || state.Budget.Value == 0));
-                int earlyCores = cores.Count(v => v.GetZDO().GetInt(ForestRuntime.DepthKey) <= 16);
-                bool density = layout.Rooms.Select((r, i) => (r, i)).Where(x => x.r.ChestCount > 0 ||
-                    x.r.ResourceCount > 0).All(x =>
-                {
-                    decimal budget = GuardedChestReward.Rules.Budget(EncounterPlan.ForestSet(x.r.Depth), 0,
-                        x.r.Depth <= ForestPlan.SafeDepth).Value;
-                    int expected = EncounterPlan.Guards(GuardedChestReward.Rules, budget,
-                        x.r.ResourceCount > 0, x.r.Arena, unchecked(seed * 397 ^ x.i), x.r.GuaranteedCores) +
-                        x.r.RareGuardCount;
-                    return guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i) == expected &&
-                        guards.Count(g => ForestRuntime.Zdo(g).GetInt(ForestRuntime.RoomKey) == x.i &&
-                            Utils.GetPrefabName(g.gameObject) == "Ghost") == x.r.RareGuardCount &&
-                        chests.Count(c => ForestRuntime.Zdo(c).GetInt(ForestRuntime.RoomKey) == x.i) ==
-                            x.r.ChestCount &&
-                        cores.Count(c => c.GetZDO().GetInt(ForestRuntime.RoomKey) == x.i) >= x.r.ResourceCount;
-                });
-                string fingerprint = EpicLootBridge.Hash(ForestRuntime.Zdo(generator).GetByteArray(ZDOVars.s_roomData));
-                bool repeat = !fingerprints.TryGetValue(seed, out string previous) || previous == fingerprint;
-                fingerprints[seed] = fingerprint;
-                int actualResourceRooms = cores.Select(c => c.GetZDO().GetInt(ForestRuntime.RoomKey))
-                    .Distinct().Count();
-                bool quota = actualResourceRooms >= 2 && actualResourceRooms <= 4 &&
-                    actualResourceRooms == layout.Rooms.Count(r => r.ResourceCount > 0);
-                int gates = views.Count(v => v.IsValid() && v.GetZDO().GetBool(ForestGates.GateKey));
-                bool gateMatch = !layout.StageGates || gates == EncounterGates.Edges(layout).Length &&
-                    ForestGates.CheckClosedColliders();
-                var terminal = chests.Select(GuardedChestReward.Read).OfType<ChestRewardState>()
-                    .Where(s => s.Room.Depth == ForestPlan.MaxDepth).ToArray();
-                bool terminalMatch = terminal.Length == 4 &&
-                    terminal.All(s => s.Budget.Value >= 175 && s.Budget.Value <= 200);
-                bool passed = open == 0 && depthMatch && guardMatch && rewardMatch && earlyCores >= 5 &&
-                    repeat && density && quota && gateMatch && terminalMatch;
-                results.Add(new { seed, passed, rooms = rooms.Length, open_sockets = open,
-                    max_depth = layout.Rooms.Max(r => r.Depth), early_core_pickables = earlyCores,
-                    guards = guards.Length, chests = chests.Length, depth_match = depthMatch,
-                    guard_match = guardMatch, reward_match = rewardMatch, repeat_matches = repeat,
-                    density_match = density, resource_quota_match = quota, branches = layout.BranchCount,
-                    gates, gate_match = gateMatch, terminal_budget_match = terminalMatch,
-                    terminal_budgets = terminal.Select(s => s.Budget.Value).ToArray(),
-                    rare_guards = guards.Count(g => Utils.GetPrefabName(g.gameObject) == "Ghost"),
-                    resource_rooms = layout.Rooms.Count(r => r.ResourceCount > 0),
-                    arena_guards = guards.Count(g => layout.Rooms[ForestRuntime.Zdo(g)
-                        .GetInt(ForestRuntime.RoomKey)].Arena),
-                    fingerprint, duration_ms = watch.ElapsedMilliseconds });
-            }
-            catch (Exception e) { results.Add(new { seed, passed = false, error = e.ToString() }); }
-            finally
-            {
-                foreach (var view in ForestRuntime.Spawned.ToArray())
-                    if (view != null && view.IsValid() && view.IsOwner())
-                    {
-                        view.gameObject.SetActive(false);
-                        ZNetScene.instance.Destroy(view.gameObject);
-                    }
-                ForestRuntime.Spawned.Clear();
-                generator.gameObject.SetActive(false);
-                ZNetScene.instance.Destroy(generator.gameObject);
-            }
-        }
-        return results;
-    }
 }

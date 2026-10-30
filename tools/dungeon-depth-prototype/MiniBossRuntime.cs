@@ -27,7 +27,6 @@ internal sealed class MiniBossRuntime : MonoBehaviour
 
     internal static void Install(GameObject host, Harmony harmony)
     {
-        if (!MiniBossTrial.Enabled) return;
         MiniBossArenaController.Install(harmony);
         MiniBossArenaFixtures.Install(harmony);
         harmony.Patch(PovBridge.Method("PassiveTree.EnemyDifficulty", "Desired"),
@@ -44,8 +43,17 @@ internal sealed class MiniBossRuntime : MonoBehaviour
         if (IsBoss(c)) __result *= hp ? MiniBossRules.HealthFactor : MiniBossRules.DamageFactor;
     }
 
-    private static bool Wear(WearNTear __instance) =>
-        Data(__instance)?.GetString(MiniBossTrial.HubKey).Length is not > 0;
+    private static bool Wear(WearNTear __instance)
+    {
+        var data = Data(__instance);
+        if (data == null) return true;
+        if (data.GetString(MiniBossTrial.HubKey).Length > 0) return false;
+        // Сетевые сундуки и мебель могут загрузиться раньше статических комнат.
+        // Они не изнашиваются от отсутствия опоры; обычный урон и разрушаемые двери сохраняются.
+        string kind = data.GetString(ForestRuntime.KindKey);
+        return data.GetString(ForestRuntime.Tag).Length == 0 ||
+            !(kind == "chest" || kind == "object" || kind == "core" || data.GetBool(ForestGates.GateKey));
+    }
 
     internal static void Mark(Character boss, string name, int seed)
     {
@@ -68,7 +76,7 @@ internal sealed class MiniBossRuntime : MonoBehaviour
 
     private void Update()
     {
-        if (!MiniBossTrial.Ready || Time.realtimeSinceStartup < next) return;
+        if (ZNetScene.instance == null || ZDOMan.instance == null || Time.realtimeSinceStartup < next) return;
         next = Time.realtimeSinceStartup + .25f;
         var gates = ForestFixture.AllZdos().Values.Where(z => z.GetBool(ForestGates.GateKey))
             .GroupBy(z => z.GetString(ForestRuntime.Tag)).ToDictionary(g => g.Key,
@@ -81,9 +89,21 @@ internal sealed class MiniBossRuntime : MonoBehaviour
             {
                 var ai = creature.GetComponent<BaseAI>();
                 // Разрушенная дверь удаляется из ZDO: отсутствие преграды тоже выпускает охрану.
-                if (ai != null) ai.enabled = MiniBossArena.Applies(creature) ||
-                    !gates.TryGetValue(data.GetString(ForestRuntime.Tag), out bool released)
-                    || released;
+                var gateId = data.GetZDOID(MiniBossConnection.GateKey);
+                if (gateId != ZDOID.None || data.GetBool(MiniBossConnection.GateKey))
+                {
+                    var gate = MiniBossConnection.Gate(data);
+                    // Конкретная дверь; остальные пороги данжа не выпускают помощника.
+                    var root = MiniBossConnection.Arena(data);
+                    bool open = gate?.GetBool(ForestGates.ReleasedKey) == true ||
+                        root?.GetBool(MiniBossConnection.ReleasedKey) == true ||
+                        data.GetBool(MiniBossConnection.ReleasedKey);
+                    if (open && creature.GetComponent<ZNetView>().IsOwner())
+                        data.Set(MiniBossConnection.ReleasedKey, true);
+                    if (ai != null) ai.enabled = MiniBossArena.Applies(creature) || open;
+                }
+                else if (ai != null) ai.enabled = MiniBossArena.Applies(creature) ||
+                    !gates.TryGetValue(data.GetString(ForestRuntime.Tag), out bool released) || released;
             }
         }
         foreach (var view in Object.FindObjectsByType<ZNetView>(FindObjectsSortMode.None))
@@ -124,19 +144,25 @@ internal sealed class MiniBossRuntime : MonoBehaviour
             int seed = zdo.GetInt(SeedKey);
             UnityEngine.Random.InitState(unchecked(seed ^ 0x31415926));
             var identities = new HashSet<string>();
-            for (int i = 0; i < 2; i++)
+            string snapshot = zdo.GetString(MiniBossConnection.EncounterKey);
+            var plan = snapshot.Length > 0 ? JsonConvert.DeserializeObject<MiniBossEncounter>(snapshot)!.Reward :
+                new RewardPlan { Groups = new List<RewardGroup> {
+                    new RewardGroup { Size = 2, Quality = RewardQuality.Mythic } },
+                    Coins = new System.Random(unchecked(seed ^ 0x27d4eb2d)).Next(300, 901) };
+            foreach (var group in plan.Groups)
+            for (int i = 0; i < group.Size; i++)
             {
                 ItemDrop.ItemData? item = null;
                 for (int attempt = 0; attempt < 64; attempt++)
                 {
-                    var candidate = EpicLootBridge.Generate("TreasureChest_forestcrypt", 1, RewardQuality.Mythic);
+                    var candidate = EpicLootBridge.Generate("TreasureChest_forestcrypt", 1, group.Quality);
                     if (identities.Add(EpicLootBridge.Identity(candidate))) { item = candidate; break; }
                 }
                 if (item == null) throw new InvalidOperationException("Не удалось получить разные предметы");
                 item.m_customData[DropKey] = state.Token + ":" + state.Items.Count;
                 state.Items.Add(GuardedChestReward.PackItem(item));
             }
-            state.Gold = new System.Random(unchecked(seed ^ 0x27d4eb2d)).Next(300, 901);
+            state.Gold = plan.Coins;
             var prefab = ObjectDB.instance.GetItemPrefab("Coins");
             var source = prefab.GetComponent<ItemDrop>().m_itemData;
             for (int left = state.Gold; left > 0;)
@@ -149,6 +175,13 @@ internal sealed class MiniBossRuntime : MonoBehaviour
             return state;
         }
         finally { UnityEngine.Random.state = previous; }
+    }
+
+    internal static void PrepareReward(Character boss)
+    {
+        var data = Data(boss)!;
+        if (data.GetString(RewardKey).Length == 0)
+            data.Set(RewardKey, JsonConvert.SerializeObject(Generate(boss)));
     }
 
     // Используется и пробой; повторный вызов на том же ZDO не создаёт предметы заново.

@@ -16,6 +16,19 @@ internal sealed class MiniBossArena : MonoBehaviour
         while (DungeonDB.instance == null) yield return null;
         MiniBossCryptDecor.Build(gameObject);
     }
+    private float nextConnection;
+    private GameObject? linkedGenerator;
+    private void Update()
+    {
+        if (Time.realtimeSinceStartup < nextConnection) return;
+        nextConnection = Time.realtimeSinceStartup + .25f;
+        var data = MiniBossRuntime.Data(this);
+        if (data == null || data.GetString(MiniBossConnection.LinkKey).Length == 0) return;
+        if (linkedGenerator == null)
+            linkedGenerator = MiniBossConnection.Instance(MiniBossConnection.Generator(data));
+        if (linkedGenerator == null || linkedGenerator.GetComponent<MiniBossRoomLink>()?.Open != true)
+            transform.Find(MiniBossConnection.CapName).gameObject.SetActive(true);
+    }
     internal const string Key = "uberdungeon.arena.v1", OriginKey = Key + ".origin";
     internal const string RotationKey = Key + ".rotation";
     internal const string StateKey = Key + ".state", ValueKey = Key + ".value";
@@ -25,9 +38,10 @@ internal sealed class MiniBossArena : MonoBehaviour
     private static Harmony? early;
     internal static void InstallPrefabs()
     {
-        if (!MiniBossTrial.Enabled || early != null) return;
+        if (early != null) return;
         early = new Harmony(Plugin.Guid + ".arena-prefabs");
         ServerExitRepair.Install(early);
+        MiniBossConnection.Install(early);
         early.Patch(AccessTools.Method(typeof(ZNetView), "Awake"),
             prefix: new HarmonyMethod(typeof(MiniBossArena), nameof(DoorLoading)));
         early.Patch(AccessTools.Method(typeof(ZNetScene), "Awake"),

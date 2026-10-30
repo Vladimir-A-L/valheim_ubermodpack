@@ -17,7 +17,8 @@ public static class EncounterGates
         arenaA != arenaB || Band(a) != Band(b);
 
     public static bool Required(ForestPlan.Placement a, ForestPlan.Placement b) =>
-        !a.Template.Endcap && !b.Template.Endcap && Required(ForestPlan.ModifierCount(a.Depth),
+        !a.Template.Endcap && !b.Template.Endcap && !a.MiniBoss && !b.MiniBoss &&
+        Required(ForestPlan.ModifierCount(a.Depth),
             ForestPlan.ModifierCount(b.Depth), a.Arena, b.Arena);
 
     public static bool Fits(ForestPlan.Placement parent, int socket, ForestPlan.Placement child) =>
@@ -30,12 +31,14 @@ public static class EncounterGates
     public static void Validate(ForestPlan.Layout layout)
     {
         var barriers = new HashSet<(int, int)>(Edges(layout));
+        var bossEdges = layout.Edges.Where(e => layout.Rooms[e.B].MiniBoss).ToArray();
         foreach (var (a, b) in barriers)
         {
             var child = layout.Rooms[b];
             if (child.Parent != a || !Fits(layout.Rooms[a], child.ParentSocket, child))
                 throw new InvalidOperationException("Порог сложности не допускает штатную дверь");
         }
+        barriers.UnionWith(bossEdges); // Настоящая дверь внутри составной секции.
         // Проверяем связные области, а не только выбранную главную ветвь.
         var seen = new HashSet<int>();
         for (int start = 0; start < layout.Rooms.Count; start++)

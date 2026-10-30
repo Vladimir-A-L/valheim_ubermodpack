@@ -21,13 +21,8 @@ public static class EncounterPlan
 
     public static string[] ForestSet(int depth) => ForestModifiers.Take(ForestPlan.ModifierCount(depth)).ToArray();
 
-    public static decimal ForestTerminalBudget(RewardRules rules)
-    {
-        decimal budget = rules.Budget(ForestSet(ForestPlan.MaxDepth), 0, false).Value;
-        if (budget < 175 || budget > 200)
-            throw new InvalidOperationException("Бюджет конечной охраны должен быть от 175 до 200");
-        return budget;
-    }
+    public static decimal ForestTerminalBudget(RewardRules rules, int depth = ForestPlan.MaxDepth) =>
+        rules.Budget(ForestSet(depth), 0, depth <= ForestPlan.SafeDepth).Value;
 
     // Редкая охрана добавляется после основного расчёта, включая утроение арены.
     public static int ResourceReinforcements(bool resources, int seed) =>

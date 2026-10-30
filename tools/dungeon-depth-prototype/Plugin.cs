@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.12.2")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.13.0")]
 [BepInDependency("sighsorry.ServerManager", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
@@ -69,6 +69,7 @@ public sealed class Plugin : BaseUnityPlugin
                 EpicLootBridge.Install(harmony!);
                 PovBridge.Install(harmony!);
                 MiniBossRuntime.Install(gameObject, harmony!);
+                MiniBossConnection.InstallMap(harmony!);
                 CombatRecorder.Install(gameObject, harmony!, expectedWorld);
                 GuardedChestReward.Install(harmony!);
                 if (Config.Bind("ForestCrypt", "Enabled", false,

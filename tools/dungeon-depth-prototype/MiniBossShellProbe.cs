@@ -9,7 +9,7 @@ namespace DungeonDepthPrototype;
 // Проверяет именно отрисовываемые треугольники: физический raycast не обнаруживает дырки в декоре.
 internal static class MiniBossShellProbe
 {
-    private readonly struct Triangle
+    internal readonly struct Triangle
     {
         internal readonly Vector3 A, B, C;
         internal Triangle(Vector3 a, Vector3 b, Vector3 c) { A = a; B = b; C = c; }
@@ -24,6 +24,50 @@ internal static class MiniBossShellProbe
             return v >= -.0001f && u + v <= 1.0001f && Vector3.Dot(e2, q) / det > .0001f;
         }
     }
+    internal static object Connection(MiniBossArena arena, Room parent)
+    {
+        var triangles = new List<Triangle>();
+        foreach (var filter in arena.GetComponentsInChildren<MeshFilter>()
+                     .Concat(parent.GetComponentsInChildren<MeshFilter>()))
+        {
+            var renderer = filter.GetComponent<MeshRenderer>();
+            if (renderer == null || !renderer.enabled || filter.sharedMesh == null) continue;
+            var vertices = filter.sharedMesh.vertices.Select(v =>
+                arena.transform.InverseTransformPoint(filter.transform.TransformPoint(v))).ToArray();
+            var indices = filter.sharedMesh.triangles;
+            for (int i = 0; i < indices.Length; i += 3)
+                triangles.Add(new Triangle(vertices[indices[i]], vertices[indices[i + 1]], vertices[indices[i + 2]]));
+        }
+        int rays = 0, leaks = 0, otherExits = 0;
+        var examples = new List<object>();
+        foreach (float z in new[] { -28.75f, -28.4f, -28.1f, -28f, -27.9f, -27.6f, -27.25f })
+        foreach (float x in new[] { -.7f, 0, .7f })
+        foreach (float y in new[] { .05f, 1.6f, 2.3f })
+        foreach (float along in new[] { -.2f, 0, .2f })
+        foreach (var direction in new[] { new Vector3(1, 0, along), new Vector3(-1, 0, along),
+                     new Vector3(0, 1, along), new Vector3(0, -1, along) })
+        {
+            rays++; var from = new Vector3(x, y, z);
+            if (triangles.Any(t => t.Hit(from, direction.normalized))) continue;
+            var worldFrom = arena.transform.TransformPoint(from);
+            var worldDirection = arena.transform.TransformDirection(direction.normalized);
+            bool throughOtherSocket = parent.GetConnections().Any(socket => {
+                var normal = socket.transform.forward;
+                float denominator = Vector3.Dot(worldDirection, normal);
+                if (denominator >= -.001f) return false;
+                float distance = Vector3.Dot(socket.transform.position - worldFrom, normal) / denominator;
+                if (distance <= 0) return false;
+                var point = socket.transform.InverseTransformPoint(worldFrom + worldDirection * distance);
+                return Math.Abs(point.x) <= 1 && point.y >= 0 && point.y <= 2.4f;
+            });
+            if (throughOtherSocket) { otherExits++; continue; }
+            leaks++;
+            if (examples.Count < 12) examples.Add(new { x, y, z, direction = ForestFixture.V(direction) });
+        }
+        return new { passed = leaks == 0, rays, leaks, other_exits = otherExits, examples,
+            triangles = triangles.Count };
+    }
+
     internal static object Run(MiniBossArena arena)
     {
         var started = System.Diagnostics.Stopwatch.StartNew();

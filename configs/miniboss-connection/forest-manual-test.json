@@ -1,0 +1,16 @@
+{
+  "Enabled": true,
+  "Record": true,
+  "StartFullOnce": false,
+  "AutoPrepareOnce": false,
+  "ResetInventory": false,
+  "ResetPov": false,
+  "PreparationId": "miniboss-arena-0100",
+  "PlayerName": "Drug",
+  "StartPosition": [
+    2048,
+    4002,
+    2048
+  ],
+  "StartYaw": 0
+}

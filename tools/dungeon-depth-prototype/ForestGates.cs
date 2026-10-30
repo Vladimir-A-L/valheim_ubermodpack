@@ -50,7 +50,7 @@ internal static class ForestGates
     {
         var zdo = Gate(__instance);
         if (zdo != null && __instance.GetComponent<ZNetView>().IsOwner() &&
-            zdo.GetInt(ZDOVars.s_state) != 0) zdo.Set(ReleasedKey, true);
+            zdo.GetInt(ZDOVars.s_state) != 0) { zdo.Set(ReleasedKey, true); MiniBossConnection.Release(zdo); }
     }
 
     private static bool Damage(Component __instance, HitData hit)

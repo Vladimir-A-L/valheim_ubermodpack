@@ -31,16 +31,9 @@ internal static class ForestPlanChecks
         check(terminal >= 175 && terminal <= 200, "Конечный бюджет в согласованном диапазоне");
         check(densityRules.Budget(EncounterPlan.ForestSet(59), 0, false).Value < 175,
             "До последней ступени нижний порог ещё не достигнут");
-        decimal divisor = densityRules.GrowthDivisor;
-        foreach (decimal outside in new[] { 10000m, 20m })
-        {
-            densityRules.GrowthDivisor = outside;
-            bool rejectedBudget = false;
-            try { EncounterPlan.ForestTerminalBudget(densityRules); }
-            catch (InvalidOperationException) { rejectedBudget = true; }
-            check(rejectedBudget, "Изменённые веса не выпускают данж вне конечного диапазона");
-        }
-        densityRules.GrowthDivisor = divisor;
+        check(EncounterPlan.ForestTerminalBudget(densityRules, 16) == 0 &&
+            EncounterPlan.ForestTerminalBudget(densityRules, 40) < terminal,
+            "Короткий маршрут не поднимает бюджет до испытания 64");
         for (int seed = 0; seed < 30; seed++)
             check(EncounterPlan.Guards(densityRules, 0, true, false, seed, true) ==
                 EncounterPlan.Guards(densityRules, 0, true, false, seed) + 2, "Ровно две добавки у начальных ядер");
@@ -69,7 +62,7 @@ internal static class ForestPlanChecks
         for (int seed = 0; seed < 100; seed++)
         {
             var trial = ForestPlan.CreateTrial(templates, new Point(0, 0, -1), 0,
-                new Point(0, 0, 0), new Point(64, 64, 64), seed);
+                new Point(0, 0, 0), new Point(128, 64, 128), seed);
             check(trial.BranchCount == 1 && trial.Rooms.Count(r => r.Arena) == 1,
                 "Одна ветвь с одним боссом");
             check(trial.Rooms.Single(r => r.Arena).Depth == 5 && trial.Rooms.Max(r => r.Depth) == 5,
@@ -89,14 +82,14 @@ internal static class ForestPlanChecks
                             "Каждый стык пробного склепа закрыт ровно один раз");
             }
             check(Fingerprint(trial) == Fingerprint(ForestPlan.CreateTrial(templates,
-                new Point(0, 0, -1), 0, new Point(0, 0, 0), new Point(64, 64, 64), seed)),
+                new Point(0, 0, -1), 0, new Point(0, 0, 0), new Point(128, 64, 128), seed)),
                 "Воспроизводимость короткого склепа");
         }
         foreach (int seed in new[] { 0, 1, 1001, 1002, 1003, 1004, 1005, 1006 })
         {
             var center = new Point(64, 5000, -128);
-            var a = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed);
-            var b = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed);
+            var a = ForestPlan.Create(templates, center, seed % 4, center, new Point(128, 64, 128), seed);
+            var b = ForestPlan.Create(templates, center, seed % 4, center, new Point(128, 64, 128), seed);
             check(Fingerprint(a) == Fingerprint(b), "Повторяемость полного плана");
             check(a.BranchCount >= 2 && a.BranchCount <= 5, "От двух до пяти ветвей");
             check(a.Rooms.Single(r => r.Arena).ChestCount == 3, "Три сундука на арене");
@@ -107,14 +100,12 @@ internal static class ForestPlanChecks
             check(a.Rooms.Where(r => r.ResourceCount == 0).All(r => r.RareGuardCount == 0),
                 "Редкая добавка только у ресурсов");
             check(a.Rooms.Where(r => r.GuaranteedCores).All(r => r.Depth <= 16), "Начальные ресурсы без усиления");
-            check(a.Rooms.Count(r => r.Depth == 64 && !r.Template.Endcap) == 2,
-                "Основной конец и арена на глубине 64");
-            check(a.Rooms.Where(r => r.Branch == 0 && r.ChestCount > 0).Select(r => r.Depth)
-                .SequenceEqual(new[] { 8, 12, 16, 32, 48, 64 }),
-                "Удлинение сохраняет шесть основных комнат наград");
-            check(a.Rooms[a.Rooms.First(r => r.Branch == 1).Parent].Depth == 48,
-                "Отвод арены перенесён на глубину 48");
-            var gated = ForestPlan.Create(templates, center, seed % 4, center, new Point(64, 64, 64), seed, true);
+            var boss = a.Rooms.Single(r => r.MiniBoss);
+            check(boss.CombatDepth >= 52 && boss.CombatDepth <= 64 && boss.Depth == boss.CombatDepth + 1,
+                "Секция — один узел; профиль берётся перед переходом");
+            check(boss.ResourceCount == 0 && boss.ChestCount == 0 && boss.RareGuardCount == 0,
+                "Босс не наследует ресурсное наполнение");
+            var gated = ForestPlan.Create(templates, center, seed % 4, center, new Point(128, 64, 128), seed, true);
             EncounterGates.Validate(gated);
             check(EncounterGates.Edges(gated).Any(e => gated.Rooms[e.B].Arena), "Вход арены закрыт");
             check(EncounterGates.Edges(gated).Any(e => gated.Rooms[e.A].Depth == 16),
@@ -147,5 +138,48 @@ internal static class ForestPlanChecks
             catch (InvalidOperationException) { rejected = true; }
             check(rejected, "Разрыв реального стыка отвергается");
         }
+        foreach (int length in new[] { 16, 40, 63, 64, 65, 80 })
+        foreach (int turn in Enumerable.Range(0, 4))
+        {
+            var plan = ForestPlan.Create(templates, new Point(0, 0, 0), turn,
+                new Point(0, 0, 0), new Point(128, 64, 128), 730 + turn, true, length);
+            var boss = plan.Rooms.Single(r => r.MiniBoss);
+            var arena = plan.Rooms.Single(r => r.Arena);
+            foreach (var special in new[] { boss, arena })
+            {
+                int route = plan.Rooms[special.RouteEnd].Depth;
+                check(route == length && plan.Rooms[special.Attachment].Depth >=
+                    ForestPlan.PlacementThreshold(route, special.MiniBoss ? 80 : 70),
+                    "Порог считается от входа до конца выбранного маршрута");
+            }
+            check(plan.Rooms.Sum(r => r.Depth) > length && boss.CombatDepth <= length,
+                "Сумма длин ветвей не является длиной выбранного пути");
+            check(plan.SearchSteps <= ForestPlan.MaxAttempts * 20000, "Ограниченная стоимость поиска");
+        }
+        foreach (var row in new[] { (40, 32, 28), (64, 52, 45), (80, 64, 56), (41, 33, 29) })
+            check(ForestPlan.PlacementThreshold(row.Item1, 80) == row.Item2 &&
+                ForestPlan.PlacementThreshold(row.Item1, 70) == row.Item3, "Округление порогов вверх");
+        foreach (int length in new[] { 40, 64, 80 })
+        foreach (int unrelatedLength in new[] { 5, 100, 250 })
+        {
+            var graph = Enumerable.Range(0, length).Select(i => (i, i + 1)).ToList();
+            int previous = 8;
+            for (int i = 1; i <= unrelatedLength; i++)
+            { graph.Add((previous, length + i)); previous = length + i; }
+            var depths = DungeonGeometryProbe.RoomGraph.Distances(length + unrelatedLength + 1, graph, 0);
+            check(depths[length] == length && ForestPlan.PlacementThreshold(depths[length], 80) ==
+                ForestPlan.PlacementThreshold(length, 80), "Другая ветка не изменяет выбранный маршрут");
+        }
+        for (int seed = 0; seed < 10; seed++)
+        {
+            var shortPlan = ForestPlan.Create(templates, new Point(0, 0, 0), 0, new Point(0, 0, 0),
+                new Point(128, 64, 128), seed, true, 16);
+            check(shortPlan.BranchCount is >= 2 and <= 5, "Минимальный маршрут сохраняет квоту ветвей");
+        }
+        bool impossible = false;
+        try { ForestPlan.Create(templates, new Point(0, 0, 0), 0, new Point(0, 0, 0),
+            new Point(1, 1, 1), 42); }
+        catch (InvalidOperationException) { impossible = true; }
+        check(impossible, "Несовместимые размеры отвергаются без неполного данжа");
     }
 }

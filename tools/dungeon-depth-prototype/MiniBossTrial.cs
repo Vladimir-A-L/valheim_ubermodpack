@@ -495,12 +495,12 @@ internal static class MiniBossTrial
             rune_check = runeCheck }));
     }
 
-    internal static void Tag(Character creature, string token, int room, string role)
+    internal static void Tag(Character creature, string token, int room, string role, int depth = 64)
     {
         var zdo = MiniBossRuntime.Data(creature)!;
         zdo.Set(ActorKey, role); zdo.Set(ForestRuntime.Tag, token);
         zdo.Set(ForestRuntime.KindKey, "guard"); zdo.Set(ForestRuntime.RoomKey, room);
-        zdo.Set(ForestRuntime.DepthKey, 64); zdo.Set(CombatRecorder.EntityKey, Guid.NewGuid().ToString("N"));
+        zdo.Set(ForestRuntime.DepthKey, depth); zdo.Set(CombatRecorder.EntityKey, Guid.NewGuid().ToString("N"));
     }
 
     internal static object Status() => new
