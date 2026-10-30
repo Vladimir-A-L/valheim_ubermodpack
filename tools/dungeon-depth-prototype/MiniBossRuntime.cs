@@ -201,27 +201,59 @@ internal sealed class MiniBossRuneText : MonoBehaviour, Hoverable, Interactable
     }
 }
 
-// У алтаря широкий служебный коллайдер. Для маленького камня оставляем проверенный объём 0,4×1,5×0,35 м.
+// Только область чтения. У камня в стене она вынесена к рисунку и имеет толщину 5 см.
 internal sealed class MiniBossRuneShape : MonoBehaviour
 {
     private BoxCollider interaction = null!;
+    private readonly Dictionary<Transform, (Vector3 Position, Quaternion Rotation)> visuals =
+        new Dictionary<Transform, (Vector3, Quaternion)>();
     private void Awake()
     {
         interaction = gameObject.AddComponent<BoxCollider>();
-        interaction.center = new Vector3(0, 3.75f, 0); interaction.size = new Vector3(2, 7.5f, 1.75f);
+        bool wall = MiniBossRuntime.Data(this)?.GetBool(MiniBossTrial.RuneWallKey) == true;
+        interaction.center = new Vector3(0, 3.75f, wall ? .75f : 0);
+        interaction.size = new Vector3(2, 7.5f, wall ? .25f : 1.75f);
         Maintain();
         InvokeRepeating(nameof(Maintain), .25f, .25f);
     }
 
     private void Maintain()
     {
+        var data = MiniBossRuntime.Data(this);
+        if (data?.GetBool(MiniBossTrial.RuneWallKey) == true)
+        {
+            var rotation = Quaternion.Euler(0, data.GetInt(MiniBossTrial.RuneVisualKey) * 90, 0);
+            foreach (Transform child in transform)
+            {
+                if (!visuals.TryGetValue(child, out var source))
+                    visuals.Add(child, source = (child.localPosition, child.localRotation));
+                child.localPosition = rotation * source.Position;
+                child.localRotation = rotation * source.Rotation;
+            }
+        }
         // Дочерние модели могут включить свои коллайдеры после Awake. Камень — только указатель:
         // взаимодействие лучом сохраняется, но декоративный объект не перекрывает узкий проход.
         foreach (var collider in GetComponentsInChildren<Collider>(true))
             if (collider != interaction) collider.enabled = false;
         foreach (var character in Character.GetAllCharacters())
-        foreach (var collider in character.GetComponents<Collider>())
+        foreach (var collider in character.GetComponentsInChildren<Collider>(true))
             Physics.IgnoreCollision(interaction, collider);
+    }
+
+    internal object CheckWallMount()
+    {
+        Maintain(); Physics.SyncTransforms();
+        var ray = new Ray(interaction.bounds.center + transform.forward, -transform.forward);
+        bool visible = Physics.Raycast(ray, out var hit, 1.5f,
+            LayerMask.GetMask("Default", "static_solid", "Default_small", "piece", "terrain", "blocker"),
+            QueryTriggerInteraction.Ignore) && hit.collider == interaction;
+        var colliders = Character.GetAllCharacters()
+            .SelectMany(c => c.GetComponentsInChildren<Collider>(true)).ToArray();
+        bool nonblocking = colliders.All(c => Physics.GetIgnoreCollision(interaction, c));
+        if (!visible || !nonblocking)
+            throw new InvalidOperationException("Камень в стене недоступен лучу или сталкивается с персонажем");
+        return new { interaction_ray_visible = visible, character_collisions_ignored = nonblocking,
+            checked_colliders = colliders.Length, interaction_depth = interaction.size.z * transform.lossyScale.z };
     }
 }
 

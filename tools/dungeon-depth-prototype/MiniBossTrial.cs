@@ -14,8 +14,20 @@ internal static class MiniBossTrial
 {
     internal const string IndexKey = "uberdungeon.miniboss.trial";
     internal const string HubKey = IndexKey + ".hub", RuneKey = IndexKey + ".rune";
+    internal const string RuneWallKey = RuneKey + ".wall";
+    internal const string RuneVisualKey = RuneKey + ".visual-turn";
     internal const string SpecKey = IndexKey + ".spec", ActorKey = IndexKey + ".actor";
-    internal static readonly Vector3 Hub = new Vector3(2048, 7000, 2048);
+    // Навигация Valheim 1.0.20 охватывает Y = -500..5500. Высота 7000 исключала пол из NavMesh.
+    // 4000 также отделяет испытания от штатных интерьеров, размещённых около 5000.
+    internal static readonly Vector3 Hub = new Vector3(2048, 4000, 2048);
+
+    private static void CheckNavigationHeight()
+    {
+        float center = Pathfinding.instance.GetTilePos(Vector3Int.zero).y;
+        float height = (float)AccessTools.Field(typeof(Pathfinding), "m_tileHeight").GetRawConstantValue();
+        if (Math.Abs(Hub.y - center) + 20 >= height / 2)
+            throw new InvalidOperationException("Площадка вне высотного диапазона штатной навигации");
+    }
     internal static bool Enabled => Plugin.Instance.Config.Bind("MiniBossTrial", "Enabled", false,
         "Шесть склепов только для изолированного ручного испытания.").Value;
     internal static bool Ready => Enabled && ZNet.instance != null && ZNetScene.instance != null &&
@@ -47,8 +59,23 @@ internal static class MiniBossTrial
             case "miniboss-probe": Server(); return Probe();
             case "miniboss-death-probe": Server(); return DeathProbe(command.Value<bool>("verify"));
             case "miniboss-gate-probe": Server(); return GateProbe(command.Value<string>("phase") ?? "create");
+            case "miniboss-navigation-probe": Server();
+                return MiniBossNavigationProbe.Run(command.Value<string>("phase") ?? "status");
+            case "miniboss-rune-preview": return PreviewRune(command.Value<int>("quarter_turns"));
             default: throw new ArgumentException("Неизвестная команда мини-босса");
         }
+    }
+
+    private static object PreviewRune(int quarterTurns)
+    {
+        if (quarterTurns < 0 || quarterTurns > 3 || !ForestManual.Target(Player.m_localPlayer))
+            throw new InvalidOperationException("Нужен выбранный тестовый персонаж и поворот 0..3");
+        var hover = Player.m_localPlayer.GetHoverObject();
+        var view = hover == null ? null : hover.GetComponentInParent<ZNetView>();
+        if (view == null || !view.IsValid() || !view.IsOwner() || !view.GetZDO().GetBool(RuneWallKey))
+            throw new InvalidOperationException("Нужно навести прицел на принадлежащий клиенту камень в стене");
+        view.GetZDO().Set(RuneVisualKey, quarterTurns);
+        return new { quarter_turns = quarterTurns, interaction_unchanged = true };
     }
 
     private static object Navigation()
@@ -257,6 +284,7 @@ internal static class MiniBossTrial
     {
         if (ZNet.instance.GetPeers().Any(p => p.IsReady()))
             throw new InvalidOperationException("Создание площадки требует отсутствия игроков");
+        CheckNavigationHeight();
         if (ForestFixture.AllZdos().Values.Any(z => z.GetInt(IndexKey, -1) >= 0 || z.GetString(HubKey).Length > 0))
             throw new InvalidOperationException("Площадка уже существует; автоматический сброс запрещён");
         Pool();
@@ -386,31 +414,62 @@ internal static class MiniBossTrial
             var helper = Spawn(kind, position, Quaternion.identity).GetComponent<Character>();
             helper.SetLevel(1); PovBridge.AssignIds(helper, modifiers); Tag(helper, token, roomIndex, "helper");
         }
-        var inward = ForestRuntime.V(parent.Position) - doorPosition; inward.y = 0; inward.Normalize();
+        var inward = rotation * Vector3.forward;
+        if (Vector3.Dot(inward, ForestRuntime.V(parent.Position) - doorPosition) < 0) inward = -inward;
         var side = Vector3.Cross(Vector3.up, inward);
         Vector3? markerPosition = null;
+        Vector3 markerNormal = Vector3.zero;
+        var runeProbes = new List<object>();
         foreach (float distance in new[] { 1.2f, 1.8f, 2.4f })
-        foreach (float offset in new[] { .7f, -.7f })
         {
-            var point = doorPosition + inward * distance + side * offset;
-            if (!Physics.Raycast(point + Vector3.up, Vector3.down, out var floor, 2, Solid) ||
-                Math.Abs(floor.point.y - doorPosition.y) > .25f ||
-                Physics.CheckCapsule(floor.point + Vector3.up * .4f, floor.point + Vector3.up * 1.7f,
-                    .35f, Solid, QueryTriggerInteraction.Ignore)) continue;
-            markerPosition = floor.point;
-            break;
+            var point = doorPosition + inward * distance;
+            if (!Physics.Raycast(point + Vector3.up, Vector3.down, out var floor, 2, Solid,
+                    QueryTriggerInteraction.Ignore) || Math.Abs(floor.point.y - doorPosition.y) > .25f) continue;
+            foreach (float direction in new[] { 1f, -1f })
+            {
+                var ray = new Ray(floor.point + Vector3.up * .8f, side * direction);
+                bool found = Physics.Raycast(ray, out var wall, 3, Solid, QueryTriggerInteraction.Ignore);
+                runeProbes.Add(new { distance, direction, found, wall_distance = wall.distance,
+                    normal_dot = found ? Vector3.Dot(wall.normal, -ray.direction) : 0 });
+                if (!found || Vector3.Dot(wall.normal, -ray.direction) < .7f) continue;
+                // Каменные стены неровные: плоскость рисунка ставим перед наиболее выступающей
+                // точкой стены во всём небольшом прямоугольнике чтения, сохраняя ориентацию двери.
+                float nearestWall = wall.distance;
+                bool continuousWall = true;
+                foreach (float along in new[] { -.18f, 0, .18f })
+                foreach (float height in new[] { .15f, .75f, 1.35f })
+                {
+                    var sample = new Ray(floor.point + inward * along + Vector3.up * height, ray.direction);
+                    if (!Physics.Raycast(sample, out var surface, 3, Solid, QueryTriggerInteraction.Ignore) ||
+                        Vector3.Dot(surface.normal, -ray.direction) < .7f) { continuousWall = false; break; }
+                    nearestWall = Math.Min(nearestWall, surface.distance);
+                }
+                if (!continuousWall) continue;
+                // Лицевая плоскость вдоль боковой стены, перпендикулярно плоскости двери.
+                // Основной объём уходит в стену; перед ней остаётся поверхность с рисунком.
+                markerNormal = -ray.direction;
+                markerPosition = floor.point + ray.direction * nearestWall - markerNormal * .1f;
+                break;
+            }
+            if (markerPosition != null) break;
         }
-        if (markerPosition == null) throw new InvalidOperationException("Нет доступного места для камня");
-        var rune = Spawn("BossStone_TheElder", markerPosition.Value, Quaternion.LookRotation(inward));
+        if (markerPosition == null) throw new InvalidOperationException("Нет боковой стены для рунного камня: " +
+            JsonConvert.SerializeObject(runeProbes));
+        var rune = Spawn("BossStone_TheElder", markerPosition.Value, Quaternion.LookRotation(markerNormal));
         var runeData = MiniBossRuntime.Data(rune.transform)!;
         runeData.Set(RuneKey, "Здесь покоится владыка " + name);
+        runeData.Set(RuneWallKey, true);
+        // Рисунок BossStone_TheElder обращён назад относительно локальной оси Z модели.
+        runeData.Set(RuneVisualKey, 2);
         runeData.Set(ForestRuntime.Tag, token);
         MiniBossRuntime.ConfigureRune(rune.GetComponent<ZNetView>());
+        var runeCheck = rune.GetComponent<MiniBossRuneShape>().CheckWallMount();
         root.Set(SpecKey, JsonConvert.SerializeObject(new { index, seed, token, name, prefab,
             modifiers, assistants, pool, combat_depth = 64, physical_depth = 5,
             boss_position = new[] { bossPosition.x, bossPosition.y, bossPosition.z },
             door_position = new[] { doorPosition.x, doorPosition.y, doorPosition.z },
-            room = room.Template.Name, clear_width = clearWidth, scale = 1.8, health = 12, damage = 5 }));
+            room = room.Template.Name, clear_width = clearWidth, scale = 1.8, health = 12, damage = 5,
+            rune_check = runeCheck }));
     }
 
     private static void Tag(Character creature, string token, int room, string role)
@@ -447,7 +506,10 @@ internal static class MiniBossTrial
             .Select(z => new { tag = z.GetString(ZDOVars.s_tag), position = new[] {
                 z.GetPosition().x, z.GetPosition().y, z.GetPosition().z } }).ToArray(),
         runestones = ForestFixture.AllZdos().Values.Where(z => z.GetString(RuneKey).Length > 0)
-            .Select(z => new { text = z.GetString(RuneKey), position = new[] {
+            .Select(z => new { text = z.GetString(RuneKey), wall_mounted = z.GetBool(RuneWallKey),
+                visual_quarter_turns = z.GetInt(RuneVisualKey),
+                rotation = new[] { z.GetRotation().x, z.GetRotation().y, z.GetRotation().z, z.GetRotation().w },
+                position = new[] {
                 z.GetPosition().x, z.GetPosition().y, z.GetPosition().z } }).ToArray()
     };
 
