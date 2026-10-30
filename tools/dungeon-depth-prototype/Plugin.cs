@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.9.2")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.10.0")]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 public sealed class Plugin : BaseUnityPlugin
@@ -23,6 +23,7 @@ public sealed class Plugin : BaseUnityPlugin
     private void Awake()
     {
         Instance = this;
+        MiniBossArena.InstallPrefabs();
         NavigationProfile.Install();
         ForestManual.Install(gameObject);
         bool probe = Config.Bind("Probe", "Enabled", false, "Автопроверки на отдельном сервере.").Value;
@@ -120,5 +121,6 @@ public sealed class Plugin : BaseUnityPlugin
         CombatRecorder.Close();
         harmony?.UnpatchSelf();
         NavigationProfile.Uninstall();
+        MiniBossArena.Uninstall();
     }
 }

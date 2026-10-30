@@ -144,7 +144,7 @@ internal sealed class ForestFixture : MonoBehaviour
         throw new ArgumentException("Неизвестная команда");
     }
 
-    private static float[] V(Vector3 p) => new[] { p.x, p.y, p.z };
+    internal static float[] V(Vector3 p) => new[] { p.x, p.y, p.z };
 
     private static object PlayerState()
     {

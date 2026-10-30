@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "scope": "isolated-four-custom-miniboss-arenas",
+  "observed_at_utc": "2026-10-30T11:11:41.041064+00:00",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "unchanged_dependencies": [
+    "miniboss-trial-092-20261030.lock.json"
+  ],
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.10.0",
+    "dll_sha256": "f67a4a6e6ddb46643c8e35cf3aaba0c067b03c497a10d5260b079168db67f728"
+  },
+  "configuration": {
+    "configs/miniboss-arena/README.txt": "002e99b08e3acc39e305e2564367d3305edbeefaf533b5bd0429e04bcc78701f",
+    "configs/miniboss-arena/candidate.cfg": "a680309c1fe827d4584e2f21150b4b0143b1a593c54018750557e5eb164de8ad",
+    "configs/miniboss-arena/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/miniboss-arena/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/miniboss-arena/forest-manual-test.json": "38fcccc4191bf854a0ef8178e14fbcef659ed74b868ddc7a794be2d1bf822802"
+  },
+  "preparation_id": "miniboss-arena-0100",
+  "reset_pov": false,
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.10.0.zip",
+    "sha256": "9a8fd7020648edfa77d3ade840af008cacbaa6e6244a81d3f4d3744a63f61ba4",
+    "bytes": 1089382,
+    "payload_files": 10,
+    "dll_sha256": "f67a4a6e6ddb46643c8e35cf3aaba0c067b03c497a10d5260b079168db67f728",
+    "directory": "installers",
+    "installer_revision": 2,
+    "installer_sha256": "61124e175650021112f611c980a9d99f8c54eef2cb39ac47af87de06c3ec5c3d"
+  },
+  "calibration_only": {
+    "installed_in_candidate": false,
+    "Monstrum": {
+      "version": "1.6.1",
+      "dll_sha256": "d3ae4a24cb6f89966cd6dcecc7fbafa7a7856e9d932ee25d92a137fdc2332f3c"
+    },
+    "Warfare": {
+      "version": "1.9.6",
+      "dll_sha256": "8d9699efa0aa4de118caab250845543eaa66d8b3ae7fff5107775cf9e5aa1984"
+    }
+  },
+  "trial": {
+    "count": 4,
+    "bosses": [
+      "Skeleton",
+      "Ghost"
+    ],
+    "initial_helpers": [
+      0,
+      1
+    ],
+    "helper_chance_percent": 15,
+    "forced_test_variants": true,
+    "random_modifiers_per_trial": 10,
+    "first_trial_forced_warded": true,
+    "model_scale": 1.8,
+    "health_factor": 12,
+    "damage_factor": 3,
+    "reward_items": 2,
+    "reward_quality": "Mythic",
+    "gold_inclusive": [
+      300,
+      900
+    ],
+    "normal_generation_enabled": false,
+    "initial_actor_count": 6,
+    "hall_meters": [
+      24,
+      20
+    ],
+    "ceiling_meters": 6,
+    "corridor_width_meters": 4,
+    "segment_meters": 4,
+    "approach_segments": 6,
+    "fight_distance_meters": 20,
+    "pedestals_per_arena": 6,
+    "pedestal_height_meters": 0.4,
+    "initial_value_count": 24,
+    "dungeon_build_test_key": true
+  },
+  "special": {
+    "source_projectile_speed_mps": 17,
+    "speed_factor": 1.5,
+    "speed_mps": 25.5,
+    "gravity_mps2": 5,
+    "maximum_path_meters": 40,
+    "radius_meters": 4,
+    "homing": false,
+    "permanent_wall_shielding": true,
+    "door_shielding": false,
+    "structure_damage_factor": 5,
+    "structure_damage_types": [
+      "Chop",
+      "Pickaxe"
+    ],
+    "guaranteed_hit_count": null,
+    "windup": "native-weapon-hit-event-scaled-by-animator-speed",
+    "cooldown": "native-weapon-ai-attack-interval"
+  },
+  "checks": {
+    "model_assertions": 28992,
+    "tool_tests": 44,
+    "build_warnings": 0,
+    "native_path_queries_passed": 8,
+    "native_skeleton_and_ghost_release": true,
+    "native_door_damage": true,
+    "native_single_explosion_damage": true,
+    "native_wall_shielding": true,
+    "native_return_and_single_heal": true,
+    "native_return_breaks_player_wall": true,
+    "picked_value_restart_preserved": true,
+    "hp_ward_partition_restart_preserved": true,
+    "installer_windows_upgrade_from_092": true,
+    "installer_payload_hashes": 10,
+    "installer_backup_restore": true,
+    "previous_092_rollback": true,
+    "pristine_world_restart": true,
+    "config_values_identical": true,
+    "character_files_preserved": 10,
+    "client_connected": false,
+    "client_gameplay_acceptance": false,
+    "two_client_ownership_handoff": false,
+    "manual_tasks_pending": [
+      "U1",
+      "U2",
+      "U3",
+      "U4",
+      "U5",
+      "U6",
+      "U7",
+      "U8",
+      "U9"
+    ],
+    "original_allowlist_preserved": true,
+    "remote_archive_sha256_verified": true
+  }
+}

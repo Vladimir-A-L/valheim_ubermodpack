@@ -14,6 +14,7 @@ void Refuses(Action action, string name)
 }
 
 var jsonOptions = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
+MiniBossArenaChecks.Run(Check);
 string rulesPath = args.Length > 0 ? args[0] : "configs/history/dungeon-rewards-20261028.json";
 var rules = System.Text.Json.JsonSerializer.Deserialize<RewardRules>(File.ReadAllText(rulesPath), jsonOptions)!;
 rules.Validate();

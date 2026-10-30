@@ -73,6 +73,15 @@ internal static class PovBridge
 
     internal static int Read(Character character) => Convert.ToInt32(read.Invoke(null, new object[] { character }));
 
+    internal static void RestoreWard(Character character)
+    {
+        var ward = Method("PassiveTree.RuneWard", "Of").Invoke(null, new object[] { character });
+        if (ward == null) return;
+        var type = ward.GetType();
+        AccessTools.Field(type, "Current").SetValue(ward, AccessTools.Field(type, "Max").GetValue(ward));
+        AccessTools.Method(type, "Save").Invoke(ward, null);
+    }
+
     internal static string[] Ids(int mask)
     {
         var modType = set.GetParameters()[1].ParameterType;

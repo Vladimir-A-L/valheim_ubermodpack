@@ -11,8 +11,8 @@
   </defs>
   <rect width="1040" height="650" fill="#ffffff"/>
   <g font-family="DejaVu Sans, Arial, sans-serif" fill="#17212f">
-    <text x="32" y="35" font-size="22" font-weight="bold">Арена мини-босса · схема для обсуждения</text>
-    <text x="32" y="60" font-size="14" fill="#475569">Без масштаба. Размеры уточняются по коллайдеру босса ×1,8.</text>
+    <text x="32" y="35" font-size="22" font-weight="bold">Арена мини-босса · кандидат 0.10.0</text>
+    <text x="32" y="60" font-size="14" fill="#475569">Без масштаба. Зал 24×20 м; потолок 6 м; коридор и сегмент — по 4 м.</text>
     <path d="M40 370 H220 V220 H440 V90 H990 V430 H440 V460 H220 V430 H40 Z"
           fill="#f1f5f9" stroke="#334155" stroke-width="8"/>
     <path d="M40 375 V425" stroke="#f1f5f9" stroke-width="10"/>

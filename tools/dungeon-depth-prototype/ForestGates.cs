@@ -58,7 +58,8 @@ internal static class ForestGates
         var zdo = Gate(__instance);
         // До первого открытия охрана и окружение не могут разрушить преграду сами.
         // Удар игрока разрешён, но не открывает проход, пока дверь действительно не разрушена.
-        return zdo == null || zdo.GetBool(ReleasedKey) || hit.GetAttacker() is Player;
+        return zdo == null || zdo.GetBool(ReleasedKey) || hit.GetAttacker() is Player ||
+            MiniBossRock.AllowedBarrier(__instance, hit);
     }
 
     internal static void Place(DungeonGenerator generator, ForestPlan.Layout plan, string token)

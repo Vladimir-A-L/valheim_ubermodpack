@@ -28,6 +28,7 @@ internal sealed class MiniBossRuntime : MonoBehaviour
     internal static void Install(GameObject host, Harmony harmony)
     {
         if (!MiniBossTrial.Enabled) return;
+        MiniBossArenaController.Install(harmony);
         harmony.Patch(PovBridge.Method("PassiveTree.EnemyDifficulty", "Desired"),
             postfix: new HarmonyMethod(typeof(MiniBossRuntime), nameof(Factor)));
         harmony.Patch(AccessTools.Method(typeof(Character), "OnDeath"),
@@ -60,6 +61,8 @@ internal sealed class MiniBossRuntime : MonoBehaviour
     private static void Attach(Character boss)
     {
         if (boss.GetComponent<MiniBossAppearance>() == null) boss.gameObject.AddComponent<MiniBossAppearance>();
+        if (MiniBossArena.Applies(boss) && boss.GetComponent<MiniBossArenaController>() == null)
+            boss.gameObject.AddComponent<MiniBossArenaController>();
     }
 
     private void Update()
@@ -77,7 +80,8 @@ internal sealed class MiniBossRuntime : MonoBehaviour
             {
                 var ai = creature.GetComponent<BaseAI>();
                 // Разрушенная дверь удаляется из ZDO: отсутствие преграды тоже выпускает охрану.
-                if (ai != null) ai.enabled = !gates.TryGetValue(data.GetString(ForestRuntime.Tag), out bool released)
+                if (ai != null) ai.enabled = MiniBossArena.Applies(creature) ||
+                    !gates.TryGetValue(data.GetString(ForestRuntime.Tag), out bool released)
                     || released;
             }
         }

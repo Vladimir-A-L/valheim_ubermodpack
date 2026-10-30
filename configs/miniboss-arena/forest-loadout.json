@@ -1,0 +1,72 @@
+[
+  {
+    "Prefab": "BowFineWood",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "MaceBronze",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "KnifeCopper",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "ShieldBronzeBuckler",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "Torch",
+    "Count": 1,
+    "Quality": 1
+  },
+  {
+    "Prefab": "DeerStew",
+    "Count": 20,
+    "Quality": 1
+  },
+  {
+    "Prefab": "MinceMeatSauce",
+    "Count": 20,
+    "Quality": 1
+  },
+  {
+    "Prefab": "CarrotSoup",
+    "Count": 20,
+    "Quality": 1
+  },
+  {
+    "Prefab": "QueensJam",
+    "Count": 20,
+    "Quality": 1
+  },
+  {
+    "Prefab": "ArrowFlint",
+    "Count": 100,
+    "Quality": 1
+  },
+  {
+    "Prefab": "HelmetBronze",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "ArmorBronzeChest",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "ArmorBronzeLegs",
+    "Count": 1,
+    "Quality": 3
+  },
+  {
+    "Prefab": "CapeDeerHide",
+    "Count": 1,
+    "Quality": 3
+  }
+]

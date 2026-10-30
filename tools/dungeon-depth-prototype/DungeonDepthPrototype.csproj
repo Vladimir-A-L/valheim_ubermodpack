@@ -4,10 +4,12 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>DungeonDepthPrototype</AssemblyName>
-    <Version>0.9.2</Version>
+    <Version>0.10.0</Version>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../.local/server-gameplay</GameDir>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="UnityEngine.AnimationModule"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.AnimationModule.dll" Private="false" />
     <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />
     <Reference Include="EpicLoot"
                HintPath="$(GameDir)/BepInEx/plugins/RandyKnapp-EpicLoot/EpicLoot.dll" Private="false" />

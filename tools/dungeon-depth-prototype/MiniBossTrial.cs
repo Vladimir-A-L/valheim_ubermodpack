@@ -32,6 +32,8 @@ internal static class MiniBossTrial
         "Четыре склепа только для изолированного ручного испытания.").Value;
     internal static bool Ready => Enabled && ZNet.instance != null && ZNetScene.instance != null &&
         ZNet.instance.GetWorldName() == "ForestCryptQA" && PovBridge.Assembly != null;
+    internal static bool CustomArena => Plugin.Instance.Config.Bind("MiniBossTrial", "CustomArena", false,
+        "Собственная арена только в новой отдельной пробе.").Value;
     private static readonly string[] FirstNames = { "Харальд", "Эйрик", "Ульф", "Бьёрн", "Ивар", "Сигурд",
         "Рагнар", "Гуннар", "Хакон", "Рольф", "Торстейн", "Лейф", "Хальвдан", "Хельги", "Орм", "Арнбьёрн",
         "Флоки", "Кетиль", "Свейн", "Торгрим", "Аскель", "Эгиль", "Грим", "Финн" };
@@ -51,6 +53,8 @@ internal static class MiniBossTrial
         if (!Ready) throw new InvalidOperationException("Испытание мини-боссов выключено");
         switch (command.Value<string>("action"))
         {
+            case "miniboss-arena-status": return MiniBossArena.Status();
+            case "miniboss-arena-probe": Server(); return MiniBossArenaProbe.Run(command);
             case "miniboss-catalog": return Catalog();
             case "miniboss-room-catalog": Server(); return RoomCatalog();
             case "miniboss-create": Server(); return Create(command.Value<int?>("seed") ?? 20261030);
@@ -252,7 +256,7 @@ internal static class MiniBossTrial
         return result.OrderBy(s => s, StringComparer.Ordinal).ToArray();
     }
 
-    private static GameObject Spawn(string prefab, Vector3 position, Quaternion rotation, string hub = "")
+    internal static GameObject Spawn(string prefab, Vector3 position, Quaternion rotation, string hub = "")
     {
         var template = ZNetScene.instance.GetPrefab(prefab) ?? throw new InvalidOperationException("Нет " + prefab);
         var obj = Object.Instantiate(template, position, rotation);
@@ -269,7 +273,7 @@ internal static class MiniBossTrial
         MiniBossRuntime.Data(obj.transform)!.Set(ZDOVars.s_tag, tag);
     }
 
-    private static string Name(int seed)
+    internal static string Name(int seed)
     {
         var used = new HashSet<string>(ForestFixture.AllZdos().Values.Select(z => z.GetString(SpecKey))
             .Where(s => s.Length > 0).Select(s => JObject.Parse(s).Value<string>("name") ?? ""));
@@ -301,17 +305,23 @@ internal static class MiniBossTrial
         {
             // Кратность 64 сохраняет положение входа относительно штатной границы зоны.
             var entrance = Hub + new Vector3(192 + i * 128, 0, 0);
-            var obj = Object.Instantiate(ZNetScene.instance.GetPrefab("DG_ForestCrypt"), entrance,
-                Quaternion.identity);
-            var generator = obj.GetComponent<DungeonGenerator>();
-            var zdo = MiniBossRuntime.Data(generator)!;
-            zdo.Set(IndexKey, i); zdo.Set(MiniBossRuntime.SeedKey, unchecked(seed + i * 104729));
-            generator.Generate(1001, ZoneSystem.SpawnMode.Full);
-            var plan = ForestRuntime.LastPlan ?? throw new InvalidOperationException("Нет плана склепа");
-            var first = plan.Rooms[0];
-            var slots = Slots(first, 1.1f, 3.5f);
-            if (slots.Count == 0) throw new InvalidOperationException("Нет места для обратного портала");
-            var inside = slots.OrderBy(p => Vector3.Distance(p, entrance)).First();
+            Vector3 inside;
+            if (CustomArena)
+                inside = MiniBossArenaTrial.Create(entrance, i, unchecked(seed + i * 104729));
+            else
+            {
+                var obj = Object.Instantiate(ZNetScene.instance.GetPrefab("DG_ForestCrypt"), entrance,
+                    Quaternion.identity);
+                var generator = obj.GetComponent<DungeonGenerator>();
+                var zdo = MiniBossRuntime.Data(generator)!;
+                zdo.Set(IndexKey, i); zdo.Set(MiniBossRuntime.SeedKey, unchecked(seed + i * 104729));
+                generator.Generate(1001, ZoneSystem.SpawnMode.Full);
+                var plan = ForestRuntime.LastPlan ?? throw new InvalidOperationException("Нет плана склепа");
+                var first = plan.Rooms[0];
+                var slots = Slots(first, 1.1f, 3.5f);
+                if (slots.Count == 0) throw new InvalidOperationException("Нет места для обратного портала");
+                inside = slots.OrderBy(p => Vector3.Distance(p, entrance)).First();
+            }
             string tag = "Испытание " + (i + 1);
             Portal(inside, Quaternion.identity, tag);
             var hubPortal = Hub + new Vector3(-7 + (i % 2) * 14, .5f, i < 2 ? 6 : -6);
@@ -474,7 +484,7 @@ internal static class MiniBossTrial
             rune_check = runeCheck }));
     }
 
-    private static void Tag(Character creature, string token, int room, string role)
+    internal static void Tag(Character creature, string token, int room, string role)
     {
         var zdo = MiniBossRuntime.Data(creature)!;
         zdo.Set(ActorKey, role); zdo.Set(ForestRuntime.Tag, token);
