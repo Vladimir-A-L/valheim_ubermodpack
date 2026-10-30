@@ -12,9 +12,9 @@ internal static class MiniBossArenaTrial
     {
         var frame = new ArenaFrame(origin, rotation ?? Quaternion.identity);
         string token = Guid.NewGuid().ToString("N"), name = MiniBossTrial.Name(seed);
-        GameObject Spawn(string prefab, Vector3 local, string role = "")
+        GameObject Spawn(string prefab, Vector3 local)
         {
-            var obj = MiniBossTrial.Spawn(prefab, frame.Point(local), frame.Rotation, role);
+            var obj = MiniBossTrial.Spawn(prefab, frame.Point(local), frame.Rotation);
             MiniBossRuntime.Data(obj.transform)!.Set(ForestRuntime.Tag, token); return obj;
         }
         var root = Spawn(MiniBossArenaPlan.Prefab, Vector3.zero);
@@ -81,21 +81,6 @@ internal static class MiniBossArenaTrial
         runeData.Set(MiniBossArenaFixtures.RuneScaleKey, .26f);
         runeData.Set(MiniBossArenaFixtures.RevisionKey, true);
         MiniBossRuntime.ConfigureRune(rune.GetComponent<ZNetView>());
-        // Угол для подготовки U6/U7; исходные материалы выдаёт отдельный тестовый сундук.
-        var supplies = Spawn("piece_chest_wood", new Vector3(27, .05f, 13), "supplies").GetComponent<Container>();
-        var inventory = supplies.GetInventory(); inventory.RemoveAll();
-        foreach (var item in new[] { ("Hammer", 1), ("Wood", 100), ("Stone", 50) })
-        {
-            var source = ObjectDB.instance.GetItemPrefab(item.Item1);
-            int remaining = item.Item2;
-            while (remaining > 0)
-            {
-                var value = source.GetComponent<ItemDrop>().m_itemData.Clone(); value.m_dropPrefab = source;
-                value.m_stack = Math.Min(remaining, value.m_shared.m_maxStackSize); remaining -= value.m_stack;
-                if (!inventory.AddItem(value)) throw new InvalidOperationException("Не помещаются материалы U6/U7");
-            }
-        }
-        HarmonyLib.AccessTools.Method(typeof(Container), "Save").Invoke(supplies, null);
         data.Set(MiniBossTrial.SpecKey, JsonConvert.SerializeObject(new { index, seed, token, name, prefab,
             modifiers, assistants, values = selected, custom_arena = 1,
             hall_area = 480, segment_length = MiniBossArenaPlan.Segment,
