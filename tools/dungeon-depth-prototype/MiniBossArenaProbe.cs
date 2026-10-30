@@ -27,6 +27,20 @@ internal static class MiniBossArenaProbe
             throw new InvalidOperationException("Нативная проба требует отдельного сервера без игроков");
         var origin = MiniBossTrial.Hub + new Vector3(192 + index * 128, 0, 0);
         if (phase == "release") { Reference = null; return new { released = true }; }
+        if (phase == "hub-visit")
+        {
+            Reference = MiniBossTrial.Hub + Vector3.up * 2;
+            ZNet.instance.SetReferencePosition(Reference.Value);
+            return new { reference_set = true, hub = true };
+        }
+        if (phase == "hub-check")
+        {
+            var target = MiniBossTrial.Hub + Vector3.up * 2;
+            bool floor = ZoneSystem.instance.FindFloor(target, out float height);
+            int tiles = ForestFixture.AllZdos().Values.Count(z => z.GetString(MiniBossTrial.HubKey) == "floor");
+            return new { floor, height, tiles, area_ready = ZNetScene.instance.IsAreaReady(target),
+                passed = floor && Math.Abs(height - MiniBossTrial.Hub.y) < 1 && tiles == 221 };
+        }
         if (phase == "visit")
         {
             Reference = MiniBossArena.Center(origin);

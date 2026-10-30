@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-30T11:31:52.938096+00:00",
+  "scope": "miniboss-manual-entry-fix",
+  "base_lock": "miniboss-arena-0100-20261030.lock.json",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.10.1",
+    "dll_sha256": "42ac18a35745f69252862068e3096f029bfc6653eda04439b0e15a382d9e6800"
+  },
+  "unchanged_dependencies": [
+    "miniboss-arena-0100-20261030.lock.json"
+  ],
+  "configuration": {
+    "configs/miniboss-arena/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/miniboss-arena/README.txt": "3b55debbcea59e71a198fa473f29c7f5a2275d4637455cd99ca59987e40929b1",
+    "configs/miniboss-arena/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/miniboss-arena/forest-manual-test.json":
+      "38fcccc4191bf854a0ef8178e14fbcef659ed74b868ddc7a794be2d1bf822802",
+    "configs/miniboss-arena/candidate.cfg": "deaeeb393aab6bc978255e550a185253922f33253838bf02c090bf1d7c33925e"
+  },
+  "preparation_id": "miniboss-arena-0100",
+  "reset_pov": false,
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.10.1.zip",
+    "sha256": "f65a90ddfac188bc3a736e6d648520455dfdbb498682ee841ec156e67bd947ac",
+    "bytes": 1090472,
+    "payload_files": 10,
+    "dll_sha256": "42ac18a35745f69252862068e3096f029bfc6653eda04439b0e15a382d9e6800",
+    "directory": "installers",
+    "installer_revision": 2
+  },
+  "checks": {
+    "build_errors": 0,
+    "build_warnings": 0,
+    "tool_tests": 44,
+    "model_rules_unchanged": true,
+    "windows_upgrade_from_0100": true,
+    "installer_payload_hashes": 10,
+    "backup_dll_restore": true,
+    "native_hub_floor": {
+      "floor": true,
+      "height": 4000.5,
+      "tiles": 221,
+      "area_ready": true,
+      "passed": true
+    },
+    "checkpoint_verified_files": 492,
+    "profile_nonposition_payload_identical": true,
+    "profile_logout_position_bytes": 12,
+    "preparation_id_unchanged": true,
+    "arena_values_preserved": 24,
+    "boss_health_and_ward_preserved": true,
+    "pristine_client_entry_accepted": false,
+    "agent_client_launched": false,
+    "server_restart_verified": true,
+    "native_hub_floor_after_restart": {
+      "floor": true,
+      "height": 4000.5,
+      "tiles": 221,
+      "area_ready": true,
+      "passed": true
+    }
+  },
+  "limitations": [
+    "User must confirm successful entry from their own PC.",
+    "U1-U9 remain pending."
+  ]
+}

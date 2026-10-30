@@ -117,11 +117,13 @@ internal sealed class ForestManual : MonoBehaviour
             if (p.Length != 3 || Array.Exists(p, v => float.IsNaN(v) || float.IsInfinity(v)) ||
                 float.IsNaN(settings.StartYaw) || float.IsInfinity(settings.StartYaw))
                 throw new InvalidOperationException("Не задана проверенная точка у входа");
-            if (player.IsDead() || player.IsTeleporting() || !player.IsOnGround() || InventoryGui.IsVisible())
+            if (player.IsDead() || player.IsTeleporting() || InventoryGui.IsVisible())
                 return false;
             var destination = new Vector3(p[0], p[1], p[2]);
             if (!teleportStarted)
             {
+                // Сохранённая точка старой площадки может оказаться над водой или под новым полом.
+                // Штатный дальний перенос разрешён и в падении/плавании; опора нужна только для выдачи комплекта.
                 // Штатный переход после появления может уже закончиться, но cooldown ещё действует.
                 if ((float)AccessTools.Field(typeof(Player), "m_teleportCooldown").GetValue(player) < 2f)
                     return false;
@@ -139,6 +141,7 @@ internal sealed class ForestManual : MonoBehaviour
                 throw new InvalidOperationException("Персонаж не достиг ожидаемой площадки у входа: " +
                     $"смещение по горизонтали {new Vector2(offset.x, offset.z).magnitude:F1} м, " +
                     $"по высоте {offset.y:F1} м");
+            if (!player.IsOnGround()) return false;
             if (settings.ResetInventory || !player.m_customData.ContainsKey(ForestLoadout.Key))
                 ForestLoadout.Grant(player, settings.ResetInventory);
             if (settings.ResetPov)
