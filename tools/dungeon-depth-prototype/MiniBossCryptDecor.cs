@@ -118,7 +118,7 @@ internal static class MiniBossCryptDecor
             Quaternion.identity);
         foreach (var p in MiniBossArenaPlan.Pedestals)
             Fit(visuals, "stoneslab", new Vector3(p.X, .2f, p.Z), new Vector3(1.5f, .4f, 1.5f),
-                Quaternion.identity);
+                Quaternion.identity).name = MiniBossValuePlacement.PedestalName;
         foreach (var p in new[] { (1.84f, -18f), (-1.84f, -6f), (12.84f, 8f), (7.16f, 20f),
                      (30.84f, 20f), (19f, 30.84f) })
         {

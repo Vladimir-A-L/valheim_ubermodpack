@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.12.1")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.12.2")]
 [BepInDependency("sighsorry.ServerManager", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]

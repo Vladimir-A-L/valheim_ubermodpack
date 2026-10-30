@@ -46,6 +46,9 @@ internal static class MiniBossInteriorProbe
         if (phase == "connect") return Attach(arena);
         if (phase == "check") return Check(arena, token);
         if (phase == "shell") return MiniBossShellProbe.Run(arena);
+        if (phase == "values") return MiniBossValueProbe.Check(arena);
+        if (phase == "value-models") return MiniBossValueProbe.Models(arena);
+        if (phase == "value-pick") return MiniBossValueProbe.Pick(arena);
         if (phase == "destroy-door")
         {
             var data = ForestFixture.AllZdos().Values.Single(z => z.GetString(ForestRuntime.Tag) == token &&

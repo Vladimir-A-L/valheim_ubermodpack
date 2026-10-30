@@ -101,6 +101,7 @@ internal sealed class MiniBossArena : MonoBehaviour
         var shape = treasure.AddComponent<BoxCollider>();
         shape.center = Vector3.up * .2f; shape.size = new Vector3(.5f, .4f, .5f);
         var pickable = treasure.AddComponent<PickableItem>();
+        treasure.AddComponent<MiniBossValuePlacement>();
         pickable.m_randomItemPrefabs = new[] { "Amber", "AmberPearl", "Ruby", "Coins" }.Select(name =>
             new PickableItem.RandomItem { m_itemPrefab = __instance.GetPrefab(name).GetComponent<ItemDrop>(),
                 m_stackMin = name == "Coins" ? 10 : 1, m_stackMax = name == "Coins" ? 30 : 1 }).ToArray();
