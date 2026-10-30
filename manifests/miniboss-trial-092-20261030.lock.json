@@ -37,7 +37,7 @@
     "dll_sha256": "c4fc2bd8fd0cf9372d6af59f8d7472cc1f4046992d0b93b84b8053a11ada954d"
   },
   "configuration": {
-    "configs/miniboss-trial/README.txt": "0f2d95fd94aa9af8be161f590d24e598e51ece9aa76b5ce9ca62a42140170778",
+    "configs/miniboss-trial/README.txt": "0517ccf1f84ef9e8bd1e9303632a53fa8939161b54ce36c309b04eddcc92e0f7",
     "configs/miniboss-trial/candidate.cfg": "75b5204ef0837881a6d448f8f03ba5b56f1b9ed28a05c4f661a54ec2a734cd57",
     "configs/miniboss-trial/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
     "configs/miniboss-trial/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
@@ -45,12 +45,14 @@
   },
   "preparation_id": "miniboss-092",
   "client_update": {
-    "archive": "ForestCryptQA-Drug-0.9.2.zip",
-    "sha256": "cf1ef73090bfc20cda238ed6ed60af4b45aa24a3e3b62730e8ebf1955b2203a3",
-    "bytes": 1060430,
+    "archive": "ForestCryptQA-Drug-0.9.2-installer2.zip",
+    "sha256": "6e8cb7d3fc5c8076f1da33066a82c17fcbd821efa47ab68135877725cff7d988",
+    "bytes": 1061064,
     "payload_files": 10,
     "dll_sha256": "c4fc2bd8fd0cf9372d6af59f8d7472cc1f4046992d0b93b84b8053a11ada954d",
-    "directory": "installers"
+    "directory": "installers",
+    "installer_revision": 2,
+    "installer_sha256": "871f2806c0200a2481fbba3c835e721df66b27b292f045af05ebd790de56186e"
   },
   "trial": {
     "count": 4,
@@ -109,7 +111,28 @@
     "final_clean_world_restart": true,
     "prepared_profile_preserved": true,
     "original_allowlist_restored": true,
-    "qa_account_removed": true
+    "qa_account_removed": true,
+    "installer_backup_rotation_windows": [
+      "empty",
+      "five",
+      "eight",
+      "pinned",
+      "collision",
+      "blocked_then_retry",
+      "all_pinned"
+    ],
+    "installer_revision_2_payload_identical": true
   },
-  "observed_at_utc": "2026-10-30T06:52:47.276057+00:00"
+  "observed_at_utc": "2026-10-30T07:12:15.290810+00:00",
+  "previous_client_updates": [
+    {
+      "archive": "ForestCryptQA-Drug-0.9.2.zip",
+      "sha256": "cf1ef73090bfc20cda238ed6ed60af4b45aa24a3e3b62730e8ebf1955b2203a3",
+      "bytes": 1060430,
+      "payload_files": 10,
+      "dll_sha256": "c4fc2bd8fd0cf9372d6af59f8d7472cc1f4046992d0b93b84b8053a11ada954d",
+      "directory": "installers",
+      "installer_revision": 1
+    }
+  ]
 }

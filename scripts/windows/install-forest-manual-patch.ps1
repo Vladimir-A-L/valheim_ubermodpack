@@ -77,7 +77,10 @@ if (-not (Test-Path -LiteralPath $SaveDirectory)) { throw 'Не найден к�
 $backupRoot = Join-Path $game 'ForestCryptQA-private-backups'
 $oldBackups = @(Get-ChildItem $backupRoot -Filter 'manual-*.zip' -File -ErrorAction SilentlyContinue |
     Sort-Object Name -Descending)
-if ($oldBackups.Count -ge 5) { throw 'Уже есть пять backup патча. Сохраните нужные копии вне папки игры.' }
+$pinnedBackups = @($oldBackups | Where-Object { Test-Path -LiteralPath ($_.FullName + '.keep') })
+if ($pinnedBackups.Count -ge 5) {
+    throw 'Пять backup защищены файлами .keep. Снимите защиту с одной копии; сами ZIP удалять не нужно.'
+}
 $volume = Get-Item -LiteralPath $game
 $backupSources = @(
     @{name='saves'; path=(Resolve-Path -LiteralPath $SaveDirectory).Path},
@@ -155,6 +158,35 @@ try {
             if ($hash -ne $file.sha256) { throw 'Не прошла проверка SHA256 backup.' }
         }
     } finally { $zip.Dispose() }
+    # Сначала проверяем новую копию, затем освобождаем место в списке последних пяти.
+    # Старые архивы сохраняются целиком; защищённые .keep остаются на прежних местах.
+    $toArchive = @($oldBackups | Where-Object { -not (Test-Path -LiteralPath ($_.FullName + '.keep')) } |
+        Select-Object -Skip (4 - $pinnedBackups.Count))
+    if ($toArchive.Count -gt 0) {
+        $archiveRoot = Join-Path $backupRoot 'archive'
+        New-Item -ItemType Directory -Path $archiveRoot -Force | Out-Null
+        if ((Get-Item -LiteralPath $archiveRoot).Attributes -band [IO.FileAttributes]::ReparsePoint) {
+            throw 'Каталог старых backup не должен быть ссылкой.'
+        }
+        foreach ($old in $toArchive) {
+            if ($old.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Backup не должен быть ссылкой.' }
+            $destination = Join-Path $archiveRoot $old.Name
+            if (Test-Path -LiteralPath $destination) {
+                $destination = Join-Path $archiveRoot ($old.BaseName + '-' + [Guid]::NewGuid().ToString('N') + '.zip')
+            }
+            $oldHash = (Get-FileHash -LiteralPath $old.FullName).Hash
+            [IO.File]::Move($old.FullName, $destination)
+            try {
+                if ((Get-FileHash -LiteralPath $destination).Hash -ne $oldHash) {
+                    throw 'Контрольная сумма перенесённого backup не совпала.'
+                }
+            } catch {
+                if (-not (Test-Path -LiteralPath $old.FullName)) { [IO.File]::Move($destination, $old.FullName) }
+                throw
+            }
+        }
+        Write-Host ('Старые backup сохранены в: ' + $archiveRoot)
+    }
     if (Get-Process valheim -ErrorAction SilentlyContinue) { throw 'Игра запущена во время резервирования.' }
     try {
         foreach ($item in $sources) {
