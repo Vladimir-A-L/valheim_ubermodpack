@@ -13,6 +13,7 @@ internal static class MiniBossCryptDecor
     private static readonly Dictionary<string, MeshFilter> meshes = new Dictionary<string, MeshFilter>();
     internal static void Reset()
     {
+        MiniBossShell.Reset();
         meshes.Clear(); foreach (var room in held) room.m_prefab.Release(); held.Clear(); scene = null;
     }
     private static void Load()
@@ -49,16 +50,9 @@ internal static class MiniBossCryptDecor
     {
         if (root.transform.Find("crypt-architecture") != null) return;
         Load();
+        MiniBossShell.Build(root, meshes["stonewall"].GetComponent<MeshRenderer>().sharedMaterial);
         var visuals = new GameObject("crypt-architecture"); visuals.transform.SetParent(root.transform, false);
-        // Принятые пол и потолок сохраняются без изменений.
-        foreach (var rect in MiniBossArenaPlan.Floor)
-        {
-            var center = new Vector3((rect.X0 + rect.X1) / 2, -.56f, (rect.Z0 + rect.Z1) / 2);
-            var size = new Vector3(rect.X1 - rect.X0 + .1f, 1, rect.Z1 - rect.Z0 + .1f);
-            Fit(visuals, "stonefloor2", center, size, Quaternion.identity);
-            center.y = 6.56f;
-            Fit(visuals, "stonefloor2", center, size, Quaternion.Euler(180, 0, 0));
-        }
+        // Видимые плиты сохранены; их неровную подложку заменяет замкнутый собственный mesh.
         foreach (var rect in MiniBossArenaPlan.Floor)
         for (float x = rect.X0; x < rect.X1; x += 2)
         for (float z = rect.Z0; z < rect.Z1; z += 2)
@@ -69,7 +63,7 @@ internal static class MiniBossCryptDecor
             Fit(visuals, "stonefloor2", new Vector3(x + width / 2, 6.255f, z + length / 2),
                 new Vector3(width, .5f, length), Quaternion.Euler(180, 0, 0));
         }
-        // Один задний слой вынесен наружу оболочки; швы кладки соседних рядов разнесены на 2 м.
+        // Швы кладки соседних рядов разнесены на 2 м; за кладкой находится одна замкнутая оболочка.
         foreach (var group in MiniBossArenaPlan.Walls()
                      .Where(w => !(w.AlongX && w.Z == MiniBossArenaPlan.ConnectionZ))
                      .GroupBy(w => (w.AlongX, Cross: w.AlongX ? w.Z : w.X)))
@@ -87,9 +81,6 @@ internal static class MiniBossCryptDecor
                 Vector3 Center(float middle, float y, float offset) => along ?
                     new Vector3(middle, y, cross + sign * offset) :
                     new Vector3(cross + sign * offset, y, middle);
-                Fit(visuals, "stonefloor2", Center((start + finish) / 2, 3, .35f),
-                    new Vector3(finish - start + .1f, .08f, 6.2f),
-                    Quaternion.Euler(sign * 90, along ? 0 : 90, 0));
                 for (int row = 0; row < 3; row++)
                 for (float edge = start - (row % 2) * 2; edge < finish; edge += 4)
                 {
@@ -137,7 +128,8 @@ internal static class MiniBossCryptDecor
         }
         var volume = new GameObject("crypt-environment"); volume.transform.SetParent(root.transform, false);
         var trigger = volume.AddComponent<BoxCollider>(); trigger.isTrigger = true;
-        trigger.center = new Vector3(14, 3, 3.5f); trigger.size = new Vector3(34, 8, 55);
+        // Переход раньше оставался за пределами зоны и получал наружное освещение.
+        trigger.center = new Vector3(14, 3, 1.5f); trigger.size = new Vector3(34, 8, 59);
         var env = volume.AddComponent<EnvZone>(); env.m_environment = "Crypt"; env.m_force = true;
     }
     private static void Torch(GameObject parent, Vector3 position)

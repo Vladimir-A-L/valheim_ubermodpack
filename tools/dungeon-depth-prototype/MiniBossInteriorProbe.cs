@@ -45,6 +45,7 @@ internal static class MiniBossInteriorProbe
         var arena = ZNetScene.instance.FindInstance(rootData.m_uid).GetComponent<MiniBossArena>();
         if (phase == "connect") return Attach(arena);
         if (phase == "check") return Check(arena, token);
+        if (phase == "shell") return MiniBossShellProbe.Run(arena);
         if (phase == "destroy-door")
         {
             var data = ForestFixture.AllZdos().Values.Single(z => z.GetString(ForestRuntime.Tag) == token &&
