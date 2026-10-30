@@ -14,6 +14,7 @@ internal sealed class MiniBossArena : MonoBehaviour
     private System.Collections.IEnumerator Start()
     {
         while (DungeonDB.instance == null) yield return null;
+        gameObject.AddComponent<ForestAtmosphere>();
         MiniBossCryptDecor.Build(gameObject);
     }
     private float nextConnection;

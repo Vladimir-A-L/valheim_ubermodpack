@@ -126,6 +126,7 @@ internal static class MiniBossCryptDecor
                 new Vector3(.18f, 1.1f, .18f), Quaternion.identity);
             Torch(visuals, new Vector3(p.Item1, 3.12f, p.Item2));
         }
+        if (ForestAtmosphere.Connected(root.transform)) return;
         var volume = new GameObject("crypt-environment"); volume.transform.SetParent(root.transform, false);
         var trigger = volume.AddComponent<BoxCollider>(); trigger.isTrigger = true;
         // Переход раньше оставался за пределами зоны и получал наружное освещение.

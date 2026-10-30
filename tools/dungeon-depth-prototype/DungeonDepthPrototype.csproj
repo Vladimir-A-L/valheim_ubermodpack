@@ -4,10 +4,12 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>DungeonDepthPrototype</AssemblyName>
-    <Version>0.13.0</Version>
+    <Version>0.14.0</Version>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../.local/server-gameplay</GameDir>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="UnityEngine.AudioModule"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.AudioModule.dll" Private="false" />
     <Reference Include="UnityEngine.ParticleSystemModule"
                HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.ParticleSystemModule.dll" Private="false" />
     <Reference Include="UnityEngine.AnimationModule"

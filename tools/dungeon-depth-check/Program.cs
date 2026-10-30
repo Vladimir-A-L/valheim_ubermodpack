@@ -102,6 +102,7 @@ Check(branch.Max() == 1, "Branching alone does not add depth");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 2) }, 0), "Invalid room id");
 Refuses(() => DungeonGeometryProbe.RoomGraph.Distances(2, new[] { (0, 1) }, -1), "Missing entrance");
 ForestPlanChecks.Run(Check);
+InteriorCoverageChecks.Run(Check);
 IntervalChecks.Run(Check);
 ManualLedgerChecks.Run(Check);
 var helperOutcomes = Enumerable.Range(0, 100).Select(MiniBossRules.Helpers).ToArray();

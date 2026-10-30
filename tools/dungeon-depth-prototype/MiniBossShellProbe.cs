@@ -111,19 +111,23 @@ internal static class MiniBossShellProbe
             opaque = r.sharedMaterial.renderQueue <= 2500 &&
                 r.sharedMaterial.GetTag("RenderType", false) != "Transparent" &&
                 r.shadowCastingMode == ShadowCastingMode.TwoSided }).ToArray();
-        var zone = arena.GetComponentInChildren<EnvZone>(); var box = zone.GetComponent<BoxCollider>();
+        var zone = arena.GetComponentInChildren<EnvZone>();
+        var box = zone == null ? null : zone.GetComponent<BoxCollider>();
+        string environment = zone == null ? "Crypt" : zone.m_environment;
         bool covered = MiniBossArenaPlan.ShellFloor.All(rect => new[] {
             new Vector3(rect.X0 + .05f, 1.6f, rect.Z0 + .05f),
-            new Vector3(rect.X1 - .05f, 1.6f, rect.Z1 - .05f) }.All(p =>
-                box.bounds.Contains(arena.transform.TransformPoint(p))));
-        var env = EnvMan.instance.m_environments.Single(e => e.m_name == zone.m_environment);
+            new Vector3(rect.X1 - .05f, 1.6f, rect.Z1 - .05f) }.All(p => {
+                var world = arena.transform.TransformPoint(p);
+                return box != null ? box.bounds.Contains(world) : ForestAtmosphere.Contains(world);
+            }));
+        var env = EnvMan.instance.m_environments.Single(e => e.m_name == environment);
         bool complete = filters.All(f => f.sharedMesh.normals.Length == f.sharedMesh.vertexCount &&
             f.sharedMesh.tangents.Length == f.sharedMesh.vertexCount &&
             f.sharedMesh.uv.Length == f.sharedMesh.vertexCount &&
             f.sharedMesh.colors.Length == f.sharedMesh.vertexCount);
         return new { rays, leaks, expected_exits = expectedExits, examples, triangles = visible.Count,
             materials, mesh_attributes_complete = complete, environment_covered = covered,
-            environment = zone.m_environment,
+            environment,
             sunlight_day = env.m_lightIntensityDay, sunlight_night = env.m_lightIntensityNight,
             elapsed_ms = started.ElapsedMilliseconds,
             passed = filters.Length == 2 && visible.Count > 0 && leaks == 0 && covered && complete &&

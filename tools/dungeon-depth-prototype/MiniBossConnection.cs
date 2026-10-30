@@ -15,6 +15,7 @@ internal static class MiniBossConnection
     internal const string CandidateKey = LinkKey + ".candidate", ReleasedKey = LinkKey + ".released";
     internal static void Install(Harmony harmony)
     {
+        ForestAtmosphere.Install(harmony);
         harmony.Patch(AccessTools.Method(typeof(ZDOMan), "HandleDestroyedZDO"),
             prefix: new HarmonyMethod(typeof(MiniBossConnection), nameof(DoorDestroyed)));
         harmony.Patch(AccessTools.Method(typeof(DungeonGenerator), "Spawn"),
@@ -39,6 +40,8 @@ internal static class MiniBossConnection
     }
     private static void GeneratorLoaded(DungeonGenerator __instance)
     {
+        if (__instance.GetComponent<ForestAtmosphere>() == null)
+            __instance.gameObject.AddComponent<ForestAtmosphere>();
         if (__instance.GetComponent<MiniBossRoomLink>() == null)
             __instance.gameObject.AddComponent<MiniBossRoomLink>();
     }
