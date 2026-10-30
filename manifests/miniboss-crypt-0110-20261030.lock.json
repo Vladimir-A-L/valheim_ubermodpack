@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-30T13:24:31.803161+00:00",
+  "scope": "miniboss-crypt-decoration-manual-candidate",
+  "base_lock": "miniboss-entry-0101-20261030.lock.json",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.11.0",
+    "dll_sha256": "e6800118a20a038a57a4a75c3e8f0d08b2cb6ae6eff9c80f2e9534ecf5828401"
+  },
+  "unchanged_dependencies": [
+    "miniboss-entry-0101-20261030.lock.json"
+  ],
+  "configuration": {
+    "configs/miniboss-arena/README.txt": "4f846d213f547fdb24e7c543c054da29fe37aab7323a9414489c2bc912f57f8c",
+    "configs/miniboss-arena/candidate.cfg": "38f2d949a835328433e55ed5c64ffd395463bbdff12a14f285166143ccf798f0",
+    "configs/miniboss-arena/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/miniboss-arena/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/miniboss-arena/forest-manual-test.json": "38fcccc4191bf854a0ef8178e14fbcef659ed74b868ddc7a794be2d1bf822802"
+  },
+  "preparation_id": "miniboss-arena-0100",
+  "reset_pov": false,
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.11.0.zip",
+    "sha256": "ee8f59fd27ea34999361746d43ace00db824b122323dc62f027cb55faae516a9",
+    "bytes": 1101238,
+    "payload_files": 10,
+    "dll_sha256": "e6800118a20a038a57a4a75c3e8f0d08b2cb6ae6eff9c80f2e9534ecf5828401",
+    "directory": "installers",
+    "installer_revision": 2
+  },
+  "checks": {
+    "build_errors": 0,
+    "build_warnings": 0,
+    "tool_tests": 44,
+    "model_assertions": 28992,
+    "native_navigation_segments": 8,
+    "native_return_barriers": [
+      "piece_cookingstation",
+      "wood_stack",
+      "stone_pile"
+    ],
+    "fixture_portal_damage_blocked": true,
+    "migration_idempotent": true,
+    "archer_equipment_persisted": true,
+    "save_restart_rollback": {
+      "restart": true,
+      "rollback_0101": true,
+      "character_files": 11,
+      "arenas": 5,
+      "values": 30,
+      "original_values_preserved": 24
+    },
+    "backup_files_before_migration": 843,
+    "windows_installer_upgrade_from_0101_and_restore": true,
+    "client_visual_geometry_and_rune": true,
+    "client_exit_passed": false,
+    "client_visual_dll_sha256": "c4aa515de7cb086b61ba58b6e78f321287c6c90903aa56226b3c2923b195a05b",
+    "final_delivery_client_connection": false
+  },
+  "open_checks": [
+    "Ручная приёмка D1–D6",
+    "Таймаут очереди ServerManager перед выходом после диагностических переносов",
+    "U9: совместная игра со вторым человеком"
+  ],
+  "ordinary_miniboss_generation_enabled": false
+}

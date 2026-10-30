@@ -214,11 +214,19 @@ internal sealed class MiniBossArenaController : MonoBehaviour
     }
     private void Move(float dt, Vector3 target) => AccessTools.Method(typeof(BaseAI), "MoveTo")
         .Invoke(ai, new object[] { dt, target, .5f, true });
-    private Collider? Blocker(Vector3 target) => Physics.SphereCastAll(transform.position + Vector3.up,
-        .65f, (target - transform.position).normalized, Math.Min(3, Vector3.Distance(target, transform.position)),
-        MiniBossArena.Solid, QueryTriggerInteraction.Ignore).OrderBy(h => h.distance)
-        .Select(h => h.collider).FirstOrDefault(c => c.GetComponentInParent<Piece>() is Piece piece &&
-            piece.GetCreator() != 0 && c.GetComponentInParent<MiniBossArena>() == null);
+    private Collider? Blocker(Vector3 target)
+    {
+        float radius = Math.Max(.35f, boss.GetRadius());
+        float height = boss.GetComponent<Collider>().bounds.size.y;
+        var direction = target - transform.position; direction.y = 0;
+        // Полная высота корпуса: низкие стопки и ножки готовочных стоек также могут перекрывать путь.
+        return Physics.CapsuleCastAll(transform.position + Vector3.up * (radius + .02f),
+                transform.position + Vector3.up * Math.Max(radius + .02f, height - radius), radius,
+                direction.normalized, Math.Min(3, direction.magnitude), MiniBossArena.Solid,
+                QueryTriggerInteraction.Ignore).OrderBy(h => h.distance).Select(h => h.collider)
+            .FirstOrDefault(c => c.GetComponentInParent<Piece>() is Piece piece && piece.GetCreator() != 0 &&
+                c.GetComponentInParent<MiniBossArena>() == null && !MiniBossArenaFixtures.Portal(piece));
+    }
     private void Begin(Vector3 target, Vector3 velocity, string identity)
     {
         var weapon = MiniBossAttackProfile.Weapon(boss);

@@ -11,6 +11,11 @@ namespace DungeonDepthPrototype;
 // Сетевой prefab состоит только из собственной геометрии; материал берётся из закреплённой игры.
 internal sealed class MiniBossArena : MonoBehaviour
 {
+    private System.Collections.IEnumerator Start()
+    {
+        while (DungeonDB.instance == null) yield return null;
+        MiniBossCryptDecor.Build(gameObject);
+    }
     internal const string Key = "uberdungeon.arena.v1", OriginKey = Key + ".origin";
     internal const string StateKey = Key + ".state", ValueKey = Key + ".value";
     internal const string MaximumKey = Key + ".flesh-maximum";
@@ -28,7 +33,7 @@ internal sealed class MiniBossArena : MonoBehaviour
     }
     private static bool KeepMaximum(Character __instance) =>
         (MiniBossRuntime.Data(__instance)?.GetFloat(MaximumKey) ?? 0) <= 0;
-    internal static void Uninstall() { early?.UnpatchSelf(); early = null; }
+    internal static void Uninstall() { early?.UnpatchSelf(); early = null; MiniBossCryptDecor.Reset(); }
 
     private static void Register(ZNetScene __instance)
     {
@@ -88,10 +93,9 @@ internal sealed class MiniBossArena : MonoBehaviour
 
     private static void Box(GameObject root, Material material, string name, Vector3 position, Vector3 size)
     {
-        var obj = GameObject.CreatePrimitive(PrimitiveType.Cube); obj.name = name;
+        var obj = new GameObject(name); obj.AddComponent<BoxCollider>();
         obj.layer = LayerMask.NameToLayer("static_solid"); obj.transform.SetParent(root.transform, false);
         obj.transform.localPosition = position; obj.transform.localScale = size;
-        obj.GetComponent<Renderer>().sharedMaterial = material;
     }
 
     internal static Vector3 Origin(Character boss) => MiniBossRuntime.Data(boss)!.GetVec3(OriginKey, Vector3.zero);

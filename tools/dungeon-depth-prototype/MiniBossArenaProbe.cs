@@ -23,8 +23,12 @@ internal static class MiniBossArenaProbe
         string phase = command.Value<string>("phase") ?? "catalog";
         int index = command.Value<int?>("index") ?? 0;
         if (phase == "snapshot") return Snapshot();
+        if (phase == "decor-status") return MiniBossCryptDecor.Status();
         if (ZNet.instance.GetPeers().Any(p => p.IsReady()))
             throw new InvalidOperationException("Нативная проба требует отдельного сервера без игроков");
+        if (phase == "decor-catalog") return MiniBossCryptDecor.Catalog();
+        if (phase == "decor-migrate") return MiniBossArenaFixtures.Migrate();
+        if (phase == "archer-create") return MiniBossArenaFixtures.CreateArcher();
         var origin = MiniBossTrial.Hub + new Vector3(192 + index * 128, 0, 0);
         if (phase == "release") { Reference = null; return new { released = true }; }
         if (phase == "hub-visit")
@@ -51,6 +55,7 @@ internal static class MiniBossArenaProbe
         var boss = Character.GetAllCharacters().Single(c => MiniBossArena.Applies(c) &&
             MiniBossRuntime.Data(c)!.GetString(MiniBossTrial.ActorKey) == "boss" &&
             Vector3.Distance(MiniBossArena.Origin(c), origin) < .1f);
+        if (phase == "portal-probe") return MiniBossCryptDecor.PortalProbe(boss, origin);
         if (phase == "navigation")
         {
             Physics.SyncTransforms();
@@ -99,7 +104,10 @@ internal static class MiniBossArenaProbe
         }
         if (phase == "barrier")
         {
-            var obj = MiniBossTrial.Spawn("woodwall", origin + new Vector3(0, 0, 5),
+            string kind = command.Value<string>("prefab") ?? "woodwall";
+            if (!new[] { "woodwall", "piece_cookingstation", "wood_stack", "stone_pile" }.Contains(kind))
+                throw new ArgumentException("Неподдержанная проверочная преграда");
+            var obj = MiniBossTrial.Spawn(kind, origin + new Vector3(0, .02f, 5),
                 Quaternion.identity);
             // Фикстура помечена как пользовательская преграда; ID не является учётной записью.
             MiniBossRuntime.Data(obj.transform)!.Set(ZDOVars.s_creator, 1L);

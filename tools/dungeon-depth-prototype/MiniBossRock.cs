@@ -151,6 +151,7 @@ internal sealed class MiniBossRock : MonoBehaviour
             var target = collider.GetComponentInParent<IDestructible>();
             if (target == null || ReferenceEquals(target, attacker) || !targets.Add(target) ||
                 collider.GetComponentInParent<MiniBossArena>() != null) continue;
+            if (target is Component fixture && MiniBossArenaFixtures.Portal(fixture)) continue;
             var character = target as Character;
             var point = character == null ? collider.ClosestPoint(position) : character.GetCenterPoint();
             if (MiniBossArena.Shielded(position, point)) { shielded++; continue; }

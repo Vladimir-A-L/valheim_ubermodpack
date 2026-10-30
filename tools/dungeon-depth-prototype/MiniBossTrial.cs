@@ -65,21 +65,31 @@ internal static class MiniBossTrial
             case "miniboss-gate-probe": Server(); return GateProbe(command.Value<string>("phase") ?? "create");
             case "miniboss-navigation-probe": Server();
                 return MiniBossNavigationProbe.Run(command.Value<string>("phase") ?? "status");
-            case "miniboss-rune-preview": return PreviewRune(command.Value<int>("quarter_turns"));
+            case "miniboss-rune-preview": return PreviewRune(command.Value<int>("quarter_turns"),
+                command.Value<float?>("normal_offset") ?? 0);
             default: throw new ArgumentException("Неизвестная команда мини-босса");
         }
     }
 
-    private static object PreviewRune(int quarterTurns)
+    private static object PreviewRune(int quarterTurns, float normalOffset)
     {
-        if (quarterTurns < 0 || quarterTurns > 3 || !ForestManual.Target(Player.m_localPlayer))
+        if (quarterTurns < 0 || quarterTurns > 3 || float.IsNaN(normalOffset) || Math.Abs(normalOffset) > 1 ||
+            !ForestManual.Target(Player.m_localPlayer))
             throw new InvalidOperationException("Нужен выбранный тестовый персонаж и поворот 0..3");
         var hover = Player.m_localPlayer.GetHoverObject();
         var view = hover == null ? null : hover.GetComponentInParent<ZNetView>();
+        if (view == null || !view.IsValid() || !view.GetZDO().GetBool(RuneWallKey))
+            view = Object.FindObjectsByType<ZNetView>(FindObjectsSortMode.None)
+                .Where(v => v.IsValid() && v.GetZDO().GetBool(RuneWallKey) &&
+                    Vector3.Distance(v.transform.position, Player.m_localPlayer.transform.position) < 3)
+                .OrderBy(v => Vector3.Distance(v.transform.position, Player.m_localPlayer.transform.position))
+                .FirstOrDefault();
         if (view == null || !view.IsValid() || !view.IsOwner() || !view.GetZDO().GetBool(RuneWallKey))
-            throw new InvalidOperationException("Нужно навести прицел на принадлежащий клиенту камень в стене");
+            throw new InvalidOperationException("Нужен принадлежащий клиенту камень в стене не далее трёх метров");
         view.GetZDO().Set(RuneVisualKey, quarterTurns);
-        return new { quarter_turns = quarterTurns, interaction_unchanged = true };
+        view.transform.position += view.transform.forward * normalOffset;
+        view.GetZDO().SetPosition(view.transform.position);
+        return new { quarter_turns = quarterTurns, normal_offset = normalOffset };
     }
 
     private static object Navigation()
@@ -267,7 +277,7 @@ internal static class MiniBossTrial
         return obj;
     }
 
-    private static void Portal(Vector3 position, Quaternion rotation, string tag)
+    internal static void Portal(Vector3 position, Quaternion rotation, string tag)
     {
         var obj = Spawn("portal_wood", position, rotation, "portal");
         MiniBossRuntime.Data(obj.transform)!.Set(ZDOVars.s_tag, tag);
@@ -519,11 +529,23 @@ internal static class MiniBossTrial
                 z.GetPosition().x, z.GetPosition().y, z.GetPosition().z } }).ToArray(),
         runestones = ForestFixture.AllZdos().Values.Where(z => z.GetString(RuneKey).Length > 0)
             .Select(z => new { text = z.GetString(RuneKey), wall_mounted = z.GetBool(RuneWallKey),
+                geometry = RuneGeometry(z),
                 visual_quarter_turns = z.GetInt(RuneVisualKey),
                 rotation = new[] { z.GetRotation().x, z.GetRotation().y, z.GetRotation().z, z.GetRotation().w },
                 position = new[] {
                 z.GetPosition().x, z.GetPosition().y, z.GetPosition().z } }).ToArray()
     };
+
+    private static object? RuneGeometry(ZDO data)
+    {
+        var obj = ZNetScene.instance.FindInstance(data.m_uid);
+        if (obj == null) return null;
+        return new { rotation = ForestFixture.V(obj.transform.eulerAngles),
+            scale = ForestFixture.V(obj.transform.localScale),
+            meshes = obj.GetComponentsInChildren<Renderer>(true).Select(r => new {
+                r.name, r.enabled, active = r.gameObject.activeInHierarchy,
+                center = ForestFixture.V(r.bounds.center), size = ForestFixture.V(r.bounds.size) }).ToArray() };
+    }
 
     private static object Probe()
     {

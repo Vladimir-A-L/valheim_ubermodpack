@@ -7,7 +7,7 @@ namespace DungeonDepthPrototype;
 
 internal static class MiniBossArenaTrial
 {
-    internal static Vector3 Create(Vector3 origin, int index, int seed)
+    internal static Vector3 Create(Vector3 origin, int index, int seed, bool archer = false)
     {
         string token = Guid.NewGuid().ToString("N"), name = MiniBossTrial.Name(seed);
         GameObject Spawn(string prefab, Vector3 local, string role = "")
@@ -16,8 +16,6 @@ internal static class MiniBossArenaTrial
             MiniBossRuntime.Data(obj.transform)!.Set(ForestRuntime.Tag, token); return obj;
         }
         var root = Spawn(MiniBossArenaPlan.Prefab, Vector3.zero);
-        // Только ручной отдельный мир: U7 должен дойти до нашего ограничения, а не штатного запрета подземелий.
-        ZoneSystem.instance.SetGlobalKey(GlobalKeys.DungeonBuild);
         var data = MiniBossRuntime.Data(root.transform)!;
         data.Set(MiniBossTrial.IndexKey, index);
         var gateObj = Spawn("dungeon_forestcrypt_door", Vector3.zero);
@@ -27,6 +25,7 @@ internal static class MiniBossArenaTrial
         gate.GetZDO().Set(MiniBossArena.Key, true); gate.GetZDO().Set(ZDOVars.s_state, 0);
         string prefab = index % 2 == 0 ? "Skeleton" : "Ghost";
         var boss = Spawn(prefab, MiniBossArena.Center(Vector3.zero)).GetComponent<Character>();
+        if (archer) MiniBossRuntime.Data(boss)!.Set(MiniBossArenaFixtures.WeaponKey, "skeleton_bow");
         MiniBossRuntime.Mark(boss, name, seed);
         var previous = UnityEngine.Random.state;
         string[] modifiers;
@@ -45,7 +44,7 @@ internal static class MiniBossArenaTrial
         bossData.Set(MiniBossArena.MaximumKey, boss.GetMaxHealth());
         bossData.Set(MiniBossArena.StateKey, JsonConvert.SerializeObject(new MiniBossArenaState()));
         boss.gameObject.AddComponent<MiniBossArenaController>();
-        var assistants = new string[MiniBossRules.TrialHelpers(index)];
+        var assistants = new string[archer ? 0 : MiniBossRules.TrialHelpers(index)];
         var random = new System.Random(unchecked(seed ^ 0x27182818));
         for (int i = 0; i < assistants.Length; i++)
         {
@@ -70,11 +69,14 @@ internal static class MiniBossArenaTrial
             }
             finally { UnityEngine.Random.state = randomState; }
         }
-        var rune = Spawn("BossStone_TheElder", new Vector3(-2, 0, -1.8f));
+        var rune = Spawn("BossStone_TheElder", new Vector3(-1.75f, 0, -1.8f));
         rune.transform.rotation = Quaternion.Euler(0, 90, 0);
         var runeData = MiniBossRuntime.Data(rune.transform)!;
+        runeData.SetRotation(rune.transform.rotation);
         runeData.Set(MiniBossTrial.RuneKey, "Здесь покоится владыка " + name);
         runeData.Set(MiniBossTrial.RuneWallKey, true); runeData.Set(MiniBossTrial.RuneVisualKey, 2);
+        runeData.Set(MiniBossArenaFixtures.RuneScaleKey, .26f);
+        runeData.Set(MiniBossArenaFixtures.RevisionKey, true);
         MiniBossRuntime.ConfigureRune(rune.GetComponent<ZNetView>());
         foreach (int segment in Enumerable.Range(1, 6))
         {
@@ -85,7 +87,6 @@ internal static class MiniBossArenaTrial
         }
         // Угол для подготовки U6/U7; исходные материалы выдаёт отдельный тестовый сундук.
         var supplies = Spawn("piece_chest_wood", new Vector3(27, .05f, 13), "supplies").GetComponent<Container>();
-        Spawn("piece_workbench", new Vector3(10, .05f, 5.9f), "workbench");
         var inventory = supplies.GetInventory(); inventory.RemoveAll();
         foreach (var item in new[] { ("Hammer", 1), ("Wood", 100), ("Stone", 50) })
         {
@@ -106,7 +107,7 @@ internal static class MiniBossArenaTrial
             combat_depth = 64, door_position = ForestFixture.V(origin),
             boss_position = ForestFixture.V(boss.transform.position),
             scale = 1.8, health = MiniBossRules.HealthFactor, damage = MiniBossRules.DamageFactor,
-            helper_chance_percent = MiniBossRules.HelperChancePercent, forced_test_variant = true }));
+            helper_chance_percent = MiniBossRules.HelperChancePercent, forced_test_variant = true, archer }));
         return origin + new Vector3(0, .08f, -22);
     }
 }

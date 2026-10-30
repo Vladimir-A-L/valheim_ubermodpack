@@ -29,6 +29,7 @@ internal sealed class MiniBossRuntime : MonoBehaviour
     {
         if (!MiniBossTrial.Enabled) return;
         MiniBossArenaController.Install(harmony);
+        MiniBossArenaFixtures.Install(harmony);
         harmony.Patch(PovBridge.Method("PassiveTree.EnemyDifficulty", "Desired"),
             postfix: new HarmonyMethod(typeof(MiniBossRuntime), nameof(Factor)));
         harmony.Patch(AccessTools.Method(typeof(Character), "OnDeath"),
@@ -96,7 +97,7 @@ internal sealed class MiniBossRuntime : MonoBehaviour
 
     internal static void ConfigureRune(ZNetView view)
     {
-        view.transform.localScale = Vector3.one * .2f;
+        view.transform.localScale = Vector3.one * view.GetZDO().GetFloat(MiniBossArenaFixtures.RuneScaleKey, .2f);
         if (view.GetComponent<MiniBossRuneShape>() == null) view.gameObject.AddComponent<MiniBossRuneShape>();
         foreach (var stand in view.GetComponentsInChildren<ItemStand>(true)) Object.Destroy(stand);
         foreach (var stone in view.GetComponentsInChildren<BossStone>(true)) Object.Destroy(stone);
