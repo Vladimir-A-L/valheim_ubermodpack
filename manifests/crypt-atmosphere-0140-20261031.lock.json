@@ -175,7 +175,7 @@
     "restored_files": 10,
     "previous_zip_unchanged": true,
     "client_run_by_agent": false,
-    "client_visual_and_audio_accepted": false
+    "client_visual_and_audio_accepted": true
   },
   "manual_handoff": {
     "at_utc": "2026-10-30T20:43:49.490531+00:00",
@@ -201,10 +201,12 @@
   "manual_acceptance": {
     "source": "user_report",
     "C1_0130_connection_and_map": true,
-    "R1_0140_atmosphere_and_resource_arena": false
+    "R1_0140_atmosphere_and_resource_arena": true,
+    "outside_environment_restored": true,
+    "report": "docs/reports/2026-10-31-r1-guard-radial-review.md"
   },
   "open_checks": [
-    "R1: атмосфера по пути к ресурсной арене, зал и выход на хаб",
+    "Охрана: скелет-лучник за стеной ресурсной арены; причина и восстановление не проверены",
     "U9: совместная игра со вторым человеком"
   ]
 }
