@@ -11,7 +11,8 @@ internal sealed class MiniBossArenaController : MonoBehaviour
     private Character boss = null!;
     private MonsterAI ai = null!;
     private ZNetView view = null!;
-    private Vector3 origin, safe;
+    private ArenaFrame frame;
+    private Vector3 safe;
     private float observe;
     internal MiniBossArenaState State = new MiniBossArenaState();
     private bool owned;
@@ -19,8 +20,8 @@ internal sealed class MiniBossArenaController : MonoBehaviour
     private void Awake()
     {
         boss = GetComponent<Character>(); ai = GetComponent<MonsterAI>(); view = GetComponent<ZNetView>();
-        origin = MiniBossArena.Origin(boss); safe = MiniBossArena.Inside(origin, transform.position) ?
-            transform.position : MiniBossArena.Center(origin);
+        frame = MiniBossArena.Frame(boss); safe = MiniBossArena.Inside(frame, transform.position) ?
+            transform.position : MiniBossArena.Center(frame);
     }
     internal static void Install(Harmony harmony)
     {
@@ -41,7 +42,6 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         Patch(typeof(Humanoid), "OnAttackTrigger", nameof(OrdinaryTrigger));
         Patch(typeof(Player), "TryPlacePiece", nameof(Build));
         Patch(typeof(Pickable), "Awake", nameof(PickableLoaded), true);
-        Patch(typeof(ZNetView), "Awake", nameof(Loaded), true);
         Patch(typeof(ZDO), "Deserialize", nameof(Received), true);
         Patch(typeof(ZSyncAnimation), "RPC_SetTrigger", nameof(Animation));
         var blink = PovBridge.Assembly.GetType("PassiveTree.RarityMods2+Habits");
@@ -63,12 +63,6 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         if (ZNet.instance != null && ZNet.instance.IsServer() &&
             (__instance.GetBool(MiniBossArena.Key) || __instance.GetBool(MiniBossArena.ValueKey)))
             ZDOMan.instance.SetDirtySector(__instance);
-    }
-    private static void Loaded(ZNetView __instance)
-    {
-        if (__instance.IsValid() && __instance.GetZDO().GetBool(MiniBossArena.Key) &&
-            __instance.GetZDO().GetBool(ForestGates.GateKey))
-        { __instance.m_syncInitialScale = true; __instance.transform.localScale = Vector3.one * 2; }
     }
     private static void PickableLoaded(Pickable __instance)
     {
@@ -112,7 +106,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         if (owned) return;
         State = JsonConvert.DeserializeObject<MiniBossArenaState>(view.GetZDO()
             .GetString(MiniBossArena.StateKey, "{}"))!;
-        origin = MiniBossArena.Origin(boss); owned = true;
+        frame = MiniBossArena.Frame(boss); owned = true;
     }
     private void Save() => view.GetZDO().Set(MiniBossArena.StateKey, JsonConvert.SerializeObject(State));
     internal bool Tick(float dt)
@@ -126,13 +120,13 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         if (observe <= 0)
         {
             observe = .2f;
-            foreach (var p in players.Where(p => !p.InGhostMode() && MiniBossArena.Near(origin, p.transform.position)))
+            foreach (var p in players.Where(p => !p.InGhostMode() && MiniBossArena.Near(frame, p.transform.position)))
                 if (BaseAI.IsEnemy(boss, p) && (ai.CanSeeTarget(p) || ai.CanHearTarget(p))) Join(p);
             if (AccessTools.Field(typeof(MonsterAI), "m_targetCreature").GetValue(ai) is Player target)
                 Join(target);
         }
         bool participantNear = players.Any(p => State.Participants.Contains(p.GetPlayerID()) &&
-            MiniBossArena.Near(origin, p.transform.position));
+            MiniBossArena.Near(frame, p.transform.position));
         State.Observe(true, participantNear);
         if (State.Casting)
         {
@@ -154,7 +148,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         if (State.Returning)
         {
             State.Mode = "return";
-            var center = MiniBossArena.Center(origin);
+            var center = MiniBossArena.Center(frame);
             if (Vector3.Distance(transform.position, center) <= 1)
             {
                 if (State.Arrive(true))
@@ -162,7 +156,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
                     boss.SetHealth(boss.GetMaxHealth()); PovBridge.RestoreWard(boss);
                     AccessTools.Field(typeof(MonsterAI), "m_targetCreature").SetValue(ai, null);
                     AccessTools.Method(typeof(BaseAI), "SetAlerted").Invoke(ai, new object[] { false });
-                    ai.StopMoving(); Face(new Vector3(9, 0, 10)); Save();
+                    ai.StopMoving(); Face(frame.Direction(new Vector3(9, 0, 10))); Save();
                 }
                 return false;
             }
@@ -178,11 +172,15 @@ internal sealed class MiniBossArenaController : MonoBehaviour
             Save(); return false;
         }
         State.Blocker = "";
-        if (!State.Engaged) { State.Mode = "idle"; ai.StopMoving(); Face(new Vector3(9, 0, 10)); Save(); return false; }
-        if (players.Any(p => MiniBossArena.Inside(origin, p.transform.position)))
+        if (!State.Engaged)
+        {
+            State.Mode = "idle"; ai.StopMoving(); Face(frame.Direction(new Vector3(9, 0, 10)));
+            Save(); return false;
+        }
+        if (players.Any(p => MiniBossArena.Inside(frame, p.transform.position)))
         {
             State.Mode = "melee";
-            var inside = players.Where(p => !p.InGhostMode() && MiniBossArena.Inside(origin, p.transform.position) &&
+            var inside = players.Where(p => !p.InGhostMode() && MiniBossArena.Inside(frame, p.transform.position) &&
                 State.Participants.Contains(p.GetPlayerID())).OrderBy(p =>
                 Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();
             if (inside != null) AccessTools.Field(typeof(MonsterAI), "m_targetCreature").SetValue(ai, inside);
@@ -190,11 +188,11 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         }
         State.Mode = "seek-shot";
         var enemy = players.Where(p => State.Participants.Contains(p.GetPlayerID()) &&
-                MiniBossArena.Near(origin, p.transform.position))
+                MiniBossArena.Near(frame, p.transform.position))
             .OrderBy(p => Vector3.Distance(p.transform.position, transform.position)).FirstOrDefault();
         if (enemy == null) { Save(); return false; }
         State.Target = enemy.GetPlayerID().ToString(System.Globalization.CultureInfo.InvariantCulture);
-        var shoot = origin + new Vector3(0, .08f, 2);
+        var shoot = frame.Point(new Vector3(0, .08f, 2));
         if (Vector3.Distance(transform.position, shoot) > .8f) Move(dt, Waypoint(false));
         else
         {
@@ -205,7 +203,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
     }
     private Vector3 Waypoint(bool returning)
     {
-        var route = MiniBossArenaPlan.Route.Select(p => origin + new Vector3(p.X, .08f, p.Z)).ToArray();
+        var route = MiniBossArenaPlan.Route.Select(p => frame.Point(new Vector3(p.X, .08f, p.Z))).ToArray();
         if (!returning) Array.Reverse(route);
         // Ближайшая достижимая точка по маршруту; стены запрещают срезать изгиб.
         for (int i = route.Length - 1; i >= 0; i--)
@@ -257,7 +255,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
     {
         if (!view.IsValid() || !view.IsOwner() || boss.IsDead()) return;
         var p = transform.position;
-        if (!MiniBossArena.Inside(origin, p) || p.z < origin.z + boss.GetRadius())
+        if (!MiniBossArena.Inside(frame, p) || frame.Local(p).z < boss.GetRadius())
         {
             p = safe; transform.position = p;
             var body = GetComponent<Rigidbody>(); body.position = p; body.linearVelocity = Vector3.zero;
@@ -269,7 +267,7 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         // Каждый клиент прикладывает мягкую физическую силу только своему персонажу. Телепортации нет.
         var player = Player.m_localPlayer;
         if (player == null || !view.IsValid() || boss.IsDead() || !ReadState().Returning ||
-            Time.time < pushAt || !MiniBossArena.Inside(origin, player.transform.position) ||
+            Time.time < pushAt || !MiniBossArena.Inside(frame, player.transform.position) ||
             Vector3.Distance(player.transform.position, transform.position) > boss.GetRadius() + 1.1f) return;
         pushAt = Time.time + .1f;
         var forward = Waypoint(true) - transform.position; forward.y = 0;
@@ -279,18 +277,18 @@ internal sealed class MiniBossArenaController : MonoBehaviour
         foreach (var direction in new[] { side, -side })
         {
             var p = player.transform.position;
-            if (!MiniBossArena.Inside(origin, p + direction) || Physics.CapsuleCast(p + Vector3.up * .4f,
+            if (!MiniBossArena.Inside(frame, p + direction) || Physics.CapsuleCast(p + Vector3.up * .4f,
                     p + Vector3.up * 1.5f, .35f, direction, .8f, mask, QueryTriggerInteraction.Ignore)) continue;
             player.ApplyPushback(direction, player.GetComponent<Rigidbody>().mass * 1.6f); break;
         }
     }
     internal bool BuildBlocked(Vector3 position, float radius = 0) => !boss.IsDead() && ReadState().Returning &&
-        MiniBossArena.Inside(origin, position) && DistanceToRoute(position) < 2.5f + radius;
+        MiniBossArena.Inside(frame, position) && DistanceToRoute(position) < 2.5f + radius;
     private float DistanceToRoute(Vector3 position)
     {
         float distance = float.MaxValue;
-        var points = MiniBossArenaPlan.Route.Select(p => origin + new Vector3(p.X, 0, p.Z)).ToArray();
-        position.y = origin.y;
+        var points = MiniBossArenaPlan.Route.Select(p => frame.Point(new Vector3(p.X, 0, p.Z))).ToArray();
+        position.y = frame.Origin.y;
         for (int i = 1; i < points.Length; i++)
         {
             var delta = points[i] - points[i - 1];

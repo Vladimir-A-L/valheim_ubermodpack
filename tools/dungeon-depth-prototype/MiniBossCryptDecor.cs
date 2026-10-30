@@ -47,10 +47,10 @@ internal static class MiniBossCryptDecor
     }
     internal static void Build(GameObject root)
     {
+        if (root.transform.Find("crypt-architecture") != null) return;
         Load();
         var visuals = new GameObject("crypt-architecture"); visuals.transform.SetParent(root.transform, false);
-        // Неровные края штатных камней не заполняют свой bounds целиком. Сплошной задний слой
-        // из штатного пола закрывает стыки; он не меняет коллайдеры и навигацию.
+        // Принятые пол и потолок сохраняются без изменений.
         foreach (var rect in MiniBossArenaPlan.Floor)
         {
             var center = new Vector3((rect.X0 + rect.X1) / 2, -.56f, (rect.Z0 + rect.Z1) / 2);
@@ -69,31 +69,56 @@ internal static class MiniBossCryptDecor
             Fit(visuals, "stonefloor2", new Vector3(x + width / 2, 6.255f, z + length / 2),
                 new Vector3(width, .5f, length), Quaternion.Euler(180, 0, 0));
         }
-        // Соседние метровые отрезки оболочки объединяются в штатные каменные секции длиной до 4 м.
-        foreach (var group in MiniBossArenaPlan.Walls().GroupBy(w => (w.AlongX, Cross: w.AlongX ? w.Z : w.X)))
+        // Один задний слой вынесен наружу оболочки; швы кладки соседних рядов разнесены на 2 м.
+        foreach (var group in MiniBossArenaPlan.Walls()
+                     .Where(w => !(w.AlongX && w.Z == MiniBossArenaPlan.ConnectionZ))
+                     .GroupBy(w => (w.AlongX, Cross: w.AlongX ? w.Z : w.X)))
         {
             var points = group.Select(w => w.AlongX ? w.X : w.Z).OrderBy(v => v).ToArray();
             for (int i = 0; i < points.Length;)
             {
-                int count = 1;
-                while (count < 4 && i + count < points.Length && points[i + count] == points[i] + count) count++;
-                float middle = points[i] - .5f + count / 2f;
-                var backing = group.Key.AlongX ? new Vector3(middle, 3, group.Key.Cross) :
-                    new Vector3(group.Key.Cross, 3, middle);
-                Fit(visuals, "stonefloor2", backing, new Vector3(count + .12f, .08f, 6.2f),
-                    Quaternion.Euler(90, group.Key.AlongX ? 0 : 90, 0));
-                Fit(visuals, "stonefloor2", backing, new Vector3(count + .12f, .08f, 6.2f),
-                    Quaternion.Euler(-90, group.Key.AlongX ? 0 : 90, 0));
-                for (int row = 0; row < 2; row++)
+                int end = i + 1;
+                while (end < points.Length && points[end] == points[end - 1] + 1) end++;
+                float start = points[i] - .5f, finish = points[end - 1] + .5f;
+                bool along = group.Key.AlongX;
+                float cross = group.Key.Cross;
+                float sign = MiniBossArenaPlan.FloorAt(along ? points[i] : cross + .5f,
+                    along ? cross + .5f : points[i]) ? -1 : 1;
+                Vector3 Center(float middle, float y, float offset) => along ?
+                    new Vector3(middle, y, cross + sign * offset) :
+                    new Vector3(cross + sign * offset, y, middle);
+                Fit(visuals, "stonefloor2", Center((start + finish) / 2, 3, .35f),
+                    new Vector3(finish - start + .1f, .08f, 6.2f),
+                    Quaternion.Euler(sign * 90, along ? 0 : 90, 0));
+                for (int row = 0; row < 3; row++)
+                for (float edge = start - (row % 2) * 2; edge < finish; edge += 4)
                 {
-                    var center = group.Key.AlongX ? new Vector3(middle, 1.5f + row * 3, group.Key.Cross) :
-                        new Vector3(group.Key.Cross, 1.5f + row * 3, middle);
-                    Fit(visuals, "stonewall", center, new Vector3(.3f, 3.08f, count + .08f),
-                        Quaternion.Euler(0, group.Key.AlongX ? 90 : 0, 0));
+                    float left = Math.Max(start, edge), right = Math.Min(finish, edge + 4);
+                    Fit(visuals, "stonewall", Center((left + right) / 2, 1 + row * 2, .08f + row * .015f),
+                        new Vector3(.42f, 2.13f, right - left + .16f),
+                        Quaternion.Euler(0, along ? 90 : 0, 0));
                 }
-                i += count;
+                i = end;
             }
         }
+        // Пол принятого коридора не меняется. Снаружи его плиты переходят к штатной толщине пола склепа.
+        for (int z = -28; z < -24; z += 2)
+        for (int x = -2; x < 2; x += 2)
+        {
+            float depth = z == -28 ? 1.001338f : .5f;
+            Fit(visuals, "stonefloor2", new Vector3(x + 1, -depth / 2 - .005f, z + 1),
+                new Vector3(2, depth, 2), Quaternion.identity);
+            Fit(visuals, "stonefloor2", new Vector3(x + 1, 6.255f, z + 1),
+                new Vector3(2, .5f, 2), Quaternion.Euler(180, 0, 0));
+        }
+        var cap = root.transform.Find(MiniBossConnection.CapName).gameObject;
+        Fit(cap, "stonewall", new Vector3(0, 1.2f, -28), new Vector3(.3f, 2.4f, 2),
+            Quaternion.Euler(0, 90, 0));
+        foreach (float x in new[] { -1.5f, 1.5f })
+            Fit(visuals, "stonepillar", new Vector3(x, 1.2f, -28), new Vector3(1, 2.4f, .3f),
+                Quaternion.identity);
+        Fit(visuals, "stoneslab", new Vector3(0, 4.2f, -28), new Vector3(4, 3.6f, .3f),
+            Quaternion.identity);
         // Штатные каменные столбы и плита образуют проём, сохраняя ширину 4 м и высоту 4,4 м.
         foreach (float x in new[] { -2.3f, 2.3f })
             Fit(visuals, "stonepillar", new Vector3(x, 2.2f, 0), new Vector3(.6f, 4.4f, .7f),
@@ -105,12 +130,42 @@ internal static class MiniBossCryptDecor
                 Quaternion.identity);
         foreach (var p in new[] { (1.84f, -18f), (-1.84f, -6f), (12.84f, 8f), (7.16f, 20f),
                      (30.84f, 20f), (19f, 30.84f) })
+        {
             Fit(visuals, "polySurface1", new Vector3(p.Item1, 2.6f, p.Item2),
                 new Vector3(.18f, 1.1f, .18f), Quaternion.identity);
+            Torch(visuals, new Vector3(p.Item1, 3.12f, p.Item2));
+        }
         var volume = new GameObject("crypt-environment"); volume.transform.SetParent(root.transform, false);
         var trigger = volume.AddComponent<BoxCollider>(); trigger.isTrigger = true;
         trigger.center = new Vector3(14, 3, 3.5f); trigger.size = new Vector3(34, 8, 55);
         var env = volume.AddComponent<EnvZone>(); env.m_environment = "Crypt"; env.m_force = true;
+    }
+    private static void Torch(GameObject parent, Vector3 position)
+    {
+        var source = held.SelectMany(r => r.RoomInPrefab.GetComponentsInChildren<Transform>(true))
+            .First(t => t.name == "CastleKit_groundtorch");
+        var holder = new GameObject("crypt-torch-flame"); holder.SetActive(false);
+        holder.transform.SetParent(parent.transform, false); holder.transform.localPosition = position;
+        // Только штатные визуальные эффекты. Поведение топлива, коллайдеры и сетевые объекты не копируются.
+        foreach (Transform child in source)
+        {
+            if (child.GetComponentsInChildren<ParticleSystem>(true).Length == 0 &&
+                child.GetComponentsInChildren<Light>(true).Length == 0) continue;
+            var obj = UnityEngine.Object.Instantiate(child.gameObject, holder.transform, false);
+            foreach (var component in obj.GetComponentsInChildren<Component>(true))
+                if (component is MonoBehaviour || component is Collider || component is Rigidbody)
+                    UnityEngine.Object.DestroyImmediate(component);
+            obj.SetActive(true);
+        }
+        // Эффекты исходного факела размещены относительно его основания; переносим пламя к вершине mesh.
+        var particles = holder.GetComponentsInChildren<ParticleSystem>(true);
+        if (particles.Length == 0) throw new InvalidOperationException("В штатном факеле не найдено пламя");
+        Vector3 flame = holder.transform.InverseTransformPoint(particles[0].transform.position);
+        foreach (Transform child in holder.transform) child.localPosition -= flame;
+        foreach (var light in holder.GetComponentsInChildren<Light>(true))
+        { light.enabled = true; light.shadows = LightShadows.None; }
+        holder.SetActive(true);
+        foreach (var particle in particles) { var main = particle.main; main.loop = true; particle.Play(); }
     }
     internal static object Catalog()
     {

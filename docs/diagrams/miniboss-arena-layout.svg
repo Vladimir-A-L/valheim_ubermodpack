@@ -3,6 +3,7 @@
   <title id="title">Схема отдельной арены мини-босса</title>
   <desc id="description">Прямой подход из шести сегментов ведёт к двери. За дверью широкий Г-образный
     предбанник скрывает центр ровного зала. Низкие постаменты стоят у стен вне маршрута босса.
+    За шестым сегментом добавлен переход с защитной заглушкой.
     Схема не в масштабе; пять сегментов отсчитываются по пути от двери.</desc>
   <defs>
     <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto">
@@ -11,10 +12,13 @@
   </defs>
   <rect width="1040" height="650" fill="#ffffff"/>
   <g font-family="DejaVu Sans, Arial, sans-serif" fill="#17212f">
-    <text x="32" y="35" font-size="22" font-weight="bold">Арена мини-босса · кандидат 0.10.0</text>
-    <text x="32" y="60" font-size="14" fill="#475569">Без масштаба. Зал 24×20 м; потолок 6 м; коридор и сегмент — по 4 м.</text>
+    <text x="32" y="35" font-size="22" font-weight="bold">Арена мини-босса · кандидат 0.12.0</text>
+    <text x="32" y="60" font-size="14" fill="#475569">
+      Без масштаба. Зал 24×20 м; потолок 6 м; коридор и сегмент — по 4 м.</text>
     <path d="M40 370 H220 V220 H440 V90 H990 V430 H440 V460 H220 V430 H40 Z"
           fill="#f1f5f9" stroke="#334155" stroke-width="8"/>
+    <rect x="8" y="370" width="32" height="60" fill="#fef3c7" stroke="#334155" stroke-width="3"/>
+    <path d="M8 370 V430" stroke="#334155" stroke-width="7"/>
     <path d="M40 375 V425" stroke="#f1f5f9" stroke-width="10"/>
     <path d="M220 220 H340 V340 H220 Z" fill="#64748b" stroke="#334155" stroke-width="6"/>
     <path d="M440 90 V220 M440 300 V430" stroke="#334155" stroke-width="8"/>
@@ -67,7 +71,7 @@
     <text x="650" y="550" font-size="14">Босс остаётся за порогом двери.</text>
     <text x="650" y="574" font-size="14">Босс проходит весь изгиб предбанника.</text>
     <text x="32" y="629" font-size="13" fill="#475569">
-      Число постаментов условное; схема не подтверждает игровую навигацию.
+      Слева переход 4 м: стык 2×2,4 м на уровне пола, заглушка до подключения штатной комнаты.
     </text>
   </g>
 </svg>

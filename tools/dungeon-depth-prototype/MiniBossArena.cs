@@ -17,6 +17,7 @@ internal sealed class MiniBossArena : MonoBehaviour
         MiniBossCryptDecor.Build(gameObject);
     }
     internal const string Key = "uberdungeon.arena.v1", OriginKey = Key + ".origin";
+    internal const string RotationKey = Key + ".rotation";
     internal const string StateKey = Key + ".state", ValueKey = Key + ".value";
     internal const string MaximumKey = Key + ".flesh-maximum";
     internal static readonly int Solid = LayerMask.GetMask("Default", "static_solid", "Default_small",
@@ -26,6 +27,9 @@ internal sealed class MiniBossArena : MonoBehaviour
     {
         if (!MiniBossTrial.Enabled || early != null) return;
         early = new Harmony(Plugin.Guid + ".arena-prefabs");
+        ServerExitRepair.Install(early);
+        early.Patch(AccessTools.Method(typeof(ZNetView), "Awake"),
+            prefix: new HarmonyMethod(typeof(MiniBossArena), nameof(DoorLoading)));
         early.Patch(AccessTools.Method(typeof(ZNetScene), "Awake"),
             postfix: new HarmonyMethod(typeof(MiniBossArena), nameof(Register)) { priority = Priority.Last });
         early.Patch(AccessTools.Method(typeof(Character), "SetupMaxHealth"),
@@ -33,6 +37,13 @@ internal sealed class MiniBossArena : MonoBehaviour
     }
     private static bool KeepMaximum(Character __instance) =>
         (MiniBossRuntime.Data(__instance)?.GetFloat(MaximumKey) ?? 0) <= 0;
+    private static void DoorLoading(ZNetView __instance)
+    {
+        // До чтения масштаба исходным Awake, включая первые объекты входящей сцены.
+        var data = ZNetView.m_initZDO;
+        if (data != null && data.GetBool(Key) && data.GetBool(ForestGates.GateKey))
+            __instance.m_syncInitialScale = true;
+    }
     internal static void Uninstall() { early?.UnpatchSelf(); early = null; MiniBossCryptDecor.Reset(); }
 
     private static void Register(ZNetScene __instance)
@@ -52,7 +63,7 @@ internal sealed class MiniBossArena : MonoBehaviour
             return obj;
         }
         var arena = Prefab(MiniBossArenaPlan.Prefab); arena.AddComponent<MiniBossArena>();
-        foreach (var r in MiniBossArenaPlan.Floor)
+        foreach (var r in MiniBossArenaPlan.ShellFloor)
         {
             Box(arena, material, "floor", new Vector3((r.X0 + r.X1) / 2f, -.25f, (r.Z0 + r.Z1) / 2f),
                 new Vector3(r.X1 - r.X0, .5f, r.Z1 - r.Z0));
@@ -60,8 +71,12 @@ internal sealed class MiniBossArena : MonoBehaviour
                 new Vector3(r.X1 - r.X0, .5f, r.Z1 - r.Z0));
         }
         foreach (var wall in MiniBossArenaPlan.Walls())
+        {
+            if (wall.AlongX && wall.Z == MiniBossArenaPlan.ConnectionZ) continue;
             Box(arena, material, "wall", new Vector3(wall.X, 3, wall.Z),
                 wall.AlongX ? new Vector3(1.02f, 6, .3f) : new Vector3(.3f, 6, 1.02f));
+        }
+        MiniBossConnection.Build(arena);
         // Заполняет проём над дверью; коробка двери остаётся разрушаемым отдельным объектом.
         Box(arena, material, "lintel", new Vector3(0, 5.2f, 0), new Vector3(4, 1.6f, .3f));
         foreach (var p in MiniBossArenaPlan.Pedestals)
@@ -99,13 +114,20 @@ internal sealed class MiniBossArena : MonoBehaviour
     }
 
     internal static Vector3 Origin(Character boss) => MiniBossRuntime.Data(boss)!.GetVec3(OriginKey, Vector3.zero);
+    internal static ArenaFrame Frame(Character boss) => new ArenaFrame(Origin(boss),
+        Quaternion.Euler(MiniBossRuntime.Data(boss)!.GetVec3(RotationKey, Vector3.zero)));
     internal static bool Applies(Character c) => MiniBossRuntime.IsBoss(c) &&
         MiniBossRuntime.Data(c)!.GetBool(Key);
     internal static bool Inside(Vector3 origin, Vector3 position)
-    { var p = position - origin; return MiniBossArenaPlan.Inside(p.x, p.y, p.z); }
+        => Inside(new ArenaFrame(origin, Quaternion.identity), position);
+    internal static bool Inside(ArenaFrame frame, Vector3 position)
+    { var p = frame.Local(position); return MiniBossArenaPlan.Inside(p.x, p.y, p.z); }
     internal static bool Near(Vector3 origin, Vector3 position)
-    { var p = position - origin; return MiniBossArenaPlan.InFightZone(p.x, p.y, p.z); }
-    internal static Vector3 Center(Vector3 origin) => origin + new Vector3(19, .08f, 21);
+        => Near(new ArenaFrame(origin, Quaternion.identity), position);
+    internal static bool Near(ArenaFrame frame, Vector3 position)
+    { var p = frame.Local(position); return MiniBossArenaPlan.InFightZone(p.x, p.y, p.z); }
+    internal static Vector3 Center(Vector3 origin) => Center(new ArenaFrame(origin, Quaternion.identity));
+    internal static Vector3 Center(ArenaFrame frame) => frame.Point(new Vector3(19, .08f, 21));
     internal static bool Shielded(Vector3 from, Vector3 to) => Physics.RaycastAll(from,
         (to - from).normalized, Vector3.Distance(from, to), Solid, QueryTriggerInteraction.Ignore)
         .Any(h => h.collider.GetComponentInParent<MiniBossArena>() != null);

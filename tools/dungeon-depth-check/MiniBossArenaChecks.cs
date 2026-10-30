@@ -13,6 +13,11 @@ internal static class MiniBossArenaChecks
             check(MiniBossArenaPlan.Inside(p.X, 0, p.Z), "Весь маршрут возврата внутри арены");
         check(MiniBossArenaPlan.FlightDistance == 40 && MiniBossArenaPlan.CorridorWidth == 4,
             "Дальность и полный радиус взрыва взяты из геометрии");
+        check(MiniBossArenaPlan.Floor[0].Z0 == -24 && MiniBossArenaPlan.Floor[0].Z1 == 0 &&
+            MiniBossArenaPlan.FloorAt(0, -28) && !MiniBossArenaPlan.InFightZone(0, 0, -26),
+            "Переход снаружи шести сегментов не расширяет зону боя");
+        check(!MiniBossArenaPlan.Walls().Any(w => w.AlongX && w.Z == -24 && Math.Abs(w.X) < 2),
+            "На стыке перехода и коридора нет внутренней стенки");
         var state = new MiniBossArenaState { Engaged = true };
         check(state.MayCast(false, false) && !state.MayCast(true, false), "Танк внутри запрещает новый бросок");
         state.Casting = true; state.Windup = .7f; state.CastSequence = 3;

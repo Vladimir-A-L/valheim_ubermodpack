@@ -4,10 +4,12 @@
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <AssemblyName>DungeonDepthPrototype</AssemblyName>
-    <Version>0.11.0</Version>
+    <Version>0.12.0</Version>
     <GameDir Condition="'$(GameDir)' == ''">$(MSBuildThisFileDirectory)../../.local/server-gameplay</GameDir>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="UnityEngine.ParticleSystemModule"
+               HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.ParticleSystemModule.dll" Private="false" />
     <Reference Include="UnityEngine.AnimationModule"
                HintPath="$(GameDir)/valheim_server_Data/Managed/UnityEngine.AnimationModule.dll" Private="false" />
     <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />

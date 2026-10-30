@@ -54,6 +54,7 @@ internal static class MiniBossTrial
         switch (command.Value<string>("action"))
         {
             case "miniboss-arena-status": return MiniBossArena.Status();
+            case "miniboss-interior-probe": Server(); return MiniBossInteriorProbe.Run(command);
             case "miniboss-arena-probe": Server(); return MiniBossArenaProbe.Run(command);
             case "miniboss-catalog": return Catalog();
             case "miniboss-room-catalog": Server(); return RoomCatalog();

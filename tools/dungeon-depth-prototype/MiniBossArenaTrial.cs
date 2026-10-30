@@ -7,12 +7,14 @@ namespace DungeonDepthPrototype;
 
 internal static class MiniBossArenaTrial
 {
-    internal static Vector3 Create(Vector3 origin, int index, int seed, bool archer = false)
+    internal static Vector3 Create(Vector3 origin, int index, int seed, bool archer = false,
+        Quaternion? rotation = null)
     {
+        var frame = new ArenaFrame(origin, rotation ?? Quaternion.identity);
         string token = Guid.NewGuid().ToString("N"), name = MiniBossTrial.Name(seed);
         GameObject Spawn(string prefab, Vector3 local, string role = "")
         {
-            var obj = MiniBossTrial.Spawn(prefab, origin + local, Quaternion.identity, role);
+            var obj = MiniBossTrial.Spawn(prefab, frame.Point(local), frame.Rotation, role);
             MiniBossRuntime.Data(obj.transform)!.Set(ForestRuntime.Tag, token); return obj;
         }
         var root = Spawn(MiniBossArenaPlan.Prefab, Vector3.zero);
@@ -41,6 +43,7 @@ internal static class MiniBossArenaTrial
         MiniBossTrial.Tag(boss, token, 0, "boss");
         var bossData = MiniBossRuntime.Data(boss)!;
         bossData.Set(MiniBossArena.Key, true); bossData.Set(MiniBossArena.OriginKey, origin);
+        bossData.Set(MiniBossArena.RotationKey, frame.Rotation.eulerAngles);
         bossData.Set(MiniBossArena.MaximumKey, boss.GetMaxHealth());
         bossData.Set(MiniBossArena.StateKey, JsonConvert.SerializeObject(new MiniBossArenaState()));
         boss.gameObject.AddComponent<MiniBossArenaController>();
@@ -70,7 +73,7 @@ internal static class MiniBossArenaTrial
             finally { UnityEngine.Random.state = randomState; }
         }
         var rune = Spawn("BossStone_TheElder", new Vector3(-1.75f, 0, -1.8f));
-        rune.transform.rotation = Quaternion.Euler(0, 90, 0);
+        rune.transform.rotation = frame.Rotation * Quaternion.Euler(0, 90, 0);
         var runeData = MiniBossRuntime.Data(rune.transform)!;
         runeData.SetRotation(rune.transform.rotation);
         runeData.Set(MiniBossTrial.RuneKey, "Здесь покоится владыка " + name);
@@ -78,13 +81,6 @@ internal static class MiniBossArenaTrial
         runeData.Set(MiniBossArenaFixtures.RuneScaleKey, .26f);
         runeData.Set(MiniBossArenaFixtures.RevisionKey, true);
         MiniBossRuntime.ConfigureRune(rune.GetComponent<ZNetView>());
-        foreach (int segment in Enumerable.Range(1, 6))
-        {
-            var sign = Spawn("sign", new Vector3(1.85f, 1.4f, -segment * MiniBossArenaPlan.Segment + .2f), "sign");
-            sign.transform.rotation = Quaternion.Euler(0, 270, 0);
-            MiniBossRuntime.Data(sign.transform)!.Set(ZDOVars.s_text,
-                segment == 5 ? "5 · ГРАНИЦА БОЯ\nДальше — возврат" : segment + " · сегмент");
-        }
         // Угол для подготовки U6/U7; исходные материалы выдаёт отдельный тестовый сундук.
         var supplies = Spawn("piece_chest_wood", new Vector3(27, .05f, 13), "supplies").GetComponent<Container>();
         var inventory = supplies.GetInventory(); inventory.RemoveAll();
@@ -108,6 +104,6 @@ internal static class MiniBossArenaTrial
             boss_position = ForestFixture.V(boss.transform.position),
             scale = 1.8, health = MiniBossRules.HealthFactor, damage = MiniBossRules.DamageFactor,
             helper_chance_percent = MiniBossRules.HelperChancePercent, forced_test_variant = true, archer }));
-        return origin + new Vector3(0, .08f, -22);
+        return frame.Point(new Vector3(0, .08f, -22));
     }
 }

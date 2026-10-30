@@ -28,6 +28,7 @@ internal static class MiniBossArenaProbe
             throw new InvalidOperationException("Нативная проба требует отдельного сервера без игроков");
         if (phase == "decor-catalog") return MiniBossCryptDecor.Catalog();
         if (phase == "decor-migrate") return MiniBossArenaFixtures.Migrate();
+        if (phase == "interior-migrate") return MiniBossArenaFixtures.MigrateInterior();
         if (phase == "archer-create") return MiniBossArenaFixtures.CreateArcher();
         var origin = MiniBossTrial.Hub + new Vector3(192 + index * 128, 0, 0);
         if (phase == "release") { Reference = null; return new { released = true }; }

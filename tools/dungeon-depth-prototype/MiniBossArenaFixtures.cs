@@ -30,6 +30,33 @@ internal static class MiniBossArenaFixtures
     private static bool Damage(Component __instance, HitData hit) =>
         !Portal(__instance) || hit.GetAttacker() == null || hit.GetAttacker().IsPlayer();
 
+    internal static object MigrateInterior()
+    {
+        if (!ZNet.instance.IsServer() || ZNet.instance.GetPeers().Any(p => p.IsReady()))
+            throw new InvalidOperationException("Миграция требует свободного QA-сервера и остановленного backup");
+        var all = ForestFixture.AllZdos().Values.ToArray();
+        var arenas = all.Where(z => z.GetPrefab() == MiniBossArenaPlan.Prefab.GetStableHashCode()).ToArray();
+        int removed = 0, updated = 0;
+        foreach (var arena in arenas)
+        {
+            string token = arena.GetString(ForestRuntime.Tag);
+            foreach (var sign in all.Where(z => z.GetString(ForestRuntime.Tag) == token &&
+                         z.GetPrefab() == "sign".GetStableHashCode() && z.GetString(MiniBossTrial.HubKey) == "sign"))
+            {
+                sign.SetOwner(ZDOMan.GetSessionID());
+                var obj = ZNetScene.instance.FindInstance(sign.m_uid);
+                if (obj != null) ZNetScene.instance.Destroy(obj); else ZDOMan.instance.DestroyZDO(sign);
+                removed++;
+            }
+            foreach (var boss in all.Where(z => z.GetString(ForestRuntime.Tag) == token &&
+                         z.GetBool(MiniBossRuntime.BossKey) && z.GetBool(MiniBossArena.Key)))
+                boss.Set(MiniBossArena.RotationKey, arena.GetRotation().eulerAngles);
+            if (!arena.GetBool(MiniBossArena.Key + ".interior-0120"))
+            { arena.Set(MiniBossArena.Key + ".interior-0120", true); updated++; }
+        }
+        return new { segments_removed = removed, arenas_updated = updated };
+    }
+
     internal static object Migrate()
     {
         if (!ZNet.instance.IsServer() || ZNet.instance.GetPeers().Any(p => p.IsReady()))
