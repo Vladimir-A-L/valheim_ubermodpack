@@ -1,0 +1,107 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-31T08:06:58.760330+00:00",
+  "scope": "radial-stand-server-mod-policy-fix",
+  "base_lock": "radial-stand-0151-r3-20261031.lock.json",
+  "delivery_version": "0.15.1-r3",
+  "cause": "empty-required-and-optional-reference-folders",
+  "previous_effective_rules": 1,
+  "effective_rules": 9,
+  "required_dlls": 11,
+  "optional_dlls": 1,
+  "reference_files": {
+    "optional/DungeonMaps.dll": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b",
+    "required/YamlDotNetDetector.dll": "db5a75085f60d69a05979af303d6b0f1db15b1d5d84c77f606d876547ef1f482",
+    "required/Newtonsoft.Json.dll": "d134937ec381729074694490e81983b08ec7991b31550eabafb9202e5b404f89",
+    "required/DungeonDepthPrototype.dll": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563",
+    "required/PathOfValheiman.dll": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416",
+    "required/ConditionalConfigSync.dll": "9e3aa79de10b31a4ee06e7cd94faf46d87b3bf3ec64ea3d15b07a396836f8b8a",
+    "required/NewtonsoftJsonDetector.dll": "513f2b88dfea6b96336a63d4120cdfc05011391ab45d981989e88844722d84b7",
+    "required/EpicLoot.dll": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef",
+    "required/ServerManager.dll": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38",
+    "required/Jotunn.dll": "9509221046842a70f94b98bab4cb41005dee026823a7a79345829ed46a30f796",
+    "required/YamlDotNet.dll": "9172f0758ed76963e0ede3b5ca9a1fb5b82f64c7e7a92cb3a6de39efa933a668",
+    "required/ConditionalConfigSync.Plugin.dll": "9aa35c2ce769dfefb01bcdec77cf2c64227ce7c41b995a2b982516449c18290f"
+  },
+  "checks": [
+    {
+      "case": "reproduce-empty-policy",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "rules": 1,
+      "diagnostics": [
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present",
+        "validation.unlisted_plugin_present"
+      ]
+    },
+    {
+      "case": "fixed-policy",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "rules": 9,
+      "diagnostics": []
+    },
+    {
+      "case": "changed-dll",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "rules": 9,
+      "diagnostics": [
+        "validation.hash_not_allowed"
+      ]
+    },
+    {
+      "case": "missing-required",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "rules": 9,
+      "diagnostics": [
+        "validation.required_plugin_missing"
+      ]
+    },
+    {
+      "case": "unlisted-plugin",
+      "expected_allowed": false,
+      "actual_allowed": false,
+      "rules": 9,
+      "diagnostics": [
+        "validation.unlisted_plugin_present"
+      ]
+    },
+    {
+      "case": "optional-absent",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "rules": 9,
+      "diagnostics": []
+    },
+    {
+      "case": "installed-policy",
+      "expected_allowed": true,
+      "actual_allowed": true,
+      "rules": 9,
+      "diagnostics": []
+    }
+  ],
+  "reported_client_hashes_verified": 5,
+  "client_records_in_log": 9,
+  "client_archive_changed": false,
+  "client_archive_sha256": "16924a55463bd00281a2656ce9f6ddb8d5fd3abdaecbbf4c1be94dc0ea6cf12c",
+  "server_restarted": false,
+  "world_modified": false,
+  "character_modified": false,
+  "client_connection": "retry-pending",
+  "checkpoint_restore": "apply-mod-policy-fix-overlay-after-original-handoff-checkpoint",
+  "validation_tool_sources": {
+    "tools/server-policy-check/ServerPolicyCheck.csproj":
+      "1f1c39e78ba68c17ac7527bee7b438a65bbb6b078f126a00c8ae613eebbabdbe",
+    "tools/server-policy-check/README.md": "44111286ecb72783d807a69f87c253e20090d0d36b52796e9c9c7fa562566977",
+    "tools/server-policy-check/Program.cs": "5d9854bbc63c0cf9defbf5883b0b40df49a63f3fe431da2c573f93a4410cb7a8"
+  }
+}

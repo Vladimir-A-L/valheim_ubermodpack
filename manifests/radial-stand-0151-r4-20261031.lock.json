@@ -1,0 +1,131 @@
+{
+  "observed_at_utc": "2026-10-31T08:28:37.744309+00:00",
+  "release": "0.15.1-r4",
+  "configuration_revision": 4,
+  "plugin_version": "0.15.1",
+  "character": "RadialQa",
+  "archive": "ForestCryptQA-RadialQa-0.15.1-r4.zip",
+  "archive_sha256": "3ecdd9536988212fec9122f1e32e463d833424507e86935cb3d6e6b0d3f060fd",
+  "dll_sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563",
+  "changed_payload": [
+    "forest-manual-test.json"
+  ],
+  "installer_unchanged": true,
+  "preparation_id": "radial-r3-stand",
+  "preparation_id_unchanged": true,
+  "reset_pov": false,
+  "server_files_changed": [
+    "forest-manual-test.json",
+    "forest-manual-server.json"
+  ],
+  "checkpoint_files": 682,
+  "preflight": {
+    "before": {
+      "passed": false,
+      "errors": [
+        "Имя клиента отличается от персонажа (с учётом регистра)",
+        "Персонаж отсутствует в серверном допуске (с учётом регистра)"
+      ],
+      "payload_files": 11
+    },
+    "candidate": {
+      "passed": true,
+      "errors": [],
+      "payload_files": 11
+    }
+  },
+  "verification": {
+    "observed_at_utc": "2026-10-31T08:27:00.573245+00:00",
+    "server_ready": true,
+    "manual_server_ready": true,
+    "plans_equal": true,
+    "plans": 10,
+    "objects_equal": true,
+    "tagged_objects": 2331,
+    "character_files_equal": true,
+    "character_files": 3,
+    "peers": 0,
+    "limits": {
+      "RuntimeMaxUSec": "infinity",
+      "CPUQuotaPerSecUSec": "1.500000s",
+      "MemoryMax": "3221225472",
+      "ActiveState": "active"
+    },
+    "client_preparation": "pending"
+  },
+  "native_loadout": {
+    "types": 14,
+    "stacks": 18,
+    "equipment_quality": 3
+  },
+  "mod_policy_rules": 9,
+  "client_connection": "confirmed-by-user-before-r4",
+  "client_preparation": "pending",
+  "client_acceptance": {
+    "R2": "accepted-on-0141",
+    "R3": "pending",
+    "R4": "pending",
+    "U9": "deferred"
+  },
+  "payload_files": [
+    {
+      "source": "DungeonDepthPrototype.dll",
+      "relative": "BepInEx\\plugins\\DungeonDepthPrototype\\DungeonDepthPrototype.dll",
+      "sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+    },
+    {
+      "source": "ServerManager.dll",
+      "relative": "BepInEx\\plugins\\ServerManager\\ServerManager.dll",
+      "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    },
+    {
+      "source": "sighsorry.ServerManager.cfg",
+      "relative": "BepInEx\\config\\sighsorry.ServerManager.cfg",
+      "sha256": "ead0190ea2982b68c9a2e56fa12573fe64c07eb59ca237fd8720410e177acb13"
+    },
+    {
+      "source": "dungeon-rewards.json",
+      "relative": "BepInEx\\config\\dungeon-rewards.json",
+      "sha256": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832"
+    },
+    {
+      "source": "forest-loadout.json",
+      "relative": "BepInEx\\config\\forest-loadout.json",
+      "sha256": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3"
+    },
+    {
+      "source": "DungeonMaps.dll",
+      "relative": "BepInEx\\plugins\\DungeonMaps\\DungeonMaps.dll",
+      "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+    },
+    {
+      "source": "zl.dungeonmaps.cfg",
+      "relative": "BepInEx\\config\\zl.dungeonmaps.cfg",
+      "sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870"
+    },
+    {
+      "source": "forest-navigation.json",
+      "relative": "BepInEx\\config\\forest-navigation.json",
+      "sha256": "d218cc05c566982cd2e7914b011bd81bd418264355c48d202848ede5b8ad11b2"
+    },
+    {
+      "source": "forest-manual-test.json",
+      "relative": "BepInEx\\config\\forest-manual-test.json",
+      "sha256": "f1e38649f1007df3ad2e7a1f12bdf16f1eda798699c38d2d96d55cfb9b8ce31f"
+    },
+    {
+      "source": "ubermodpack.dungeon-depth-prototype.cfg",
+      "relative": "BepInEx\\config\\ubermodpack.dungeon-depth-prototype.cfg",
+      "sha256": "eda85f0757ab07969f0223031474d605ec123a752faea60383c68fdebc9d1bf2"
+    },
+    {
+      "source": "radial-dungeons.json",
+      "relative": "BepInEx\\config\\radial-dungeons.json",
+      "sha256": "fe4348391f654c5959a48a25e6a547a47c8bcfefcf9a922fdeb0f6ee52185699"
+    }
+  ],
+  "checkpoint_restore": "before-preparation-fix-checkpoint plus preparation-fix/candidate-config manual JSON overlay",
+  "sources": {
+    "scripts/check-forest-preparation.py": "8042a466e07d97a7367c33abc46866d33223208367233653350a37b4792225fd"
+  }
+}

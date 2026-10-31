@@ -1,0 +1,285 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-31T07:50:52.165622+00:00",
+  "scope": "isolated-radial-stand-r3-r4-handoff",
+  "base_lock": "radial-dungeons-0151-r2-20261031.lock.json",
+  "delivery_version": "0.15.1-r3",
+  "configuration_revision": 3,
+  "radial_revision": "forest-radial-2",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "game_managed_assembly_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.15.1",
+    "dll_sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+  },
+  "pinned_dependencies": [
+    {
+      "name": "PathOfValheiman",
+      "version": "5.3.6",
+      "dll_sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416"
+    },
+    {
+      "name": "EpicLoot",
+      "version": "0.15.3",
+      "dll_sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef"
+    },
+    {
+      "name": "sighsorry-ServerManager",
+      "version": "1.2.5",
+      "dll_sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    }
+  ],
+  "client_update": {
+    "archive": "ForestCryptQA-RadialQA-0.15.1-r3.zip",
+    "sha256": "16924a55463bd00281a2656ce9f6ddb8d5fd3abdaecbbf4c1be94dc0ea6cf12c",
+    "bytes": 1217764,
+    "payload_files": 11,
+    "changed_payload": [
+      "sighsorry.ServerManager.cfg",
+      "forest-manual-test.json"
+    ],
+    "installer_unchanged": true,
+    "dll_sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+  },
+  "payload_files": [
+    {
+      "source": "DungeonDepthPrototype.dll",
+      "relative": "BepInEx\\plugins\\DungeonDepthPrototype\\DungeonDepthPrototype.dll",
+      "sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+    },
+    {
+      "source": "ServerManager.dll",
+      "relative": "BepInEx\\plugins\\ServerManager\\ServerManager.dll",
+      "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    },
+    {
+      "source": "sighsorry.ServerManager.cfg",
+      "relative": "BepInEx\\config\\sighsorry.ServerManager.cfg",
+      "sha256": "ead0190ea2982b68c9a2e56fa12573fe64c07eb59ca237fd8720410e177acb13"
+    },
+    {
+      "source": "dungeon-rewards.json",
+      "relative": "BepInEx\\config\\dungeon-rewards.json",
+      "sha256": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832"
+    },
+    {
+      "source": "forest-loadout.json",
+      "relative": "BepInEx\\config\\forest-loadout.json",
+      "sha256": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3"
+    },
+    {
+      "source": "DungeonMaps.dll",
+      "relative": "BepInEx\\plugins\\DungeonMaps\\DungeonMaps.dll",
+      "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+    },
+    {
+      "source": "zl.dungeonmaps.cfg",
+      "relative": "BepInEx\\config\\zl.dungeonmaps.cfg",
+      "sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870"
+    },
+    {
+      "source": "forest-navigation.json",
+      "relative": "BepInEx\\config\\forest-navigation.json",
+      "sha256": "d218cc05c566982cd2e7914b011bd81bd418264355c48d202848ede5b8ad11b2"
+    },
+    {
+      "source": "forest-manual-test.json",
+      "relative": "BepInEx\\config\\forest-manual-test.json",
+      "sha256": "ea0e0fc23ef2c5d9a6b6678946f575d333debf4ab4162e7fd09d86e86c5ed77d"
+    },
+    {
+      "source": "ubermodpack.dungeon-depth-prototype.cfg",
+      "relative": "BepInEx\\config\\ubermodpack.dungeon-depth-prototype.cfg",
+      "sha256": "eda85f0757ab07969f0223031474d605ec123a752faea60383c68fdebc9d1bf2"
+    },
+    {
+      "source": "radial-dungeons.json",
+      "relative": "BepInEx\\config\\radial-dungeons.json",
+      "sha256": "fe4348391f654c5959a48a25e6a547a47c8bcfefcf9a922fdeb0f6ee52185699"
+    }
+  ],
+  "server": {
+    "unit": "valheim-radial-stand",
+    "cpu_quota": "150%",
+    "memory_max_bytes": 3221225472,
+    "runtime_max": "infinity",
+    "udp_ports": [
+      2476,
+      2477
+    ],
+    "separate_config_and_savedir": true,
+    "reference_override": false,
+    "preparation_plugin_installed": false,
+    "integrated_encounters": true,
+    "radial_enabled": true,
+    "probe_radii": false,
+    "radii": [
+      2000,
+      4500
+    ],
+    "fallback": "vanilla",
+    "saved_plans": 8,
+    "standby_generators": 0,
+    "standby_characters": 0
+  },
+  "test_profile": {
+    "character": "RadialQA",
+    "preparation_id": "radial-r3-stand",
+    "new_profile": true,
+    "auto_prepare_once": true,
+    "reset_inventory_for_new_test_profile": true,
+    "reset_pov": false,
+    "god": true,
+    "ghost": false,
+    "client_integrated_encounters": false,
+    "client_radial_enabled": false,
+    "existing_drug_profile_imported": false
+  },
+  "access": {
+    "hub_floor_tiles": 121,
+    "portal_pairs": 4,
+    "entrances": [
+      {
+        "profile": "near",
+        "radius": 967.2239852800706,
+        "maximum_depth": 47,
+        "forced_probe": false,
+        "native_both_arrivals_floor_and_body": true,
+        "area_ready": true,
+        "client_passage": "pending"
+      },
+      {
+        "profile": "middle",
+        "radius": 2983.218666981682,
+        "maximum_depth": 43,
+        "forced_probe": false,
+        "native_both_arrivals_floor_and_body": true,
+        "area_ready": true,
+        "client_passage": "pending"
+      },
+      {
+        "profile": "far",
+        "radius": 5009.191000868939,
+        "maximum_depth": 37,
+        "forced_probe": false,
+        "native_both_arrivals_floor_and_body": true,
+        "area_ready": true,
+        "client_passage": "pending"
+      }
+    ],
+    "r4_corridor_depth": 27,
+    "r4_guard_depth": 28,
+    "r4_guard_modifiers": 20,
+    "r4_gate_left_closed": true
+  },
+  "checks": {
+    "first_restart": {
+      "plans_equal": true,
+      "plans": 8,
+      "objects_equal": true,
+      "objects": 2004
+    },
+    "health_restart": {
+      "actors_before": 230,
+      "actors_after": 230,
+      "compared": 230,
+      "identities_equal": true,
+      "hp_shield_and_profiles_equal": true
+    },
+    "final_restart": {
+      "plans_equal": true,
+      "objects_equal": true,
+      "plans": 8,
+      "objects": 2004
+    },
+    "checkpoint": {
+      "files": 468,
+      "sha256_verified": true,
+      "private_manifest_sha256": "72a5b4c38e81710819c4399e008fd9cf91a35370f1085eca96f4fc02e03db3a9"
+    },
+    "windows_installer": {
+      "previous_archives_preserved": true,
+      "payload_files": 11,
+      "new_file_removed": true,
+      "save_unchanged": true,
+      "status": "passed",
+      "rollback_applied": true,
+      "cases": [
+        "upgrade_0141"
+      ],
+      "restored_files": 10
+    },
+    "tools_tests": 44,
+    "preparation_tool_build_warnings": 0,
+    "preparation_tool_build_errors": 0,
+    "wide_native_matrix_repeated": false,
+    "model_repeated": false,
+    "fallback": "previous-pinned-dll-evidence; no-induced-failure-on-manual-world"
+  },
+  "server_load": {
+    "seconds": 60.01790932600852,
+    "players": 0,
+    "characters": 230,
+    "generators": 2,
+    "cpu_percent": 90.80043708950745,
+    "memory_current_bytes": 3093000192,
+    "memory_peak_bytes": 3221225472,
+    "frames": 1383,
+    "frame_mean_ms": 44.00268,
+    "frame_p95_ms": 69.9481659,
+    "frame_max_ms": 177.400131,
+    "client_fps_measured": false
+  },
+  "preparation_tool": {
+    "name": "RadialStandPrep",
+    "version": "0.1.1",
+    "executed_dll_sha256": "b637e96f79270d502681f4eabd5f7792ec956523a0ba60ac75f0447148a2b83c",
+    "removed_before_handoff": true
+  },
+  "preserved": {
+    "active_server": "0.14.1",
+    "active_world_replaced": false,
+    "active_client_changed": false,
+    "ordinary_generation_enabled_in_user_world": false,
+    "r2_archive_sha256": "6b7a0e53caf7aba0a9aa28adfd98ffac7b417c9318ea5454a80634e49e469443"
+  },
+  "acceptance": {
+    "R2": "accepted_on_0141",
+    "R3": "pending",
+    "R4": "pending",
+    "U9": "deferred"
+  },
+  "source_files": {
+    "tools/radial-stand-prep/RadialStandPrep.csproj":
+      "68a8670f226025158f0c3466cccdf1a3974a6350e991ccf32f37e92a0b91586d",
+    "tools/radial-stand-prep/README.md": "333474365f46a8b8bfb170b4d9b6bf4a9d8e2f4e363a32e44511f01b40109450",
+    "tools/radial-stand-prep/Plugin.cs": "62529ccab6b9a5cb5ae6bc2820586d5d459a50b589d2947474d78db613b9cf48"
+  }
+}
