@@ -1,0 +1,117 @@
+{
+  "recorded_at_utc": "2026-10-31T09:28:44.258812+00:00",
+  "evidence": "user-message-and-two-F2-screenshots",
+  "plugin_version": "0.15.1",
+  "delivered_configuration_revision": 4,
+  "character": "RadialQa",
+  "R3": {
+    "entry_exit_atmosphere": "user-confirmed",
+    "collected_items_stay_absent": "user-confirmed",
+    "defeated_guards_stay_absent": "user-confirmed",
+    "after_server_restart": "pending"
+  },
+  "R4": {
+    "effects_function": "user-confirmed",
+    "performance": "failed-user-report",
+    "combat_balance": "not-accepted-god-mode-test"
+  },
+  "user_report": {
+    "gpu": "RTX 5080",
+    "cpu": "Ryzen 9 9950X",
+    "resolution": null,
+    "graphics_api": null,
+    "middle_far_camera_fps_range": [
+      7,
+      9
+    ],
+    "effects_combat_fps_range": [
+      10,
+      11
+    ],
+    "graphics_preset": "ultra",
+    "draw_distance": "middle-slider",
+    "camera_drop_without_combat_or_visible_effects": null
+  },
+  "screenshots": [
+    {
+      "fps": 17.7,
+      "frame_ms": 56.5,
+      "instances": 3521,
+      "zdo_active": 22057,
+      "client_queue": 211
+    },
+    {
+      "fps": 7.9,
+      "frame_ms": 126.8,
+      "instances": 3006,
+      "zdo_active": 22225,
+      "client_queue": 130
+    }
+  ],
+  "proposal": {
+    "name": "empowered",
+    "implemented": false,
+    "per_stack_health": ".15",
+    "per_stack_damage": ".10",
+    "self_compounding": false,
+    "depth_step": "proposed-existing-profile-step-not-yet-confirmed",
+    "far_examples": [
+      {
+        "depth": 28,
+        "unique_modifiers": 20,
+        "stacks": 0,
+        "health_factor": "1.00",
+        "damage_factor": "1.00"
+      },
+      {
+        "depth": 29,
+        "unique_modifiers": 20,
+        "stacks": 0,
+        "health_factor": "1.00",
+        "damage_factor": "1.00"
+      },
+      {
+        "depth": 30,
+        "unique_modifiers": 20,
+        "stacks": 1,
+        "health_factor": "1.15",
+        "damage_factor": "1.10"
+      },
+      {
+        "depth": 31,
+        "unique_modifiers": 20,
+        "stacks": 1,
+        "health_factor": "1.15",
+        "damage_factor": "1.10"
+      },
+      {
+        "depth": 32,
+        "unique_modifiers": 20,
+        "stacks": 2,
+        "health_factor": "1.30",
+        "damage_factor": "1.20"
+      },
+      {
+        "depth": 33,
+        "unique_modifiers": 20,
+        "stacks": 2,
+        "health_factor": "1.30",
+        "damage_factor": "1.20"
+      },
+      {
+        "depth": 40,
+        "unique_modifiers": 20,
+        "stacks": 6,
+        "health_factor": "1.90",
+        "damage_factor": "1.60"
+      }
+    ],
+    "open_scope": [
+      "damage-effects-and-reflection",
+      "bosses",
+      "reward-budget"
+    ]
+  },
+  "ordinary_generation_approved": false,
+  "U9": "deferred"
+}
