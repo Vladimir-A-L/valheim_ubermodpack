@@ -56,6 +56,7 @@ internal static class ForestPlanChecks
             Room("forestcrypt_Bend1", n, w), Room("forestcrypt_Bend2", n, e),
             Room("forestcrypt_Stairs1", n, s), Room("forestcrypt_new_Burialchamber05", n, s),
             Room(ForestPlan.TrialArena, n, s) };
+        RadialGeometryChecks.Run(templates, check);
         string Fingerprint(ForestPlan.Layout layout) => string.Join(";", layout.Rooms.Select(r =>
             FormattableString.Invariant($"{r.Template.Name}:{r.Position.X},{r.Position.Y},{r.Position.Z}:{r.Turn}") +
             $":{r.ResourceCount}:{r.RareGuardCount}"));

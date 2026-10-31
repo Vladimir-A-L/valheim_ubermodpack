@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.14.0")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.15.1")]
 [BepInDependency("sighsorry.ServerManager", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
@@ -68,7 +68,10 @@ public sealed class Plugin : BaseUnityPlugin
                 EpicLootBridge.Verify();
                 EpicLootBridge.Install(harmony!);
                 PovBridge.Install(harmony!);
+                RadialRuntime.Load();
+                RadialMetrics.Install(gameObject, harmony!);
                 MiniBossRuntime.Install(gameObject, harmony!);
+                RadialLoadHealth.Install(harmony!);
                 MiniBossConnection.InstallMap(harmony!);
                 CombatRecorder.Install(gameObject, harmony!, expectedWorld);
                 GuardedChestReward.Install(harmony!);

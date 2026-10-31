@@ -18,8 +18,7 @@ public static class EncounterGates
 
     public static bool Required(ForestPlan.Placement a, ForestPlan.Placement b) =>
         !a.Template.Endcap && !b.Template.Endcap && !a.MiniBoss && !b.MiniBoss &&
-        Required(ForestPlan.ModifierCount(a.Depth),
-            ForestPlan.ModifierCount(b.Depth), a.Arena, b.Arena);
+        Required(a.ModifierCount, b.ModifierCount, a.Arena, b.Arena);
 
     public static bool Fits(ForestPlan.Placement parent, int socket, ForestPlan.Placement child) =>
         parent.Template.Sockets[socket].AllowDoor &&
@@ -45,13 +44,13 @@ public static class EncounterGates
         {
             if (!seen.Add(start)) continue;
             var pending = new Queue<int>(); pending.Enqueue(start);
-            int band = Band(ForestPlan.ModifierCount(layout.Rooms[start].Depth));
+            int band = Band(layout.Rooms[start].ModifierCount);
             bool arena = layout.Rooms[start].Arena;
             while (pending.Count > 0)
             {
                 int current = pending.Dequeue();
                 var room = layout.Rooms[current];
-                if (!room.Template.Endcap && (Band(ForestPlan.ModifierCount(room.Depth)) != band ||
+                if (!room.Template.Endcap && (Band(room.ModifierCount) != band ||
                         room.Arena != arena))
                     throw new InvalidOperationException("Есть обход закрытого порога сложности");
                 foreach (var edge in layout.Edges.Where(e => e.A == current || e.B == current))

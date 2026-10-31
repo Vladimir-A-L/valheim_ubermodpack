@@ -20,6 +20,7 @@ internal static class MiniBossArenaSection
             MiniBossRuntime.Data(obj.transform)!.Set(ForestRuntime.Tag, token); return obj;
         }
         var root = Spawn(MiniBossArenaPlan.Prefab, Vector3.zero);
+        MiniBossCryptDecor.Build(root); // Геометрия готова до общей проверки новых существ в этом кадре.
         var data = MiniBossRuntime.Data(root.transform)!;
         if (encounter.Trial) data.Set(MiniBossTrial.IndexKey, index);
         data.Set(ForestRuntime.RoomKey, room); data.Set(ForestRuntime.DepthKey, encounter.Depth);
@@ -30,6 +31,7 @@ internal static class MiniBossArenaSection
         gate.GetZDO().Set(MiniBossArena.Key, true); gate.GetZDO().Set(ZDOVars.s_state, 0);
         string prefab = encounter.Prefab;
         var boss = Spawn(prefab, MiniBossArena.Center(Vector3.zero)).GetComponent<Character>();
+        RadialRuntime.Mark(boss, encounter.Radial, true);
         if (archer) MiniBossRuntime.Data(boss)!.Set(MiniBossArenaFixtures.WeaponKey, "skeleton_bow");
         MiniBossRuntime.Mark(boss, name, seed);
         string[] modifiers = encounter.Modifiers;
@@ -59,9 +61,11 @@ internal static class MiniBossArenaSection
         var assistants = encounter.Helpers;
         for (int i = 0; i < assistants.Length; i++)
         {
-            var helper = Spawn(assistants[i], new Vector3(23, .08f, 21)).GetComponent<Character>();
-            helper.SetLevel(1); PovBridge.AssignIds(helper, modifiers);
+            var helper = Spawn(assistants[i], new Vector3(23, .08f, 19 + i * 4)).GetComponent<Character>();
+            helper.SetLevel(1); RadialRuntime.Mark(helper, encounter.Radial, false);
+            PovBridge.AssignIds(helper, modifiers);
             MiniBossTrial.Tag(helper, token, room, "helper", encounter.Depth);
+            ForestGuardRecovery.MarkSpawn(helper);
             MiniBossRuntime.Data(helper)!.Set(MiniBossConnection.GateKey, true);
             MiniBossRuntime.Data(helper)!.Set(MiniBossArena.MaximumKey, helper.GetMaxHealth());
         }
@@ -95,7 +99,8 @@ internal static class MiniBossArenaSection
             corridor_width = MiniBossArenaPlan.CorridorWidth, ceiling_height = MiniBossArenaPlan.Height,
             combat_depth = encounter.Depth, door_position = ForestFixture.V(origin),
             boss_position = ForestFixture.V(boss.transform.position),
-            scale = 1.8, health = MiniBossRules.HealthFactor, damage = MiniBossRules.DamageFactor,
+            scale = 1.8, health = encounter.Radial?.Profile.BossHealth ?? MiniBossRules.HealthFactor,
+            damage = encounter.Radial?.Profile.BossDamage ?? MiniBossRules.DamageFactor,
             helper_chance_percent = MiniBossRules.HelperChancePercent, forced_test_variant = encounter.Trial,
             archer, budget = encounter.Budget,
             reward_plan = encounter.Reward, rules_revision = encounter.RulesRevision }));

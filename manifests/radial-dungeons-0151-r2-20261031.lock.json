@@ -1,0 +1,332 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-31T02:31:20.067561+00:00",
+  "scope": "radial-forest-crypt-configuration-acceptance",
+  "base_lock": "radial-dungeons-0151-20261031.lock.json",
+  "delivery_version": "0.15.1-r2",
+  "configuration_revision": 2,
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "game_managed_assembly_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.15.1",
+    "dll_sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+  },
+  "pinned_dependencies": [
+    {
+      "name": "PathOfValheiman",
+      "version": "5.3.6",
+      "dll_sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416"
+    },
+    {
+      "name": "EpicLoot",
+      "version": "0.15.3",
+      "dll_sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef"
+    },
+    {
+      "name": "sighsorry-ServerManager",
+      "version": "1.2.5",
+      "dll_sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    }
+  ],
+  "configuration": {
+    "configs/radial-dungeons/README.txt": "048585aea70792a847c1576e4752d264d605af743c326d0f8c5060532ea507c0",
+    "configs/radial-dungeons/candidate.cfg": "eda85f0757ab07969f0223031474d605ec123a752faea60383c68fdebc9d1bf2",
+    "configs/radial-dungeons/dungeon-rewards.json": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832",
+    "configs/radial-dungeons/forest-loadout.json": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3",
+    "configs/radial-dungeons/forest-manual-test.json":
+      "f9b32eb74acacfe00b8fb29cacfec49c0629415e7f2b1b75a38a73324418ddf6",
+    "configs/radial-dungeons/radial-dungeons.json": "fe4348391f654c5959a48a25e6a547a47c8bcfefcf9a922fdeb0f6ee52185699"
+  },
+  "client_update": {
+    "archive": "ForestCryptQA-Drug-0.15.1-r2.zip",
+    "sha256": "6b7a0e53caf7aba0a9aa28adfd98ffac7b417c9318ea5454a80634e49e469443",
+    "bytes": 1217123,
+    "payload_files": 11,
+    "dll_sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563",
+    "changed_payload": [
+      "radial-dungeons.json"
+    ],
+    "original_archive_preserved": true,
+    "installer_unchanged": true,
+    "version": "0.15.1-r2",
+    "directory": "installers",
+    "installer_revision": 3
+  },
+  "payload_files": [
+    {
+      "source": "DungeonDepthPrototype.dll",
+      "relative": "BepInEx\\plugins\\DungeonDepthPrototype\\DungeonDepthPrototype.dll",
+      "sha256": "33c36cb1a0cc10db067ebbd969c8b2820290f4e01e20d9c26f362fbfd483c563"
+    },
+    {
+      "source": "ServerManager.dll",
+      "relative": "BepInEx\\plugins\\ServerManager\\ServerManager.dll",
+      "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    },
+    {
+      "source": "sighsorry.ServerManager.cfg",
+      "relative": "BepInEx\\config\\sighsorry.ServerManager.cfg",
+      "sha256": "c3888ee5e00153af7bc6c273318d0e33e0f5936f0f27dcca3488d8ac57becbda"
+    },
+    {
+      "source": "dungeon-rewards.json",
+      "relative": "BepInEx\\config\\dungeon-rewards.json",
+      "sha256": "2b529d9bd439dfd3c62de4a01d40754c8c4f2fdbbc354a8d391c25afda88f832"
+    },
+    {
+      "source": "forest-loadout.json",
+      "relative": "BepInEx\\config\\forest-loadout.json",
+      "sha256": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3"
+    },
+    {
+      "source": "DungeonMaps.dll",
+      "relative": "BepInEx\\plugins\\DungeonMaps\\DungeonMaps.dll",
+      "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+    },
+    {
+      "source": "zl.dungeonmaps.cfg",
+      "relative": "BepInEx\\config\\zl.dungeonmaps.cfg",
+      "sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870"
+    },
+    {
+      "source": "forest-navigation.json",
+      "relative": "BepInEx\\config\\forest-navigation.json",
+      "sha256": "d218cc05c566982cd2e7914b011bd81bd418264355c48d202848ede5b8ad11b2"
+    },
+    {
+      "source": "forest-manual-test.json",
+      "relative": "BepInEx\\config\\forest-manual-test.json",
+      "sha256": "f9b32eb74acacfe00b8fb29cacfec49c0629415e7f2b1b75a38a73324418ddf6"
+    },
+    {
+      "source": "ubermodpack.dungeon-depth-prototype.cfg",
+      "relative": "BepInEx\\config\\ubermodpack.dungeon-depth-prototype.cfg",
+      "sha256": "eda85f0757ab07969f0223031474d605ec123a752faea60383c68fdebc9d1bf2"
+    },
+    {
+      "source": "radial-dungeons.json",
+      "relative": "BepInEx\\config\\radial-dungeons.json",
+      "sha256": "fe4348391f654c5959a48a25e6a547a47c8bcfefcf9a922fdeb0f6ee52185699"
+    }
+  ],
+  "decision": {
+    "radii_m": [
+      2000,
+      4500
+    ],
+    "radii_accepted": true,
+    "fallback": "vanilla",
+    "fallback_accepted": true,
+    "profile_revision": "forest-radial-2",
+    "boundary_rule": "near:r<2000;middle:2000<=r<4500;far:r>=4500",
+    "ordinary_generation_enabled": false,
+    "integrated_encounters": false,
+    "client_r2": "deferred-by-user",
+    "client_r3": false,
+    "client_r4": false,
+    "multiplayer_u9": false,
+    "active_user_version": "0.14.1"
+  },
+  "checks": {
+    "model_assertions": 94072,
+    "tool_tests": 44,
+    "archive_integrity": true,
+    "all_payload_sha256_verified": true,
+    "changed_payload": [
+      "radial-dungeons.json"
+    ],
+    "installer_unchanged": true,
+    "plugin_unchanged": true,
+    "original_archive_preserved": true,
+    "source_changes": [
+      "tools/dungeon-depth-check/RadialConfigChecks.cs"
+    ],
+    "inherited_native_evidence": "radial-dungeons-0151-20261031.lock.json",
+    "inherited_native_radii_m": [
+      2000,
+      4000
+    ],
+    "native_rerun": false,
+    "windows_installer_rerun": false,
+    "previous_installer_fixture_passed": true
+  },
+  "source_files": {
+    "tools/dungeon-depth-prototype/ForestFixture.cs":
+      "35bf0e2c88b91b0621a13e03ad76ed947102a3e422baa34ae393c7fcb06abe9c",
+    "tools/dungeon-depth-prototype/RadialRuntime.cs":
+      "118bda009c34ac0b8431a244cd0be9b88c7d3df41f6382ed42e5169e2a761c2d",
+    "tools/dungeon-depth-prototype/MiniBossLink.cs": "dc28b3d36dd90a7ea69828ed6468088bb02a4eaa4105d959ffbf16700373c0f9",
+    "tools/dungeon-depth-prototype/MiniBossArenaController.cs":
+      "d133c5eb9ff7581ee06a788f39f615e5bb76906411b24e9ff76b3796a105eae0",
+    "tools/dungeon-depth-prototype/PovRespec.cs": "e088e287d6bc2e81855a1bad55256705ea29bd5d033f03facf69713faaf920fe",
+    "tools/dungeon-depth-prototype/ForestAtmosphereProbe.cs":
+      "759f18da5619233ce0442eddf7fdee3fc1702f835ad6ddf0292c14a6224e5880",
+    "tools/dungeon-depth-prototype/MiniBossArena.cs":
+      "3cca3d56d2597325aaef97dcee8b2481f5ff81ed0a2c254004f7e2cad058af1a",
+    "tools/dungeon-depth-prototype/RadialProfile.cs":
+      "b5fa2e6dac7e3b1f9fe42574be73a45eb72a27bcfeb8bdd1de6df46225d92360",
+    "tools/dungeon-depth-prototype/ForestLoadout.cs":
+      "1bf26a2c5e86c994e2d5c4e054b16bf95c7d75fd39efaf2797182d2ffd8bd427",
+    "tools/dungeon-depth-prototype/MiniBossInteriorProbe.cs":
+      "ec4066738bbd6ee4f053bb8163ef56a53299c334fe1a279e18482de1e1736dc1",
+    "tools/dungeon-depth-prototype/MiniBossValueProbe.cs":
+      "ef9a732efe777aee9d840efaf368d957aab8b2bd3f47e5df4b116e8f81adb553",
+    "tools/dungeon-depth-prototype/CombatRecorder.cs":
+      "cc50dff6dd3b97f1844b6517053977c83f8b4a8f28aebbc4359f79ae138dff38",
+    "tools/dungeon-depth-prototype/ResourceArenaAccess.cs":
+      "c8ea75aaddcb5e2552159775ad1d55550d7cf8ee4395145dc587dc2607424127",
+    "tools/dungeon-depth-prototype/RadialRoomEffects.cs":
+      "77b249ff84399575920b00cb45c6c5c9f6173bfc0fe60b7b85dcaba94f3ca23e",
+    "tools/dungeon-depth-prototype/ForestGuardWalkmap.cs":
+      "44c71d43289d4c231605b2fd74e2dd75bf9019c65e48d78b72849f49efd3408b",
+    "tools/dungeon-depth-prototype/ManualLedger.cs": "09de0ad7b470abc77c1097acba7f84ece82e94dafa694e195260f9f35b91df1f",
+    "tools/dungeon-depth-prototype/MiniBossTrial.cs":
+      "3accb258d5cb7e8f38e9edfe798a168152a197406c00e611469ec057efc422a0",
+    "tools/dungeon-depth-prototype/GuardedChestReward.cs":
+      "25c1ac37d44c719784ad2cbe1ab2078b986d687d117d2bf3f5748f23e2219f70",
+    "tools/dungeon-depth-prototype/InteriorCoverage.cs":
+      "c04f94dc82bf65bf8caca49dbbe8a18ddf99c8b1be951b1672af198975a011a5",
+    "tools/dungeon-depth-prototype/EpicLootBridge.cs":
+      "344182d17587f58c8a16fe517e86ef0e2cba4007bf7a84bcf2cbb4f2ca7addc3",
+    "tools/dungeon-depth-prototype/MiniBossRuntime.cs":
+      "003809f744795400f7a3ef11111e871313003904c27637a0c8425f2dc80f9970",
+    "tools/dungeon-depth-prototype/ForestManual.cs": "48f4838c752e42a3ad73f1898b2b402b3dee1cc88b9bf9cb1996b3ed3ad74cb5",
+    "tools/dungeon-depth-prototype/MiniBossArenaProbe.cs":
+      "6043f784be46650735dce993da3bd420c5ed2a7603a969b4d733779a0e18671f",
+    "tools/dungeon-depth-prototype/PovBridge.cs": "8843b256d9442581505b5d2b5b6b8134ac3aa1088a1bdbe028f3a617c177ae79",
+    "tools/dungeon-depth-prototype/MiniBossConnection.cs":
+      "381411235377496e0ed777c0f4d0b6f9a68599c6ce2b04966da81fc212786c0d",
+    "tools/dungeon-depth-prototype/MiniBossArenaTrial.cs":
+      "75ec87a346750365fe3adcedd28e85f6b908a2845bb0bcd38e6e0388080db0de",
+    "tools/dungeon-depth-prototype/MiniBossShellPlan.cs":
+      "0cfd68a9eea996c0496455415a477bb91fc4a42ade088ddcaf43e3a88c81a71c",
+    "tools/dungeon-depth-prototype/ForestRuntime.cs":
+      "cf40ea3eb6137b7f85322bdf38f8a2d4a888983a479430269e861cc7e84cf6e1",
+    "tools/dungeon-depth-prototype/MiniBossShellProbe.cs":
+      "22e32c7fb2577ab8d602c7b1592c52ab98260572fc42f36dc3eef81fae5d48a4",
+    "tools/dungeon-depth-prototype/CombatAnalysisProbe.cs":
+      "3eacb879c0dd8a7b4b4dfbcda12fd12ffd0c7e7befc47f5a7e4fa6f1d2c905d7",
+    "tools/dungeon-depth-prototype/Plugin.cs": "991efee92151b923eeba8d68afa18b4cd71cd19f52c5fc8ef1522501008dc4f9",
+    "tools/dungeon-depth-prototype/MiniBossShell.cs":
+      "bc7551cefa336dbd2f9f63b6669e24795fa7af95d48d56d33238e46ffe595de5",
+    "tools/dungeon-depth-prototype/ForestGates.cs": "d244ddd8346adbe75720083ffcfcf956fe0ee99ec49df9436314b4cd3f7d6607",
+    "tools/dungeon-depth-prototype/MiniBossArenaPlan.cs":
+      "5bf8ce70d96a8c8659f879aac89ed4f2d7f6dee7316b3277b2b113d47d6fb44a",
+    "tools/dungeon-depth-prototype/ClientFixture.cs":
+      "51bc7b3a262646898dbc0374c6dba1d950ced713d9d0a9b153d91dae6ae6051b",
+    "tools/dungeon-depth-prototype/DungeonDepthPrototype.csproj":
+      "2bb39c586d8dd2b297b221c8e4e7b90eb1e38c49074554e0b0280ff82cffb878",
+    "tools/dungeon-depth-prototype/ProbeSuite.cs": "1605143e08dc9c53a1883734d3af8ba9203fb36d8e19186d519cb0bc24872f64",
+    "tools/dungeon-depth-prototype/EncounterPlan.cs":
+      "ef0955f44d49d28a46a6f916625f73146b9c0a88431aec2e82b3c1c2287458db",
+    "tools/dungeon-depth-prototype/MiniBossArenaFixtures.cs":
+      "cfa0ca47817937f325e19a08f1bd127d0055c12e42261181fc08fda1d7a51af8",
+    "tools/dungeon-depth-prototype/RadialEntrance.cs":
+      "5fbd4964dd5ab41ff0564e9e9a49a6e05756bfe4c721d9f6226105a832d98071",
+    "tools/dungeon-depth-prototype/RadialWorldProbe.cs":
+      "819a2ba205e6b1ac3762aee3ab7756f37a818fe0c6db042021721de02138b218",
+    "tools/dungeon-depth-prototype/ForestPlan.cs": "c065e11f858bc971fc53eefe61b1dc6d97191331d0a7ff8678678261c198c16e",
+    "tools/dungeon-depth-prototype/MiniBossValuePlacement.cs":
+      "5b9158d447a4e747938d2716d8c1f2ec87c3c9c189683215a55877901bc64c59",
+    "tools/dungeon-depth-prototype/MiniBossEncounter.cs":
+      "1a0dd06078697421881128191707b228cd9bc7a059834484daae28f8c0cbb99b",
+    "tools/dungeon-depth-prototype/RadialMetrics.cs":
+      "9ddcd9d9a8f103802998b58223b450a713d8f06e09f68ffe51a93d8cb93b0971",
+    "tools/dungeon-depth-prototype/ServerExitProbe.cs":
+      "0ec4caf5ced70851a0b96f20119e82c1985bcf94ecc5710a8b11ac3cf9a5becf",
+    "tools/dungeon-depth-prototype/MiniBossConnectionAccess.cs":
+      "8ad7750fedf7fe1c1968bda34647f92246ef3c8146336f6b6239d55483e647e9",
+    "tools/dungeon-depth-prototype/ForestGuardRecovery.cs":
+      "0847c1839630c7cfebb5d57c4e5694ddb8c70c423668c3853669ceb6e819f74b",
+    "tools/dungeon-depth-prototype/ForestGuardProbe.cs":
+      "a24f24e63e05daa2d9e656de2baee162784ad6e2951c207ad3e04db1ae3bf39e",
+    "tools/dungeon-depth-prototype/MiniBossCryptDecor.cs":
+      "ba083623e89efc8d0ad2ca933cf35f4990a05fb1b5d63011d05fc98d11579ec9",
+    "tools/dungeon-depth-prototype/MiniBossNavigationProbe.cs":
+      "4635a2d640d1617c9a00df4d55f64fb718507b6f1a936ed734317d1ecd6ce939",
+    "tools/dungeon-depth-prototype/EncounterGates.cs":
+      "b694df93f526c128b66701e506ace56d83e04f90a8a386ba7edabf9022fb1313",
+    "tools/dungeon-depth-prototype/MiniBossConnectionProbe.cs":
+      "0edba3614bcc7c5bfce842f5f6969d5461262b3c3d201e14c38f821c8de9bafc",
+    "tools/dungeon-depth-prototype/ServerExitRepair.cs":
+      "c5f35e5a53504e6837e9204631cfa946038e083bf273f6090947806987c3a4b9",
+    "tools/dungeon-depth-prototype/RadialLoadHealth.cs":
+      "ea1920208a4020b6831696a73b0fb33449de89c31dc2ef7d7abef8877bf4ed10",
+    "tools/dungeon-depth-prototype/ArenaFrame.cs": "764db33ffe54f9eb2fd4a844a23e475bdf79c1ccb42929ad38ea444555da58f9",
+    "tools/dungeon-depth-prototype/RadialDungeonProbe.cs":
+      "409378ac2b999635ea9c079a74fb261a4942bf84ecb849bbc90704c3c8320c8f",
+    "tools/dungeon-depth-prototype/MiniBossRock.cs": "bf65931054fe176623160beab7c01f06367da8f9400ff7a35c3d23a267985cf0",
+    "tools/dungeon-depth-prototype/GuardRecoveryState.cs":
+      "fb78484d8b6a693bec02af766fb19e4ca951ac25337a95823422d5f4f7b4cf4b",
+    "tools/dungeon-depth-prototype/RadialAllocation.cs":
+      "a072dd8c0ef332ae8e7b497c6a7f7e5f04e0a9da86d57e45b6f62853f05f7e4c",
+    "tools/dungeon-depth-prototype/MiniBossRules.cs":
+      "8446dff4ce5ccb00f966013aa62f6a5b207778ddea41d9816f1d13f4fbd6957c",
+    "tools/dungeon-depth-prototype/RadialAffixProbe.cs":
+      "80fd9a46d63fa991905ce609edc9e4e02fe3754c52f37225dfe1f3add59cff78",
+    "tools/dungeon-depth-prototype/ManualTelemetry.cs":
+      "f16aaab697f7282d3c36adbc1855dbdde88a187d7ab7ba8ba53df313e746105e",
+    "tools/dungeon-depth-prototype/ForestGuardSpace.cs":
+      "9557409486b5ea4a9d781156e5208e5f60cc86938a07000346eee384becd7ffa",
+    "tools/dungeon-depth-prototype/NavigationProfile.cs":
+      "de0b3e08cf9c05d75b837bdaa0c08fcc378cd1e4988373d6371bff57cb2e3b67",
+    "tools/dungeon-depth-prototype/RewardJournal.cs":
+      "4398cf625f91db0e71755d864cc6e9c67c89dbfcc7cb6e3fc245ec686e0ed59d",
+    "tools/dungeon-depth-prototype/MiniBossArenaSection.cs":
+      "d732045b3ee5b352641f79c521ac58b292fc8ac5e49d64651a90e163774c04cf",
+    "tools/dungeon-depth-prototype/RewardModel.cs": "5636926c3bec6802dd471457d8e8cbf251e79f152538af19ca7c8a3f19bf9f80",
+    "tools/dungeon-depth-prototype/ManualDeathCounter.cs":
+      "92cb41003210b4549e3aecd684d09e346f2f2f1ca95ba902a9e477d96a6b1cb9",
+    "tools/dungeon-depth-prototype/ForestAtmosphere.cs":
+      "c825a09fe24afe543c15a3f83ea015c0560d1e64e224ac8bf437f8e71799fe03",
+    "tools/dungeon-depth-check/InteriorCoverageChecks.cs":
+      "c0024a537903748af94157b4925af5ec5eaeda6b396649c030e1eb62707daa0b",
+    "tools/dungeon-depth-check/RadialConfigChecks.cs":
+      "44c068a2e9177ba38cbe44685afb20133c13633be7a1ad29beb4874919866b27",
+    "tools/dungeon-depth-check/IntervalChecks.cs": "55bcb3fc06a53136fcc6109eb24d3a14570d8ee0b606a02ee0684a625e43b0da",
+    "tools/dungeon-depth-check/MiniBossEncounterChecks.cs":
+      "8b4b85f451416450a365bc3bb8f62e8dc28038d84b5dffb147333bd6998866b1",
+    "tools/dungeon-depth-check/ManualLedgerChecks.cs":
+      "d06390d65471435ec8e2997d46afe107bf184d13839acecdd2b331c49911b5fa",
+    "tools/dungeon-depth-check/GuardRecoveryChecks.cs":
+      "3e1d009f891fc360af7d67d1ee4b6e4efccf626d94ac4d51466fe753901cc361",
+    "tools/dungeon-depth-check/MiniBossShellChecks.cs":
+      "9bf0a77b432aed354312450cb37adff4094b8bb64969e93cdbb053f4fd807ab0",
+    "tools/dungeon-depth-check/DungeonDepthCheck.csproj":
+      "26252cb1503e9c13a86e32300b042ae656c024c3ef5ae28d79d5bfb6a1d2eea1",
+    "tools/dungeon-depth-check/MiniBossArenaChecks.cs":
+      "2c1dae7f8ca6c1ffa1f77f68ed6141af7078c0c75a933e5bbe72f5721271029a",
+    "tools/dungeon-depth-check/ForestPlanChecks.cs": "9751b48de2ab5e8b34a9f9a317b9049156de99e021c87b3d0798b839735c9d4c",
+    "tools/dungeon-depth-check/RadialGeometryChecks.cs":
+      "acf4c99eeb0e78f9620886351e058a02abda309c80caba8926effa812680f5bc",
+    "tools/dungeon-depth-check/Program.cs": "9c7405299a2ad9c4fea4049207055b27721be9866d0db629ee00675e58e2c9ec",
+    "tools/dungeon-depth-check/RadialChecks.cs": "061ad4dce905d1cc07a4d31dbf6832988b885d5b039d721275d8248361233056"
+  }
+}

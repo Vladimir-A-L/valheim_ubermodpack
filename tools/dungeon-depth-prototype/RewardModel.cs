@@ -28,20 +28,21 @@ public sealed class RewardRules
     public Dictionary<string, decimal> Weights = new Dictionary<string, decimal>();
     public SynergyRule[] Synergies = Array.Empty<SynergyRule>();
     public decimal[] QualityKnots = Array.Empty<decimal>();
-    public int MaxGeneratedItems = 256;
+    public int MaxGeneratedItems = 256, MaxModifiers = 10;
     public decimal ModifierPrice = 10, GrowthDivisor = 200;
     public RewardBand[] Bands = Array.Empty<RewardBand>();
 
     public void Validate()
     {
-        if ((Schema != 1 && Schema != 2) || string.IsNullOrWhiteSpace(Revision) || Weights.Count == 0 ||
+        if ((Schema < 1 || Schema > 3) || string.IsNullOrWhiteSpace(Revision) || Weights.Count == 0 ||
             Weights.Any(p => string.IsNullOrWhiteSpace(p.Key) || p.Value <= 0) ||
-            MaxGeneratedItems < 1 || MaxGeneratedItems > 4096)
+            MaxGeneratedItems < 1 || MaxGeneratedItems > 4096 || MaxModifiers < 1 || MaxModifiers > 26)
             throw new ArgumentException("Некорректная глобальная таблица наград");
         if (Schema == 1 && (QualityKnots.Length != 7 || QualityKnots[0] <= 0 ||
             QualityKnots.Zip(QualityKnots.Skip(1), (a, b) => a < b).Any(ok => !ok)))
             throw new ArgumentException("Некорректная прежняя шкала качества");
-        if (Schema == 2 && (ModifierPrice != 10 || GrowthDivisor <= 0 || Bands.Length != 8 ||
+        if (Schema >= 2 && ((Schema == 2 ? ModifierPrice != 10 : ModifierPrice != 10 && ModifierPrice != 5) ||
+            GrowthDivisor <= 0 || Bands.Length != 8 ||
             Bands.Any(b => b.Upper <= 0 || b.Coins < 0 || b.MinGuards < 2 || b.MaxGuards < b.MinGuards ||
                 (b.Coins > 0 ? b.Quality != RewardQuality.Common : b.Quality == RewardQuality.Common)) ||
             Bands.Zip(Bands.Skip(1), (a, b) => a.Upper < b.Upper && a.MinGuards <= b.MinGuards &&
@@ -59,7 +60,8 @@ public sealed class RewardRules
     {
         Validate();
         var ids = modifiers.ToArray();
-        if (locationBonus < 0 || ids.Length != ids.Distinct().Count() || ids.Length > 10 ||
+        if (locationBonus < 0 || ids.Length != ids.Distinct().Count() ||
+            ids.Length > (Schema < 3 ? 10 : MaxModifiers) ||
             ids.Any(id => !Weights.ContainsKey(id)))
             throw new ArgumentException("Неподдержанный набор охраны или надбавка");
         if (protectedZone && ids.Length > 0)
@@ -68,30 +70,43 @@ public sealed class RewardRules
         decimal sum = ids.Sum(id => Weights[id]);
         decimal factor = matches.Aggregate(1m, (n, s) => n * s.Factor);
         decimal growth = 1;
-        if (Schema == 2)
+        if (Schema >= 2)
         {
             // Порядок канонический: десятичное округление не зависит от порядка ID в ZDO.
             growth = ids.OrderBy(id => id, StringComparer.Ordinal)
                 .Aggregate(1m, (n, id) => n * (1 + Weights[id] / GrowthDivisor));
-            factor = ids.Length == 0 ? 1 : sum / (ids.Length * ModifierPrice) * growth * factor;
+            // В schema 3 нормировка всегда по цене 10: цена 5 уменьшает только добычу.
+            factor = ids.Length == 0 ? 1 : sum / (ids.Length * 10) * growth * factor;
             sum = ids.Length * ModifierPrice;
         }
+        decimal lootFactor = Schema >= 3 ? ModifierPrice / 10 : 1;
+        decimal combat = protectedZone ? 0 : locationBonus + (Schema >= 3 ? ids.Length * 10 : sum) * factor;
         return new BudgetResult { Points = sum, Factor = factor,
-            Growth = growth,
-            Rules = matches.Select(s => s.Id).ToArray(), Value = protectedZone ? 0 : locationBonus + sum * factor };
+            Growth = growth, CombatValue = combat, LootFactor = lootFactor,
+            Rules = matches.Select(s => s.Id).ToArray(), Value = combat * lootFactor };
     }
 
     public RewardBand Band(decimal budget)
     {
         Validate();
-        if (Schema != 2 || budget < 0) throw new ArgumentException("Нужна интервальная шкала");
+        if (Schema < 2 || budget < 0) throw new ArgumentException("Нужна интервальная шкала");
         return Bands.FirstOrDefault(b => budget <= b.Upper) ?? Bands[Bands.Length - 1];
+    }
+
+    public RewardRules AtPrice(decimal price)
+    {
+        if (Schema != 3) throw new InvalidOperationException("Радиальные цены требуют schema 3");
+        var copy = (RewardRules)MemberwiseClone();
+        copy.ModifierPrice = price;
+        copy.Validate();
+        return copy;
     }
 }
 
 public sealed class BudgetResult
 {
-    public decimal Points, Factor, Value;
+    public decimal Points, Factor, Value, CombatValue;
+    public decimal LootFactor = 1;
     public decimal Growth = 1;
     public string[] Rules = Array.Empty<string>();
 }
@@ -131,7 +146,7 @@ public static class RewardModel
     {
         rules.Validate();
         if (budget < 0) throw new ArgumentOutOfRangeException(nameof(budget));
-        if (rules.Schema == 2) return IntervalPlan(budget, rules);
+        if (rules.Schema >= 2) return IntervalPlan(budget, rules);
         decimal scale = rules.QualityKnots[6];
         decimal n = decimal.Floor(budget / scale);
         decimal remainder = budget % scale;

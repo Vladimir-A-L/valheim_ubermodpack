@@ -34,14 +34,16 @@ $rewardFiles = @('BepInEx\config\dungeon-rewards.json', 'BepInEx\config\forest-l
 $navigationFiles = @('BepInEx\plugins\DungeonMaps\DungeonMaps.dll',
     'BepInEx\config\zl.dungeonmaps.cfg', 'BepInEx\config\forest-navigation.json')
 $runtimeConfig = 'BepInEx\config\ubermodpack.dungeon-depth-prototype.cfg'
-$allowed = $requiredFiles + $rewardFiles + $navigationFiles + @($runtimeConfig)
+$radialConfig = 'BepInEx\config\radial-dungeons.json'
+$allowed = $requiredFiles + $rewardFiles + $navigationFiles + @($runtimeConfig, $radialConfig)
 $sources = @($manifest.files | ForEach-Object {
     if ($_.relative -notin $allowed -or $_.source -ne [IO.Path]::GetFileName($_.source)) {
         throw 'Неожиданный файл в manifest обновления.'
     }
     @{relative=$_.relative; source=(Join-Path $payload $_.source); hash=$_.sha256}
 })
-$baseCount = $sources.Count - [int]($runtimeConfig -in $sources.relative)
+$baseCount = $sources.Count - [int]($runtimeConfig -in $sources.relative) -
+    [int]($radialConfig -in $sources.relative)
 if ($baseCount -notin @(4, 6, 9) -or @($sources.relative | Sort-Object -Unique).Count -ne $sources.Count -or
     @($requiredFiles | Where-Object { $_ -notin $sources.relative }).Count -ne 0) {
     throw 'Неполный или повторяющийся набор файлов обновления.'
@@ -205,8 +207,8 @@ try {
         throw
     }
     Write-Host ('Патч установлен для персонажа ' + $manifest.character + '. Backup: ' + $archive)
-    Write-Host 'Запустите тестовую копию игры и войдите на прежний сервер.'
-    Write-Host 'Дождитесь сообщения «Тест готов» с подтверждённым счётчиком сервера.'
+    Write-Host 'Версия патча: ' $manifest.version
+    Write-Host 'Порядок запуска и нужная поставка сервера указаны в ПРОЧИТАЙТЕ.txt рядом с установщиком.'
 } finally {
     if (Test-Path $stage) { Remove-Item $stage -Recurse -Force }
 }

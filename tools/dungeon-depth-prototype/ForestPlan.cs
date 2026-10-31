@@ -7,10 +7,19 @@ namespace DungeonDepthPrototype;
 // Планирование без создания игровых объектов. Координаты берутся из загруженных штатных prefab.
 public static class ForestPlan
 {
+    public sealed class PlacementFailure : InvalidOperationException
+    {
+        public int Attempts { get; }
+        public int SearchSteps { get; }
+        internal PlacementFailure(int attempts, int steps, int depth) : base(
+            $"Не удалось разместить обе встречи за {attempts} попыток; L={depth}, проверено кандидатов={steps}")
+        { Attempts = attempts; SearchSteps = steps; }
+    }
     public const int SafeDepth = 16, MaxDepth = 64;
     public const string TrialArena = "forestcrypt_new_BurialChamber02";
     private const int GrowthDepth = MaxDepth - SafeDepth;
     public const int MaxAttempts = 256;
+    public const int MaxRadialSearchSteps = 250000, MaxRadialRooms = 384, MaxRadialAttempts = 2048;
     public static int ModifierCount(int depth) => depth <= SafeDepth ? 0 :
         depth >= MaxDepth ? 10 : (10 * (depth - SafeDepth) + GrowthDepth - 1) / GrowthDepth;
 
@@ -64,7 +73,9 @@ public static class ForestPlan
         public int ResourceCount, RareGuardCount, ChestCount, Branch;
         public bool Arena, MiniBoss;
         public int CombatDepth, RouteEnd = -1, Attachment = -1;
+        public int Modifiers = -1;
         public int ProfileDepth => MiniBoss ? CombatDepth : Depth;
+        public int ModifierCount => Modifiers >= 0 ? Modifiers : ForestPlan.ModifierCount(ProfileDepth);
         public IEnumerable<Volume> Bounds => (Template.Volumes.Length > 0 ? Template.Volumes :
             new[] { new Volume { Size = Template.Size } }).Select(v => new Volume {
                 Center = Position + v.Center.Rotate(Turn), Size = Abs(v.Size.Rotate(Turn)) });
@@ -87,6 +98,7 @@ public static class ForestPlan
         public int Seed, Attempts;
         public int BranchCount, RouteLength = MaxDepth, SearchSteps;
         public bool StageGates;
+        public RadialSelection? Radial;
         public List<(int A, int B)> Edges = new List<(int, int)>();
     }
 
@@ -99,13 +111,19 @@ public static class ForestPlan
         internal readonly Point Center, Size;
         internal int Tries;
         internal readonly bool StageGates;
+        internal readonly RadialSelection? Radial;
+        private readonly int workBudget;
+        private int work;
+        internal int Steps => Radial == null ? Tries : work;
+        private bool Exhausted => Tries >= Limit || Radial != null && work >= workBudget;
         internal const int Limit = 20000;
 
         internal Search(Template[] templates, int seed, Point center, Point size, bool stageGates,
-            string arena = "forestcrypt_new_Burialchamber05")
+            string arena = "forestcrypt_new_Burialchamber05", RadialSelection? radial = null,
+            int remainingWork = MaxRadialSearchSteps)
         {
             Random = new Random(seed); Center = center; Size = size;
-            StageGates = stageGates;
+            StageGates = stageGates; Radial = radial; workBudget = remainingWork;
             Template Get(string name) => templates.Single(t => t.Name == name);
             Reward = Get("forestcrypt_room1");
             Arena = Get(arena);
@@ -124,11 +142,14 @@ public static class ForestPlan
             return new Placement { Template = template, Turn = turn,
                 Position = from.SocketPosition(socket) - template.Sockets[entry].Position.Rotate(turn),
                 Parent = parent, ParentSocket = socket, InSocket = entry,
-                Depth = from.Depth + (template.Endcap ? 0 : 1) };
+                Depth = from.Depth + (template.Endcap ? 0 : 1),
+                Modifiers = Radial?.Profile.Count(from.Depth + (template.Endcap ? 0 : 1)) ?? -1 };
         }
 
         internal bool Fits(Placement candidate)
         {
+            if (Radial != null && (work >= workBudget || ++work > workBudget || Rooms.Count >= MaxRadialRooms))
+                return false;
             foreach (var volume in candidate.Bounds)
             {
                 var p = volume.Center - Center; var size = volume.Size;
@@ -155,7 +176,7 @@ public static class ForestPlan
         internal bool Extend(int parent, int targetDepth, int branch, bool arena = false)
         {
             if (Rooms[parent].Depth == targetDepth) return true;
-            if (Tries >= Limit) return false;
+            if (Exhausted || Radial != null && targetDepth > Radial.MaximumDepth) return false;
             int next = Rooms[parent].Depth + 1;
             var pool = arena && next == targetDepth ? new[] { Arena } :
                 RewardDepth(next) || next == targetDepth || (branch == 0 && next == 12) ?
@@ -166,7 +187,7 @@ public static class ForestPlan
                 select Attach(parent, s, t, entry)).OrderBy(_ => Random.Next()).ToArray();
             foreach (var c in candidates)
             {
-                if (++Tries >= Limit) return false;
+                if (++Tries >= Limit || Exhausted) return false;
                 if (!Fits(c)) continue;
                 c.Branch = branch;
                 c.Arena = arena && next == targetDepth;
@@ -209,24 +230,36 @@ public static class ForestPlan
     };
 
     public static Layout Create(Template[] templates, Point entrance, int entranceTurn,
-        Point center, Point size, int seed, bool stageGates = false, int routeLength = MaxDepth)
+        Point center, Point size, int seed, bool stageGates = false, int routeLength = MaxDepth,
+        RadialSelection? radial = null, int searchBudget = MaxRadialSearchSteps)
     {
+        if (radial != null)
+        {
+            if (searchBudget < 1 || searchBudget > MaxRadialSearchSteps)
+                throw new ArgumentOutOfRangeException(nameof(searchBudget));
+            routeLength = radial.MaximumDepth;
+        }
         if (routeLength < SafeDepth || routeLength > 160)
             throw new ArgumentOutOfRangeException(nameof(routeLength), "Допустимы маршруты от 16 до 160 переходов");
-        int totalSteps = 0;
-        for (int attempt = 0; attempt < MaxAttempts; attempt++)
+        int totalSteps = 0, attempts = 0;
+        int attemptLimit = radial == null ? MaxAttempts : MaxRadialAttempts;
+        for (int attempt = 0; attempt < attemptLimit; attempt++)
         {
-            var search = new Search(templates, unchecked(seed + attempt * 104729), center, size, stageGates);
+            if (radial != null && totalSteps >= searchBudget) break;
+            attempts++;
+            var search = new Search(templates, unchecked(seed + attempt * 104729), center, size, stageGates,
+                radial: radial, remainingWork: searchBudget - totalSteps);
             var start = templates.Single(t => t.Entrance);
             int entry = Array.FindIndex(start.Sockets, s => s.Entrance);
             int turn = (entranceTurn + 4 - start.Sockets[entry].Turn) % 4;
             var first = new Placement { Template = start, Turn = turn, InSocket = entry,
-                Position = entrance - start.Sockets[entry].Position.Rotate(turn) };
-            if (!search.Fits(first)) continue;
+                Position = entrance - start.Sockets[entry].Position.Rotate(turn),
+                Modifiers = radial?.Profile.Count(0) ?? -1 };
+            if (!search.Fits(first)) { totalSteps += search.Steps; continue; }
             search.Rooms.Add(first);
             int bossDepth = search.Random.Next(PlacementThreshold(routeLength, 80), routeLength + 1);
             // Сначала зарезервировать весь объём секции, затем достраивать остальные части плана.
-            if (!search.Extend(0, bossDepth, 0)) { totalSteps += search.Tries; continue; }
+            if (!search.Extend(0, bossDepth, 0)) { totalSteps += search.Steps; continue; }
             int bossParent = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == bossDepth);
             Placement? boss = null;
             foreach (int socket in search.FreeSockets(bossParent).OrderBy(_ => search.Random.Next()))
@@ -236,19 +269,21 @@ public static class ForestPlan
                 if (!search.Fits(candidate)) continue;
                 boss = candidate; break;
             }
-            if (boss == null) { totalSteps += search.Tries; continue; }
+            if (boss == null) { totalSteps += search.Steps; continue; }
             boss.MiniBoss = true; boss.CombatDepth = bossDepth; boss.Branch = 2; boss.Attachment = bossParent;
+            boss.Modifiers = radial?.Profile.Count(bossDepth) ?? -1;
             search.Rooms.Add(boss);
-            if (!search.Extend(bossParent, routeLength, 0)) { totalSteps += search.Tries; continue; }
+            if (!search.Extend(bossParent, routeLength, 0)) { totalSteps += search.Steps; continue; }
             int routeEnd = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == routeLength);
             boss.RouteEnd = routeEnd;
             bool arenaPlaced = false;
             var joins = search.Rooms.Select((r, i) => (r, i)).Where(x => x.r.Branch == 0 &&
-                x.r.Depth >= PlacementThreshold(routeLength, 70)).OrderBy(_ => search.Random.Next()).ToArray();
+                x.r.Depth >= PlacementThreshold(routeLength, 70) &&
+                (radial == null || x.r.Depth <= routeLength - 5)).OrderBy(_ => search.Random.Next()).ToArray();
             foreach (var join in joins)
             {
                 int before = search.Rooms.Count;
-                int length = search.Random.Next(5, 10);
+                int length = search.Random.Next(5, radial == null ? 10 : Math.Min(9, routeLength - join.r.Depth) + 1);
                 if (search.Extend(join.i, join.r.Depth + length, 1, true))
                 {
                     var arena = search.Rooms.Single(r => r.Arena);
@@ -256,20 +291,21 @@ public static class ForestPlan
                 }
                 search.Rooms.RemoveRange(before, search.Rooms.Count - before);
             }
-            if (!arenaPlaced) { totalSteps += search.Tries; continue; }
+            if (!arenaPlaced) { totalSteps += search.Steps; continue; }
             int branchCount = new Random(seed).Next(2, 6), branch = 3;
             bool branches = true;
             var branchDepths = routeLength == SafeDepth ? new[] { 4, 8, 12 } :
                 new[] { 8, 12, 16, routeLength / 2 };
             foreach (int depth in branchDepths.Distinct()
-                         .Where(d => d < routeLength).OrderBy(_ => search.Random.Next()).Take(branchCount - 2))
+                         .Where(d => d < routeLength && (radial == null || d <= routeLength - 5))
+                         .OrderBy(_ => search.Random.Next()).Take(branchCount - 2))
             {
                 int parent = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == depth);
-                int length = search.Random.Next(5, 9) * (depth >= SafeDepth ? 2 : 1);
+                int length = radial == null ? search.Random.Next(5, 9) * (depth >= SafeDepth ? 2 : 1) :
+                    search.Random.Next(3) == 0 ? routeLength - depth : search.Random.Next(5, routeLength - depth + 1);
                 if (!search.Extend(parent, depth + length, branch++)) { branches = false; break; }
             }
-            totalSteps += search.Tries;
-            if (!branches) continue;
+            if (!branches) { totalSteps += search.Steps; continue; }
             for (int i = 0; i < search.Rooms.Count && branches; i++)
                 foreach (int socket in search.FreeSockets(i).ToArray())
                 {
@@ -277,18 +313,18 @@ public static class ForestPlan
                     if (!search.Fits(cap)) { branches = false; break; }
                     search.Rooms.Add(cap);
                 }
+            totalSteps += search.Steps;
             if (!branches) continue;
             var result = new Layout { Seed = seed, Attempts = attempt + 1, Rooms = search.Rooms,
                 BranchCount = branchCount, StageGates = stageGates, RouteLength = routeLength,
-                SearchSteps = totalSteps };
+                SearchSteps = totalSteps, Radial = radial };
             AssignResources(result);
             result.Edges = result.Rooms.Select((r, i) => (r, i)).Where(x => x.r.Parent >= 0)
                 .Select(x => (x.r.Parent, x.i)).ToList();
             Validate(result);
             return result;
         }
-        throw new InvalidOperationException($"Не удалось разместить обе встречи за {MaxAttempts} попыток; " +
-            $"L={routeLength}, проверено кандидатов={totalSteps}");
+        throw new PlacementFailure(attempts, totalSteps, routeLength);
     }
 
     // Короткий стенд боя: один основной тупик и ровно одно ответвление к залу босса.
@@ -349,6 +385,10 @@ public static class ForestPlan
     {
         var rooms = layout.Rooms;
         if (rooms.Count == 0 || !rooms[0].Template.Entrance) throw new InvalidOperationException("Нет входа");
+        if (layout.Radial != null && (rooms.Count > MaxRadialRooms ||
+            layout.SearchSteps > MaxRadialSearchSteps || rooms.Any(r => r.ProfileDepth > layout.RouteLength) ||
+            layout.RouteLength != layout.Radial.MaximumDepth))
+            throw new InvalidOperationException("Превышен общий предел глубины, комнат или поиска");
         var depths = DungeonGeometryProbe.RoomGraph.Distances(rooms.Count, layout.Edges, 0);
         for (int i = 0; i < rooms.Count; i++)
         {
@@ -378,7 +418,8 @@ public static class ForestPlan
             throw new InvalidOperationException("Нет полной арены");
         var firstArenaBranch = rooms.First(r => r.Branch == arena[0].Branch && !r.Template.Endcap);
         if (firstArenaBranch.Parent != arena[0].Attachment ||
-            arena[0].Depth - rooms[firstArenaBranch.Parent].Depth < 5)
+            arena[0].Depth - rooms[firstArenaBranch.Parent].Depth < 5 ||
+            arena[0].Depth - rooms[firstArenaBranch.Parent].Depth > 9)
             throw new InvalidOperationException("Арена должна быть в конце длинного позднего ответвления");
         var bosses = rooms.Where(r => r.MiniBoss).ToArray();
         if (bosses.Length != 1) throw new InvalidOperationException("Нужна ровно одна секция мини-босса");
@@ -407,7 +448,7 @@ public static class ForestPlan
             rooms.Any(r => r.ResourceCount == 0 && r.RareGuardCount != 0))
             throw new InvalidOperationException("Нарушена общая квота ресурсов или редкой охраны");
         foreach (var (a, b) in layout.Edges)
-            if (Math.Abs(ModifierCount(rooms[a].ProfileDepth) - ModifierCount(rooms[b].ProfileDepth)) > 1)
+            if (Math.Abs(rooms[a].ModifierCount - rooms[b].ModifierCount) > 1)
                 throw new InvalidOperationException("Скачок числа модификаторов");
         if (layout.StageGates) EncounterGates.Validate(layout);
     }

@@ -113,7 +113,7 @@ public static class GuardedChestReward
     }
 
     // Точка подключения будущего генератора комнат. Не ищем ближайшего врага и не проверяем его смерть.
-    public static void Bind(Container chest, Character guard, RoomRewardContext context)
+    public static void Bind(Container chest, Character guard, RoomRewardContext context, RewardRules? rules = null)
     {
         var view = chest.GetComponent<ZNetView>();
         var guardView = guard.GetComponent<ZNetView>();
@@ -138,7 +138,8 @@ public static class GuardedChestReward
         int mask = PovBridge.Read(guard);
         string[] ids = PovBridge.Ids(mask);
         if (ids.Length != PovBridge.Count(mask)) throw new InvalidOperationException("Неизвестные биты PoV");
-        string rulesJson = JsonConvert.SerializeObject(Rules);
+        rules ??= Rules;
+        string rulesJson = JsonConvert.SerializeObject(rules);
         var state = new ChestRewardState
         {
             GuardToken = guardId, ChestToken = chestId, GuardZdoAtBinding = guardView.GetZDO().m_uid.ToString(),
@@ -148,7 +149,7 @@ public static class GuardedChestReward
             Source = Utils.GetPrefabName(chest.gameObject), Seed = context.Seed,
             Room = context, Rules = JsonConvert.DeserializeObject<RewardRules>(rulesJson)!,
             RulesHash = EpicLootBridge.Hash(Encoding.UTF8.GetBytes(rulesJson)),
-            Budget = Rules.Budget(ids, context.LocationBonus, context.ProtectedProgressionZone),
+            Budget = rules.Budget(ids, context.LocationBonus, context.ProtectedProgressionZone),
             BoundAtUtc = DateTime.UtcNow.ToString("O")
         };
         RewardModel.Plan(state.Budget.Value, state.Rules, () => 0);

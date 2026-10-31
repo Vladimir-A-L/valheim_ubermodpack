@@ -48,6 +48,10 @@ internal sealed class ForestFixture : MonoBehaviour
     private object Execute(JObject command)
     {
         string action = command.Value<string>("action") ?? "";
+        if (action == "guard-probe") return ForestGuardProbe.Run(command);
+        if (action == "radial-world-probe") return RadialWorldProbe.Run(command);
+        if (action == "radial-affix-probe") return RadialAffixProbe.Run();
+        if (action == "radial-dungeon-probe") return RadialDungeonProbe.Run(command);
         if (action == "atmosphere-probe") return ForestAtmosphereProbe.Run(command);
         if (action == "connection-probe") return MiniBossConnectionProbe.Run(command);
         if (action == "exit-status") return ServerExitRepair.Status();

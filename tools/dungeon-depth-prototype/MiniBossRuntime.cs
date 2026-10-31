@@ -40,7 +40,9 @@ internal sealed class MiniBossRuntime : MonoBehaviour
 
     private static void Factor(Character c, bool hp, ref float __result)
     {
-        if (IsBoss(c)) __result *= hp ? MiniBossRules.HealthFactor : MiniBossRules.DamageFactor;
+        float? radial = RadialRuntime.Factor(c, hp);
+        if (radial.HasValue) __result *= radial.Value;
+        else if (IsBoss(c)) __result *= hp ? MiniBossRules.HealthFactor : MiniBossRules.DamageFactor;
     }
 
     private static bool Wear(WearNTear __instance)

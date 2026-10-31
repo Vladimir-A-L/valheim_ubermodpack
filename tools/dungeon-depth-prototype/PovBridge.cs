@@ -91,7 +91,7 @@ internal static class PovBridge
             .Select(v => (string)idOf.Invoke(null, new[] { v })).OrderBy(v => v).ToArray();
     }
 
-    internal static int AssignIds(Character character, params string[] ids)
+    internal static int ValidateIds(params string[] ids)
     {
         var modType = set.GetParameters()[1].ParameterType;
         int mask = 0;
@@ -100,8 +100,17 @@ internal static class PovBridge
             object[] args = { id, Enum.ToObject(modType, 0) };
             if (!(bool)Method("PassiveTree.RarityMods", "Parse").Invoke(null, args))
                 throw new ArgumentException("Неизвестный модификатор PoV: " + id);
+            string canonical = (string)Method("PassiveTree.RarityMods", "IdOf").Invoke(null, new[] { args[1] });
+            if (canonical != id) throw new ArgumentException("Нужен точный ID PoV: " + id);
             mask |= Convert.ToInt32(args[1]);
         }
+        if (Count(mask) != ids.Length) throw new ArgumentException("Повторные ID PoV");
+        return mask;
+    }
+
+    internal static int AssignIds(Character character, params string[] ids)
+    {
+        int mask = ValidateIds(ids);
         var view = character.GetComponent<ZNetView>();
         if (view == null || !view.IsValid() || !view.IsOwner())
             throw new InvalidOperationException("Назначение разрешено только владельцу");

@@ -6,8 +6,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../dungeon-depth-prototype/GuardRecoveryState.cs" Link="GuardRecoveryState.cs" />
     <Compile Include="../dungeon-depth-prototype/InteriorCoverage.cs" Link="InteriorCoverage.cs" />
     <Compile Include="../dungeon-depth-prototype/RewardModel.cs" Link="RewardModel.cs" />
+    <Compile Include="../dungeon-depth-prototype/RadialProfile.cs" Link="RadialProfile.cs" />
+    <Compile Include="../dungeon-depth-prototype/RadialAllocation.cs" Link="RadialAllocation.cs" />
     <Compile Include="../dungeon-depth-prototype/RewardJournal.cs" Link="RewardJournal.cs" />
     <Compile Include="../dungeon-geometry-probe/RoomGraph.cs" Link="RoomGraph.cs" />
     <Compile Include="../dungeon-depth-prototype/ForestPlan.cs" Link="ForestPlan.cs" />
