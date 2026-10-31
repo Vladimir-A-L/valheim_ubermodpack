@@ -1,0 +1,654 @@
+{
+  "schema_version": 1,
+  "observed_at_utc": "2026-10-31T11:02:39.704653+00:00",
+  "scope": "isolated-radial-fps-and-empowered-candidate",
+  "delivery_version": "0.16.0-r1",
+  "base_release": "radial-stand-0151-r4-20261031.lock.json",
+  "game": {
+    "schema_version": 1,
+    "platform": "linux-x86_64",
+    "app_id": 896660,
+    "build_id": "25909431",
+    "game_version": "l-1.0.20",
+    "network_version": 41,
+    "depots": {
+      "1006": "4559160656493359681",
+      "896661": "4001404753685205688"
+    },
+    "files": {
+      "valheim_server.x86_64": {
+        "sha256": "afdc1feb7b381da99ba43c25cf75b211068ee8f778a187951f5ca644faf819cc",
+        "bytes": 15160
+      },
+      "UnityPlayer.so": {
+        "sha256": "66c4643dd702e726ed85abcb17e50923cd1de259d58e5536e5eed4647249e268",
+        "bytes": 37123576
+      },
+      "steamapps/appmanifest_896660.acf": {
+        "sha256": "4f6cd2e5a8c8fb93a4e1392fc2d82ca41c3e444fc5b2bad914ed6c4bf1d9ac29",
+        "bytes": 801
+      }
+    },
+    "scope": "Build identity and representative files; not a complete server file lock"
+  },
+  "game_managed_assembly_sha256": "c36b81c1733c48d00dd567e41010e6dc95f8dac877e0701cdb6b8c213ade7812",
+  "own_plugin": {
+    "name": "DungeonDepthPrototype",
+    "version": "0.16.0",
+    "dll_sha256": "803402f0cdc85bd0a48db1ca64536c0841a71e1d96bf0a465b2d4eda4f2c64fe"
+  },
+  "pinned_dependencies": [
+    {
+      "name": "PathOfValheiman",
+      "version": "5.3.6",
+      "dll_sha256": "ea9ce4acc6eb85c903ec415bae66d23a1ea112f6c82b846facd847bab3e72416"
+    },
+    {
+      "name": "EpicLoot",
+      "version": "0.15.3",
+      "dll_sha256": "ef0f11fb3248a7ab4a49da1b9c8f96827dec008fbc31569d90bf1bab52a1c9ef"
+    },
+    {
+      "name": "sighsorry-ServerManager",
+      "version": "1.2.5",
+      "dll_sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    }
+  ],
+  "client_update": {
+    "archive": "ForestCryptQA-RadialQa-0.16.0-r1.zip",
+    "sha256": "1496cbf0f6500e5d443c2f92d19bfbb6454cbd46283b46e661f5c854acb466a0",
+    "bytes": 1240210,
+    "payload_files": 11,
+    "dll_sha256": "803402f0cdc85bd0a48db1ca64536c0841a71e1d96bf0a465b2d4eda4f2c64fe",
+    "installer_unchanged": true
+  },
+  "payload_files": [
+    {
+      "source": "DungeonDepthPrototype.dll",
+      "relative": "BepInEx\\plugins\\DungeonDepthPrototype\\DungeonDepthPrototype.dll",
+      "sha256": "803402f0cdc85bd0a48db1ca64536c0841a71e1d96bf0a465b2d4eda4f2c64fe"
+    },
+    {
+      "source": "ServerManager.dll",
+      "relative": "BepInEx\\plugins\\ServerManager\\ServerManager.dll",
+      "sha256": "c5d6fd0ecbfba232d7c5bb33ab890aec42a277757229ea8809515320bdc62e38"
+    },
+    {
+      "source": "sighsorry.ServerManager.cfg",
+      "relative": "BepInEx\\config\\sighsorry.ServerManager.cfg",
+      "sha256": "ead0190ea2982b68c9a2e56fa12573fe64c07eb59ca237fd8720410e177acb13"
+    },
+    {
+      "source": "dungeon-rewards.json",
+      "relative": "BepInEx\\config\\dungeon-rewards.json",
+      "sha256": "8d220263ecc470e1e6f014476696bb7561ee195149cdb5f83b5b3c8e0c500f02"
+    },
+    {
+      "source": "forest-loadout.json",
+      "relative": "BepInEx\\config\\forest-loadout.json",
+      "sha256": "76f627c31ad7fa66e956809b9eac3b6463ba0ac9b09113770dadd967a09910a3"
+    },
+    {
+      "source": "DungeonMaps.dll",
+      "relative": "BepInEx\\plugins\\DungeonMaps\\DungeonMaps.dll",
+      "sha256": "6770b7dd7c81a32e6e80f249b96a752b1441bd0cb1753baab6edf06c7aaf066b"
+    },
+    {
+      "source": "zl.dungeonmaps.cfg",
+      "relative": "BepInEx\\config\\zl.dungeonmaps.cfg",
+      "sha256": "ffddedb0297aea22823d2255ab3614cf488cade3f888a20606d6ee154d9f2870"
+    },
+    {
+      "source": "forest-navigation.json",
+      "relative": "BepInEx\\config\\forest-navigation.json",
+      "sha256": "d218cc05c566982cd2e7914b011bd81bd418264355c48d202848ede5b8ad11b2"
+    },
+    {
+      "source": "forest-manual-test.json",
+      "relative": "BepInEx\\config\\forest-manual-test.json",
+      "sha256": "f1e38649f1007df3ad2e7a1f12bdf16f1eda798699c38d2d96d55cfb9b8ce31f"
+    },
+    {
+      "source": "ubermodpack.dungeon-depth-prototype.cfg",
+      "relative": "BepInEx\\config\\ubermodpack.dungeon-depth-prototype.cfg",
+      "sha256": "716ea45682a51db48fb86bba1bf2a69b8e7e095854d24999a97f92d606b2f8a8"
+    },
+    {
+      "source": "radial-dungeons.json",
+      "relative": "BepInEx\\config\\radial-dungeons.json",
+      "sha256": "9cba6d7f31c751b71711e55e3dfe0faff1464571de5665dba9e62348bbd27c86"
+    }
+  ],
+  "configuration": {
+    "radial_schema": 2,
+    "reward_schema": 4,
+    "chest_schema": 3,
+    "ordinary_modifiers": [
+      "keen",
+      "warded",
+      "furious",
+      "swift",
+      "hardy",
+      "steadfast",
+      "greedy",
+      "armored",
+      "piercing",
+      "unbreakable",
+      "burning",
+      "bound",
+      "headsman"
+    ],
+    "far_price": 7,
+    "near_middle_price": 10,
+    "stack_health_per_level": 0.15,
+    "stack_damage_per_level": 0.1,
+    "stack_loot": "B_unique * P / 10 + P * n",
+    "ordinary_generation_enabled": false,
+    "old_snapshots_migrated": false
+  },
+  "checks": {
+    "model_assertions": 155184,
+    "tool_tests": 44,
+    "native_new_generations": 6,
+    "native_rpc_checks": 34,
+    "build_warnings": 0,
+    "build_errors": 0,
+    "windows_installer": {
+      "previous_archives_preserved": true,
+      "payload_files": 11,
+      "new_file_removed": true,
+      "save_unchanged": true,
+      "status": "passed",
+      "rollback_applied": true,
+      "cases": [
+        "upgrade_0151_r4"
+      ],
+      "restored_files": 11
+    },
+    "policy": [
+      {
+        "case": "exact",
+        "allowed": true,
+        "rules": 9,
+        "entries": 9
+      },
+      {
+        "case": "old-dll",
+        "allowed": false,
+        "rules": 9,
+        "entries": 9
+      },
+      {
+        "case": "unlisted",
+        "allowed": false,
+        "rules": 9,
+        "entries": 10
+      }
+    ],
+    "preparation": {
+      "passed": true,
+      "errors": [],
+      "payload_files": 11
+    },
+    "health_restart": {
+      "wounded_loaded": true,
+      "maximum_preserved": true,
+      "stacks_preserved": true,
+      "metadata_preserved": true,
+      "native_load_health": true,
+      "native_ward_load": true,
+      "native_stack_load": true
+    },
+    "native_load_counters": {
+      "Loads": 82,
+      "Wounded": 1,
+      "Failures": 0,
+      "WardLoads": 82,
+      "WardFailures": 0,
+      "StackFailures": 0
+    },
+    "death_not_respawned": true,
+    "rollback": {
+      "passed": true,
+      "version": "0.15.1",
+      "plans": 10,
+      "objects": 2172,
+      "character_files": 7,
+      "source": "before-0160-checkpoint"
+    }
+  },
+  "preservation": {
+    "old_plans": 10,
+    "old_objects": 2172,
+    "character_files_unchanged": 7,
+    "preparation_id": "radial-r3-stand",
+    "preparation_id_changed": false,
+    "inventory_reset": false,
+    "pov_reset": false,
+    "god": true,
+    "ghost": false,
+    "drug_server_changed": false
+  },
+  "handoff": {
+    "passed": true,
+    "observed_at_utc": "2026-10-31T11:01:33.034966+00:00",
+    "plans": 13,
+    "objects": 2728,
+    "checkpoint_files": 903,
+    "preparation_plugin_removed": true,
+    "diagnostic_server_stopped": true
+  },
+  "checkpoints": {
+    "before_update_files": 811,
+    "before_update_manifest_sha256": "ff20af37c8d98831476ffd07c175b34e2369d3c983262e4c410412853f9af1fc",
+    "handoff_manifest_sha256": "878e9be1b2d961cf706ae852e4094d612a4deabd31a88f592500c4fb61fa8903",
+    "pending": 0
+  },
+  "stand_limits": {
+    "cpu_percent": 150,
+    "memory_gib": 3,
+    "oom_kills": 0,
+    "capacity_accepted": false
+  },
+  "performance": {
+    "scope": "dedicated-server-only",
+    "gpu_timing_available": false,
+    "samples": [
+      {
+        "candidate": "final-original",
+        "scene": "middle-interior",
+        "repeat": 1,
+        "median_ms": 253.02569998893887,
+        "p95_ms": 456.48809999693185,
+        "p99_ms": 519.6339000249282,
+        "over_50_ms": 116,
+        "over_100_ms": 112,
+        "frame_count": 117,
+        "process_cpu_percent": 116.62546728441731
+      },
+      {
+        "candidate": "final-original",
+        "scene": "middle-interior",
+        "repeat": 2,
+        "median_ms": 62.549500027671456,
+        "p95_ms": 240.9921000362374,
+        "p99_ms": 327.8242999804206,
+        "over_50_ms": 175,
+        "over_100_ms": 145,
+        "frame_count": 328,
+        "process_cpu_percent": 119.57868833767323
+      },
+      {
+        "candidate": "final-original",
+        "scene": "far-outside",
+        "repeat": 1,
+        "median_ms": 146.79170004092157,
+        "p95_ms": 467.8880999563262,
+        "p99_ms": 597.3264000494964,
+        "over_50_ms": 139,
+        "over_100_ms": 104,
+        "frame_count": 177,
+        "process_cpu_percent": 119.40832008939904
+      },
+      {
+        "candidate": "final-original",
+        "scene": "far-outside",
+        "repeat": 2,
+        "median_ms": 93.29900000011548,
+        "p95_ms": 251.3337999698706,
+        "p99_ms": 489.41100004594773,
+        "over_50_ms": 196,
+        "over_100_ms": 126,
+        "frame_count": 287,
+        "process_cpu_percent": 119.42580949510393
+      },
+      {
+        "candidate": "optimized-0152",
+        "scene": "middle-interior",
+        "repeat": 1,
+        "median_ms": 37.76570002082735,
+        "p95_ms": 159.90260004764423,
+        "p99_ms": 242.23989999154583,
+        "over_50_ms": 167,
+        "over_100_ms": 127,
+        "frame_count": 460,
+        "process_cpu_percent": 124.18002316176535
+      },
+      {
+        "candidate": "optimized-0152",
+        "scene": "middle-interior",
+        "repeat": 2,
+        "median_ms": 34.87969998968765,
+        "p95_ms": 136.65990001754835,
+        "p99_ms": 184.74870000500232,
+        "over_50_ms": 160,
+        "over_100_ms": 131,
+        "frame_count": 508,
+        "process_cpu_percent": 118.68084356528152
+      },
+      {
+        "candidate": "optimized-0152",
+        "scene": "far-outside",
+        "repeat": 1,
+        "median_ms": 86.4477000432089,
+        "p95_ms": 150.79340001102537,
+        "p99_ms": 205.18160000210628,
+        "over_50_ms": 243,
+        "over_100_ms": 138,
+        "frame_count": 383,
+        "process_cpu_percent": 123.16295093861372
+      },
+      {
+        "candidate": "optimized-0152",
+        "scene": "far-outside",
+        "repeat": 2,
+        "median_ms": 78.61020002746955,
+        "p95_ms": 120.30160002177581,
+        "p99_ms": 150.16279998235404,
+        "over_50_ms": 246,
+        "over_100_ms": 125,
+        "frame_count": 434,
+        "process_cpu_percent": 119.86655119527339
+      }
+    ]
+  },
+  "client_acceptance": {
+    "new_client_connection": "pending",
+    "fps": "pending-user-measurement",
+    "r3_before_restart": "accepted-on-0151",
+    "r3_after_restart": "pending",
+    "r2": "accepted-on-0141-not-repeated",
+    "u9": "deferred",
+    "agent_game_client_launched": false
+  },
+  "source_files": {
+    "tools/dungeon-depth-prototype/ArenaFrame.cs": {
+      "sha256": "764db33ffe54f9eb2fd4a844a23e475bdf79c1ccb42929ad38ea444555da58f9"
+    },
+    "tools/dungeon-depth-prototype/ClientFixture.cs": {
+      "sha256": "51bc7b3a262646898dbc0374c6dba1d950ced713d9d0a9b153d91dae6ae6051b"
+    },
+    "tools/dungeon-depth-prototype/CombatAnalysisProbe.cs": {
+      "sha256": "3eacb879c0dd8a7b4b4dfbcda12fd12ffd0c7e7befc47f5a7e4fa6f1d2c905d7"
+    },
+    "tools/dungeon-depth-prototype/CombatRecorder.cs": {
+      "sha256": "cc50dff6dd3b97f1844b6517053977c83f8b4a8f28aebbc4359f79ae138dff38"
+    },
+    "tools/dungeon-depth-prototype/DungeonDepthPrototype.csproj": {
+      "sha256": "726d6d05f4e62672d59a61494113cd3e471afbf5fa605254fc73a6fcb024ca17"
+    },
+    "tools/dungeon-depth-prototype/EmpoweredDamage.cs": {
+      "sha256": "5faa40250056c57f14bff8b65ed825529782f0cbc6ad1dff69c41b7a87c3c3bd"
+    },
+    "tools/dungeon-depth-prototype/EmpoweredProbe.cs": {
+      "sha256": "05b8fc9bf21dbfaef9ef3c450cf9bdc1223845b4d528c1c383b9d5356d21b2ad"
+    },
+    "tools/dungeon-depth-prototype/EmpoweredRules.cs": {
+      "sha256": "8e289f5c405f112877f77c1fc4b342f72c6c5a601eb87e8dda5486622d39c1a4"
+    },
+    "tools/dungeon-depth-prototype/EncounterGates.cs": {
+      "sha256": "b694df93f526c128b66701e506ace56d83e04f90a8a386ba7edabf9022fb1313"
+    },
+    "tools/dungeon-depth-prototype/EncounterPlan.cs": {
+      "sha256": "ef0955f44d49d28a46a6f916625f73146b9c0a88431aec2e82b3c1c2287458db"
+    },
+    "tools/dungeon-depth-prototype/EpicLootBridge.cs": {
+      "sha256": "344182d17587f58c8a16fe517e86ef0e2cba4007bf7a84bcf2cbb4f2ca7addc3"
+    },
+    "tools/dungeon-depth-prototype/ForestAtmosphere.cs": {
+      "sha256": "c825a09fe24afe543c15a3f83ea015c0560d1e64e224ac8bf437f8e71799fe03"
+    },
+    "tools/dungeon-depth-prototype/ForestAtmosphereProbe.cs": {
+      "sha256": "759f18da5619233ce0442eddf7fdee3fc1702f835ad6ddf0292c14a6224e5880"
+    },
+    "tools/dungeon-depth-prototype/ForestFixture.cs": {
+      "sha256": "eacde14606911af6afa2fce42dc2ea54fc7a6f6be0c0a0b13249da146669ccc0"
+    },
+    "tools/dungeon-depth-prototype/ForestGates.cs": {
+      "sha256": "d244ddd8346adbe75720083ffcfcf956fe0ee99ec49df9436314b4cd3f7d6607"
+    },
+    "tools/dungeon-depth-prototype/ForestGuardProbe.cs": {
+      "sha256": "f0fa88926fdd04ebc71e39e3db82fc2aa1c6f03e8b6aa7d3cbd250caf46f64e8"
+    },
+    "tools/dungeon-depth-prototype/ForestGuardRecovery.cs": {
+      "sha256": "0847c1839630c7cfebb5d57c4e5694ddb8c70c423668c3853669ceb6e819f74b"
+    },
+    "tools/dungeon-depth-prototype/ForestGuardSpace.cs": {
+      "sha256": "133f7621556b155c16cb95871284659a81ab3fd5b4df452dde6788ac4e26885d"
+    },
+    "tools/dungeon-depth-prototype/ForestGuardWalkmap.cs": {
+      "sha256": "44c71d43289d4c231605b2fd74e2dd75bf9019c65e48d78b72849f49efd3408b"
+    },
+    "tools/dungeon-depth-prototype/ForestLoadout.cs": {
+      "sha256": "1bf26a2c5e86c994e2d5c4e054b16bf95c7d75fd39efaf2797182d2ffd8bd427"
+    },
+    "tools/dungeon-depth-prototype/ForestManual.cs": {
+      "sha256": "48f4838c752e42a3ad73f1898b2b402b3dee1cc88b9bf9cb1996b3ed3ad74cb5"
+    },
+    "tools/dungeon-depth-prototype/ForestPlan.cs": {
+      "sha256": "e794304737b3e0338b3097c7ba6ee168fca3eb8df994508f76b4786f9c9e9aa0"
+    },
+    "tools/dungeon-depth-prototype/ForestRuntime.cs": {
+      "sha256": "e6c06ae396041d5212ad80a01d4cbbd22bd078a4ffaced2aa1ee16bd8d825563"
+    },
+    "tools/dungeon-depth-prototype/GuardRecoveryState.cs": {
+      "sha256": "fb78484d8b6a693bec02af766fb19e4ca951ac25337a95823422d5f4f7b4cf4b"
+    },
+    "tools/dungeon-depth-prototype/GuardShapeKey.cs": {
+      "sha256": "e495aaaed1cbf254765d569b84843bc6b922f8be1a075b016c504a9adbb962a7"
+    },
+    "tools/dungeon-depth-prototype/GuardedChestReward.cs": {
+      "sha256": "7f6bce3bd2528315be24f2181ac9bed2d568bbfae065fd53c0af8d2deb7b3821"
+    },
+    "tools/dungeon-depth-prototype/InteriorCoverage.cs": {
+      "sha256": "c04f94dc82bf65bf8caca49dbbe8a18ddf99c8b1be951b1672af198975a011a5"
+    },
+    "tools/dungeon-depth-prototype/ManualDeathCounter.cs": {
+      "sha256": "92cb41003210b4549e3aecd684d09e346f2f2f1ca95ba902a9e477d96a6b1cb9"
+    },
+    "tools/dungeon-depth-prototype/ManualLedger.cs": {
+      "sha256": "09de0ad7b470abc77c1097acba7f84ece82e94dafa694e195260f9f35b91df1f"
+    },
+    "tools/dungeon-depth-prototype/ManualTelemetry.cs": {
+      "sha256": "f16aaab697f7282d3c36adbc1855dbdde88a187d7ab7ba8ba53df313e746105e"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArena.cs": {
+      "sha256": "3cca3d56d2597325aaef97dcee8b2481f5ff81ed0a2c254004f7e2cad058af1a"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaController.cs": {
+      "sha256": "d133c5eb9ff7581ee06a788f39f615e5bb76906411b24e9ff76b3796a105eae0"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaFixtures.cs": {
+      "sha256": "cfa0ca47817937f325e19a08f1bd127d0055c12e42261181fc08fda1d7a51af8"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaPlan.cs": {
+      "sha256": "5bf8ce70d96a8c8659f879aac89ed4f2d7f6dee7316b3277b2b113d47d6fb44a"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaProbe.cs": {
+      "sha256": "6043f784be46650735dce993da3bd420c5ed2a7603a969b4d733779a0e18671f"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaSection.cs": {
+      "sha256": "68ee835606ec3ad1e6e1932fea31c9a5abaef0c0b98ef39733aa184e4996e7c7"
+    },
+    "tools/dungeon-depth-prototype/MiniBossArenaTrial.cs": {
+      "sha256": "75ec87a346750365fe3adcedd28e85f6b908a2845bb0bcd38e6e0388080db0de"
+    },
+    "tools/dungeon-depth-prototype/MiniBossConnection.cs": {
+      "sha256": "381411235377496e0ed777c0f4d0b6f9a68599c6ce2b04966da81fc212786c0d"
+    },
+    "tools/dungeon-depth-prototype/MiniBossConnectionAccess.cs": {
+      "sha256": "8ad7750fedf7fe1c1968bda34647f92246ef3c8146336f6b6239d55483e647e9"
+    },
+    "tools/dungeon-depth-prototype/MiniBossConnectionProbe.cs": {
+      "sha256": "0edba3614bcc7c5bfce842f5f6969d5461262b3c3d201e14c38f821c8de9bafc"
+    },
+    "tools/dungeon-depth-prototype/MiniBossCryptDecor.cs": {
+      "sha256": "ba083623e89efc8d0ad2ca933cf35f4990a05fb1b5d63011d05fc98d11579ec9"
+    },
+    "tools/dungeon-depth-prototype/MiniBossEncounter.cs": {
+      "sha256": "2ff9433c12ef40c9c4a893629f53a6ca6c0ea2bd57d87a1c6df75bb35065bd4b"
+    },
+    "tools/dungeon-depth-prototype/MiniBossInteriorProbe.cs": {
+      "sha256": "ec4066738bbd6ee4f053bb8163ef56a53299c334fe1a279e18482de1e1736dc1"
+    },
+    "tools/dungeon-depth-prototype/MiniBossLink.cs": {
+      "sha256": "dc28b3d36dd90a7ea69828ed6468088bb02a4eaa4105d959ffbf16700373c0f9"
+    },
+    "tools/dungeon-depth-prototype/MiniBossNavigationProbe.cs": {
+      "sha256": "4635a2d640d1617c9a00df4d55f64fb718507b6f1a936ed734317d1ecd6ce939"
+    },
+    "tools/dungeon-depth-prototype/MiniBossRock.cs": {
+      "sha256": "bf65931054fe176623160beab7c01f06367da8f9400ff7a35c3d23a267985cf0"
+    },
+    "tools/dungeon-depth-prototype/MiniBossRules.cs": {
+      "sha256": "8446dff4ce5ccb00f966013aa62f6a5b207778ddea41d9816f1d13f4fbd6957c"
+    },
+    "tools/dungeon-depth-prototype/MiniBossRuntime.cs": {
+      "sha256": "003809f744795400f7a3ef11111e871313003904c27637a0c8425f2dc80f9970"
+    },
+    "tools/dungeon-depth-prototype/MiniBossShell.cs": {
+      "sha256": "bc7551cefa336dbd2f9f63b6669e24795fa7af95d48d56d33238e46ffe595de5"
+    },
+    "tools/dungeon-depth-prototype/MiniBossShellPlan.cs": {
+      "sha256": "0cfd68a9eea996c0496455415a477bb91fc4a42ade088ddcaf43e3a88c81a71c"
+    },
+    "tools/dungeon-depth-prototype/MiniBossShellProbe.cs": {
+      "sha256": "22e32c7fb2577ab8d602c7b1592c52ab98260572fc42f36dc3eef81fae5d48a4"
+    },
+    "tools/dungeon-depth-prototype/MiniBossTrial.cs": {
+      "sha256": "3accb258d5cb7e8f38e9edfe798a168152a197406c00e611469ec057efc422a0"
+    },
+    "tools/dungeon-depth-prototype/MiniBossValuePlacement.cs": {
+      "sha256": "5b9158d447a4e747938d2716d8c1f2ec87c3c9c189683215a55877901bc64c59"
+    },
+    "tools/dungeon-depth-prototype/MiniBossValueProbe.cs": {
+      "sha256": "ef9a732efe777aee9d840efaf368d957aab8b2bd3f47e5df4b116e8f81adb553"
+    },
+    "tools/dungeon-depth-prototype/NavigationProfile.cs": {
+      "sha256": "de0b3e08cf9c05d75b837bdaa0c08fcc378cd1e4988373d6371bff57cb2e3b67"
+    },
+    "tools/dungeon-depth-prototype/Plugin.cs": {
+      "sha256": "5f476cf5a74e6f4e3db87787515839805ace9e881201b81b8fbf8a11760b378e"
+    },
+    "tools/dungeon-depth-prototype/PovBridge.cs": {
+      "sha256": "8843b256d9442581505b5d2b5b6b8134ac3aa1088a1bdbe028f3a617c177ae79"
+    },
+    "tools/dungeon-depth-prototype/PovRespec.cs": {
+      "sha256": "e088e287d6bc2e81855a1bad55256705ea29bd5d033f03facf69713faaf920fe"
+    },
+    "tools/dungeon-depth-prototype/ProbeSuite.cs": {
+      "sha256": "1605143e08dc9c53a1883734d3af8ba9203fb36d8e19186d519cb0bc24872f64"
+    },
+    "tools/dungeon-depth-prototype/README.md": {
+      "sha256": "9fa9289d229780c86500e34d687da4b6af75c4723248fe128e11735edf13f8fd"
+    },
+    "tools/dungeon-depth-prototype/RadialAffixProbe.cs": {
+      "sha256": "80fd9a46d63fa991905ce609edc9e4e02fe3754c52f37225dfe1f3add59cff78"
+    },
+    "tools/dungeon-depth-prototype/RadialAllocation.cs": {
+      "sha256": "a072dd8c0ef332ae8e7b497c6a7f7e5f04e0a9da86d57e45b6f62853f05f7e4c"
+    },
+    "tools/dungeon-depth-prototype/RadialDungeonProbe.cs": {
+      "sha256": "070573fc3852e1027b84ac9a480cba046a164292c497e8d4b9afa003c6bc5c01"
+    },
+    "tools/dungeon-depth-prototype/RadialEntrance.cs": {
+      "sha256": "5fbd4964dd5ab41ff0564e9e9a49a6e05756bfe4c721d9f6226105a832d98071"
+    },
+    "tools/dungeon-depth-prototype/RadialLoadHealth.cs": {
+      "sha256": "7efb40ea15c48b8724d685d44cd3fa976d1430f440e21237e20fca35228e471f"
+    },
+    "tools/dungeon-depth-prototype/RadialMetrics.cs": {
+      "sha256": "9ddcd9d9a8f103802998b58223b450a713d8f06e09f68ffe51a93d8cb93b0971"
+    },
+    "tools/dungeon-depth-prototype/RadialProfile.cs": {
+      "sha256": "ad588e6ba001845369ec44c10dd71f9d0d5d85b3b9beff829e9d85ab5c856ebc"
+    },
+    "tools/dungeon-depth-prototype/RadialRoomEffects.cs": {
+      "sha256": "77b249ff84399575920b00cb45c6c5c9f6173bfc0fe60b7b85dcaba94f3ca23e"
+    },
+    "tools/dungeon-depth-prototype/RadialRuntime.cs": {
+      "sha256": "ad09ecbe2c47ed108d117c43b07ce7453a35d1ab6faa7757083e36806fc25c93"
+    },
+    "tools/dungeon-depth-prototype/RadialWorldProbe.cs": {
+      "sha256": "cf8575c34c3a6aafdc589b24603aaf2efb45c071098943739723112ba3608fdc"
+    },
+    "tools/dungeon-depth-prototype/ResourceArenaAccess.cs": {
+      "sha256": "c8ea75aaddcb5e2552159775ad1d55550d7cf8ee4395145dc587dc2607424127"
+    },
+    "tools/dungeon-depth-prototype/RewardJournal.cs": {
+      "sha256": "4398cf625f91db0e71755d864cc6e9c67c89dbfcc7cb6e3fc245ec686e0ed59d"
+    },
+    "tools/dungeon-depth-prototype/RewardModel.cs": {
+      "sha256": "adb637bed10e79cfd18a337a01940bb307b3aac457e839ad1598cc6e0c0a0a75"
+    },
+    "tools/dungeon-depth-prototype/ServerExitProbe.cs": {
+      "sha256": "0ec4caf5ced70851a0b96f20119e82c1985bcf94ecc5710a8b11ac3cf9a5becf"
+    },
+    "tools/dungeon-depth-prototype/ServerExitRepair.cs": {
+      "sha256": "c5f35e5a53504e6837e9204631cfa946038e083bf273f6090947806987c3a4b9"
+    },
+    "tools/radial-performance-probe/Plugin.cs": {
+      "sha256": "bddbc752abbdbd65713afc9f75d980baafa74a14bbdc20b04e72d8118d41a5ee"
+    },
+    "tools/radial-performance-probe/README.md": {
+      "sha256": "5a1db369715954b05de8ab4abe548d22b60fd682d20073539d64596efb9c46f0"
+    },
+    "tools/radial-performance-probe/RadialPerformanceProbe.csproj": {
+      "sha256": "e968a5ea92f8999998083662bf0fb8020a12ed3cb1733105d44778b229136f33"
+    },
+    "tools/dungeon-depth-check/DungeonDepthCheck.csproj": {
+      "sha256": "14a462929bcc4a1f92884927aa187905301dbecff1cf93252e992df7ddad8beb"
+    },
+    "tools/dungeon-depth-check/EmpoweredChecks.cs": {
+      "sha256": "6caeabcd4970a30a694d8da61555fa1cc8b4f45c52647919ee040412cf2ac06c"
+    },
+    "tools/dungeon-depth-check/ForestPlanChecks.cs": {
+      "sha256": "9751b48de2ab5e8b34a9f9a317b9049156de99e021c87b3d0798b839735c9d4c"
+    },
+    "tools/dungeon-depth-check/GuardRecoveryChecks.cs": {
+      "sha256": "3e1d009f891fc360af7d67d1ee4b6e4efccf626d94ac4d51466fe753901cc361"
+    },
+    "tools/dungeon-depth-check/GuardShapeChecks.cs": {
+      "sha256": "671ee6d79fb725a2d80a02d7b67304c3052d7e5224707e9d9f3523ab57fcd134"
+    },
+    "tools/dungeon-depth-check/InteriorCoverageChecks.cs": {
+      "sha256": "c0024a537903748af94157b4925af5ec5eaeda6b396649c030e1eb62707daa0b"
+    },
+    "tools/dungeon-depth-check/IntervalChecks.cs": {
+      "sha256": "55bcb3fc06a53136fcc6109eb24d3a14570d8ee0b606a02ee0684a625e43b0da"
+    },
+    "tools/dungeon-depth-check/ManualLedgerChecks.cs": {
+      "sha256": "d06390d65471435ec8e2997d46afe107bf184d13839acecdd2b331c49911b5fa"
+    },
+    "tools/dungeon-depth-check/MiniBossArenaChecks.cs": {
+      "sha256": "2c1dae7f8ca6c1ffa1f77f68ed6141af7078c0c75a933e5bbe72f5721271029a"
+    },
+    "tools/dungeon-depth-check/MiniBossEncounterChecks.cs": {
+      "sha256": "8b4b85f451416450a365bc3bb8f62e8dc28038d84b5dffb147333bd6998866b1"
+    },
+    "tools/dungeon-depth-check/MiniBossShellChecks.cs": {
+      "sha256": "9bf0a77b432aed354312450cb37adff4094b8bb64969e93cdbb053f4fd807ab0"
+    },
+    "tools/dungeon-depth-check/Program.cs": {
+      "sha256": "976f07c61cef7f4fc3fb2f15ee17e10fb7d44c98a943235bd11eeb9e477c75c7"
+    },
+    "tools/dungeon-depth-check/RadialChecks.cs": {
+      "sha256": "061ad4dce905d1cc07a4d31dbf6832988b885d5b039d721275d8248361233056"
+    },
+    "tools/dungeon-depth-check/RadialConfigChecks.cs": {
+      "sha256": "44c068a2e9177ba38cbe44685afb20133c13633be7a1ad29beb4874919866b27"
+    },
+    "tools/dungeon-depth-check/RadialGeometryChecks.cs": {
+      "sha256": "acf4c99eeb0e78f9620886351e058a02abda309c80caba8926effa812680f5bc"
+    },
+    "configs/radial-empowered/README.txt": {
+      "sha256": "4cdf9d9335065db8f1d8f367073f83ca1464cad46411b1f3f12d500d98eeeadf"
+    },
+    "configs/radial-empowered/dungeon-rewards.json": {
+      "sha256": "8d220263ecc470e1e6f014476696bb7561ee195149cdb5f83b5b3c8e0c500f02"
+    },
+    "configs/radial-empowered/radial-dungeons.json": {
+      "sha256": "9cba6d7f31c751b71711e55e3dfe0faff1464571de5665dba9e62348bbd27c86"
+    }
+  }
+}

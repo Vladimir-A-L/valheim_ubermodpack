@@ -10,6 +10,12 @@ namespace DungeonDepthPrototype;
 internal sealed class ForestGuardSpace : MonoBehaviour
 {
     private static readonly HashSet<ForestGuardSpace> active = new HashSet<ForestGuardSpace>();
+    internal static bool CanonicalDimensions { get; private set; } = true;
+    internal static void SetCanonicalDimensions(bool value)
+    {
+        CanonicalDimensions = value;
+        foreach (var space in active) if (space != null) space.maps.Clear();
+    }
     private string token = "", saved = "";
     private JArray rooms = new JArray(), edges = new JArray();
     private readonly Dictionary<int, Room> loaded = new Dictionary<int, Room>();
@@ -130,7 +136,9 @@ internal sealed class ForestGuardSpace : MonoBehaviour
     private ForestGuardWalkmap Map(Character c, Room room, int id)
     {
         Capsule(c, Vector3.zero, out var bottom, out var top, out float radius);
-        var key = (room, radius, Vector3.Distance(bottom, top));
+        float height = Vector3.Distance(bottom, top);
+        var key = (room, CanonicalDimensions ? GuardShapeKey.Canonical(radius) : radius,
+            CanonicalDimensions ? GuardShapeKey.Canonical(height) : height);
         if (!maps.TryGetValue(key, out var map))
         {
             map = new ForestGuardWalkmap(this, room, c, id);

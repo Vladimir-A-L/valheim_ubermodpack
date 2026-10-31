@@ -103,7 +103,13 @@ internal static class RadialDungeonProbe
         if (phase != "generate") throw new ArgumentException("Неизвестная проба радиального данжа");
         var beforeData = ForestFixture.AllZdos().Values.Where(z => z.GetString(ForestRuntime.Tag).Length > 0)
             .Select(z => z.m_uid).ToHashSet();
-        var position = new Vector3(4096, 3500, 4095);
+        bool keep = command.Value<bool>("keep"), retained = false;
+        var position = command["position"] == null ? new Vector3(4096, 3500, 4095) :
+            MiniBossLink.V(command["position"]!.ToObject<float[]>()!);
+        if (keep && (position.y < 3000 || ForestFixture.AllZdos().Values.Any(z =>
+                z.GetString(ForestRuntime.LayoutKey).Length > 0 &&
+                Vector3.Distance(z.GetPosition(), position) < 600)))
+            throw new InvalidOperationException("Для новой QA-копии нужна отдельная свободная область");
         var obj = Object.Instantiate(ZNetScene.instance.GetPrefab("DG_ForestCrypt"), position,
             Quaternion.Euler(0, (command.Value<int?>("turn") ?? 0) * 90, 0));
         var generator = obj.GetComponent<DungeonGenerator>();
@@ -127,33 +133,44 @@ internal static class RadialDungeonProbe
             var checks = creatures.Select(c => {
                 var d = ForestRuntime.Zdo(c); bool boss = MiniBossRuntime.IsBoss(c);
                 var factors = snapshot.Selection.Factors(boss);
+                int depth = d.GetInt(ForestRuntime.DepthKey);
+                var role = boss ? RadialRole.Boss : d.GetString(ForestRuntime.KindKey) == "helper" ?
+                    RadialRole.Helper : RadialRole.Guard;
+                var loadout = snapshot.Selection.Loadout(depth, role);
+                float expectedHealth = factors.Health * EmpoweredRules.Health(loadout.Empowered);
+                float expectedDamage = factors.Damage * EmpoweredRules.Damage(loadout.Empowered);
                 var actual = NativeFactors(c);
                 float hp = c.GetMaxHealth();
                 PovBridge.Method("PassiveTree.EnemyDifficulty", "Ensure").Invoke(null, new object[] { c });
                 return new { boss, role = d.GetString(ForestRuntime.KindKey),
-                    depth = d.GetInt(ForestRuntime.DepthKey), mods = PovBridge.Count(PovBridge.Read(c)),
+                    depth, mods = PovBridge.Count(PovBridge.Read(c)), empowered = d.GetInt(RadialRuntime.EmpoweredKey),
                     hp_factor = d.GetFloat(RadialRuntime.HealthKey),
                     damage_factor = d.GetFloat(RadialRuntime.DamageKey),
                     actual_health_factor = actual.Health, actual_damage_factor = actual.Damage,
-                    passed = d.GetFloat(RadialRuntime.HealthKey) == factors.Health &&
+                    passed = d.GetFloat(RadialRuntime.HealthKey) == expectedHealth &&
                         d.GetFloat(RadialRuntime.DamageKey) == factors.Damage && c.GetMaxHealth() == hp &&
-                        Math.Abs(actual.Health - factors.Health) < .001f &&
-                        Math.Abs(actual.Damage - factors.Damage) < .001f &&
-                        PovBridge.Count(PovBridge.Read(c)) == snapshot.Selection.Profile.Count(
-                            d.GetInt(ForestRuntime.DepthKey)) };
+                        Math.Abs(actual.Health - expectedHealth) < .001f &&
+                        Math.Abs(actual.Damage - expectedDamage) < .001f &&
+                        d.GetInt(RadialRuntime.EmpoweredKey) == loadout.Empowered &&
+                        PovBridge.Ids(PovBridge.Read(c)).OrderBy(x => x)
+                            .SequenceEqual(loadout.Modifiers.OrderBy(x => x)) };
             }).ToArray();
             var chestStates = ForestRuntime.Spawned.Where(v => v != null)
                 .Select(v => v.GetComponent<Container>()).Where(c => c != null)
                 .Select(GuardedChestReward.Read).Where(s => s != null).ToArray();
-            bool rewards = chestStates.Length > 0 && chestStates.All(s => s!.Rules.Schema == 3 &&
-                s.Budget.Value == s.Budget.CombatValue * snapshot.Selection.Profile.ModifierPrice / 10);
+            decimal price = snapshot.Selection.Profile.ModifierPrice;
+            bool rewards = chestStates.Length > 0 && chestStates.All(s =>
+                s!.Rules.Schema == snapshot.Rewards.Schema &&
+                s.Budget.Value == s.Budget.CombatValue * price / 10 + price * s.GuardEmpowered);
             bool terminal = chestStates.Any(s => s!.Room.Depth == snapshot.Selection.MaximumDepth);
             var delivery = command.Value<bool>("reward") ? TerminalReward(ForestRuntime.Spawned
                 .Where(v => v != null).Select(v => v.GetComponent<Container>()).First(c => c != null &&
                     GuardedChestReward.Read(c)?.Room.Depth == snapshot.Selection.MaximumDepth)) : null;
             var effects = command.Value<bool>("effects") ? RadialRoomEffects.Run(space, guards) : (true, (object?)null);
-            return new { passed = positions && rewards && terminal && checks.All(c => c.passed) &&
-                    original == data.GetString(RadialRuntime.Key) && effects.Item1,
+            bool passed = positions && rewards && terminal && checks.All(c => c.passed) &&
+                original == data.GetString(RadialRuntime.Key) && effects.Item1;
+            retained = keep && passed;
+            return new { passed, retained, position = ForestFixture.V(position),
                 snapshot.Selection, rooms = plan.Rooms.Count,
                 plan.Attempts, plan.SearchSteps, ms = timer.ElapsedMilliseconds, generation_ms = generationMs,
                 objects = ForestRuntime.Spawned.Count(v => v != null), guards = guards.Length,
@@ -170,20 +187,23 @@ internal static class RadialDungeonProbe
         finally
         {
             ForestGuardWalkmap.CaptureDebug = false;
-            foreach (var view in ForestRuntime.Spawned.ToArray())
-                if (view != null && view.IsValid() && view.IsOwner() && !beforeData.Contains(view.GetZDO().m_uid))
-                { view.gameObject.SetActive(false); ZNetScene.instance.Destroy(view.gameObject); }
-            generator.Clear(); ZNetScene.instance.Destroy(obj);
-            var after = ForestFixture.AllZdos().Values.Where(z => z.GetString(ForestRuntime.Tag).Length > 0)
-                .Select(z => z.m_uid).ToHashSet();
-            cleanup.OldMissing = beforeData.Except(after).Count();
-            var pending = ForestFixture.AllZdos().Values.Where(z =>
-                z.GetString(ForestRuntime.Tag).Length > 0 && !beforeData.Contains(z.m_uid)).ToArray();
-            cleanup.Pending = pending.Length;
-            cleanup.Tokens = pending.Select(z => z.GetString(ForestRuntime.Tag)).Distinct().ToArray();
-            if (cleanup.OldMissing > 0)
-                throw new InvalidOperationException("После пробы исчезли прежние помеченные ZDO: " +
-                    cleanup.OldMissing);
+            if (!retained)
+            {
+                foreach (var view in ForestRuntime.Spawned.ToArray())
+                    if (view != null && view.IsValid() && view.IsOwner() && !beforeData.Contains(view.GetZDO().m_uid))
+                    { view.gameObject.SetActive(false); ZNetScene.instance.Destroy(view.gameObject); }
+                generator.Clear(); ZNetScene.instance.Destroy(obj);
+                var after = ForestFixture.AllZdos().Values.Where(z => z.GetString(ForestRuntime.Tag).Length > 0)
+                    .Select(z => z.m_uid).ToHashSet();
+                cleanup.OldMissing = beforeData.Except(after).Count();
+                var pending = ForestFixture.AllZdos().Values.Where(z =>
+                    z.GetString(ForestRuntime.Tag).Length > 0 && !beforeData.Contains(z.m_uid)).ToArray();
+                cleanup.Pending = pending.Length;
+                cleanup.Tokens = pending.Select(z => z.GetString(ForestRuntime.Tag)).Distinct().ToArray();
+                if (cleanup.OldMissing > 0)
+                    throw new InvalidOperationException("После пробы исчезли прежние помеченные ZDO: " +
+                        cleanup.OldMissing);
+            }
         }
     }
 }

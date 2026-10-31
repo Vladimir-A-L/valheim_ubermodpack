@@ -214,7 +214,8 @@ internal static class ForestRuntime
         var rules = radial?.Priced ?? GuardedChestReward.Rules;
         if (radial != null) routeLength = radial.Selection.MaximumDepth;
         decimal terminalBudget = radial == null ? EncounterPlan.ForestTerminalBudget(rules, routeLength) :
-            rules.Budget(radial.Selection.AtDepth(routeLength), 0, false).Value;
+            rules.Budget(radial.Selection.AtDepth(routeLength), 0, false,
+                radial.Selection.Loadout(routeLength).Empowered).Value;
         var data = ((List<DungeonDB.RoomData>)AccessTools.Field(typeof(DungeonGenerator), "m_availableRooms")
             .GetValue(null)).ToDictionary(d => d.m_prefab.Name);
         bool trial = MiniBossTrial.Enabled && Zdo(__instance).GetInt(MiniBossTrial.IndexKey, -1) >= 0;
@@ -422,9 +423,10 @@ internal static class ForestRuntime
             Add("TreasureChest_forestcrypt");
         while (objects.Count(v => v.GetComponent<Pickable>()?.m_itemPrefab.name == "SurtlingCore") < room.ResourceCount)
             Add("Pickable_SurtlingCoreStand");
-        var modifiers = radial?.Selection.AtDepth(room.Depth) ?? EncounterPlan.ForestSet(room.Depth);
+        var loadout = radial?.Selection.Loadout(room.Depth);
+        var modifiers = loadout?.Modifiers ?? EncounterPlan.ForestSet(room.Depth);
         var rules = radial?.Priced ?? GuardedChestReward.Rules;
-        var budget = rules.Budget(modifiers, 0, modifiers.Length == 0);
+        var budget = rules.Budget(modifiers, 0, modifiers.Length == 0, loadout?.Empowered ?? 0);
         bool planned = hasChest || room.ResourceCount > 0 || room.Arena;
         int desired = planned ? EncounterPlan.Guards(rules, budget.CombatValue,
             room.ResourceCount > 0, room.Arena, unchecked(seed * 397 ^ index), room.GuaranteedCores) : 0;
@@ -462,7 +464,7 @@ internal static class ForestRuntime
         foreach (var guard in guards)
         {
             TagObject(guard.GetComponent<ZNetView>(), token, index, room.Depth, "guard");
-            RadialRuntime.Mark(guard, radial?.Selection, false);
+            RadialRuntime.Mark(guard, radial?.Selection, false, room.Depth);
             PovBridge.AssignIds(guard, modifiers);
             Zdo(guard).Set(CombatRecorder.EntityKey, Guid.NewGuid().ToString("N"));
             ForestGuardRecovery.MarkSpawn(guard);

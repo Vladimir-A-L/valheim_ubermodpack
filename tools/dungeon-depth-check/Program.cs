@@ -16,6 +16,8 @@ void Refuses(Action action, string name)
 var jsonOptions = new System.Text.Json.JsonSerializerOptions { IncludeFields = true };
 MiniBossArenaChecks.Run(Check);
 GuardRecoveryChecks.Run(Check);
+GuardShapeChecks.Run(Check);
+EmpoweredChecks.Run(Check);
 RadialChecks.Run(Check);
 RadialConfigChecks.Run(Check);
 MiniBossEncounterChecks.Run(Check);

@@ -43,7 +43,8 @@ internal static class RadialWorldProbe
             return new { reference_set = true };
         }
         if (phase == "status") return new {
-            load_health = new { RadialLoadHealth.Loads, RadialLoadHealth.Wounded, RadialLoadHealth.Failures },
+            load_health = new { RadialLoadHealth.Loads, RadialLoadHealth.Wounded, RadialLoadHealth.Failures,
+                RadialLoadHealth.WardLoads, RadialLoadHealth.WardFailures, RadialLoadHealth.StackFailures },
             zdo = ForestFixture.AllZdos().Count, active_characters = Character.GetAllCharacters().Count,
             generators = UnityEngine.Object.FindObjectsByType<DungeonGenerator>(FindObjectsSortMode.None)
                 .Select(g => new { prefab = Utils.GetPrefabName(g.gameObject),
@@ -60,7 +61,9 @@ internal static class RadialWorldProbe
                     profile = z.GetString(RadialRuntime.ProfileKey), revision = z.GetString(RadialRuntime.RevisionKey),
                     health_factor = z.GetFloat(RadialRuntime.HealthKey),
                     damage_factor = z.GetFloat(RadialRuntime.DamageKey),
+                    empowered = z.GetInt(RadialRuntime.EmpoweredKey),
                     maximum_health = z.GetFloat(ZDOVars.s_maxHealth),
+                    maximum_ward = z.GetFloat("pt.ward.max"), ward = z.GetFloat("pt.ward.cur"),
                     health = z.GetFloat(ZDOVars.s_health, z.GetFloat(ZDOVars.s_maxHealth)),
                     modifiers = z.GetInt(PovBridge.ModsKey), boss = z.GetBool(MiniBossRuntime.BossKey) }),
             transitions = UnityEngine.Object.FindObjectsByType<Teleport>(FindObjectsSortMode.None)

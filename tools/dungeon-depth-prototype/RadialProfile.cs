@@ -27,7 +27,7 @@ public sealed class RadialProfile
             MaximumDepth > 160 || SafeDepth < 0 || InitialModifiers < 0 || ModifierStep < 1 ||
             ModifierLimit < 1 || ModifierLimit > available || InitialModifiers > ModifierLimit ||
             TargetBasisPoints < 0 || TargetBasisPoints > 10000 ||
-            (ModifierPrice != 5 && ModifierPrice != 10) ||
+            (ModifierPrice != 5 && ModifierPrice != 7 && ModifierPrice != 10) ||
             new[] { GuardHealth, GuardDamage, BossHealth, BossDamage }.Any(f =>
                 float.IsNaN(f) || float.IsInfinity(f) || f <= 0))
             throw new ArgumentException("Некорректный профиль радиального данжа");
@@ -42,6 +42,7 @@ public sealed class RadialTypeRules
     public bool Enabled, RadiiAccepted;
     public double NearRadius, MiddleRadius;
     public string[] Modifiers = Array.Empty<string>();
+    public string[] OrdinaryModifiers = Array.Empty<string>();
     public RadialProfile Near = new RadialProfile { Id = "near", MinimumDepth = 26, MaximumDepth = 52,
         TargetBasisPoints = 3000, TargetQuality = RewardQuality.Legendary, BossHealth = 8, BossDamage = 2 };
     public RadialProfile Middle = new RadialProfile { Id = "middle", MinimumDepth = 40, MaximumDepth = 64,
@@ -53,12 +54,17 @@ public sealed class RadialTypeRules
     public void Validate(RewardRules rewards, bool outside)
     {
         rewards.Validate();
-        if (string.IsNullOrWhiteSpace(Type) || string.IsNullOrWhiteSpace(Revision) || rewards.Schema != 3 ||
+        if (string.IsNullOrWhiteSpace(Type) || string.IsNullOrWhiteSpace(Revision) ||
+            (rewards.Schema != 3 && rewards.Schema != 4) ||
+            (OrdinaryModifiers.Length > 0) != (rewards.Schema == 4) ||
+            OrdinaryModifiers.Distinct().Count() != OrdinaryModifiers.Length ||
+            OrdinaryModifiers.Any(id => !Modifiers.Contains(id)) ||
             Modifiers.Length != Modifiers.Distinct().Count() || Modifiers.Length > rewards.MaxModifiers ||
             Modifiers.Count(id => new[] { "burning", "chilling", "shocking", "venomous" }.Contains(id)) > 1 ||
             Modifiers.Any(id => !rewards.Weights.ContainsKey(id)))
             throw new ArgumentException("Неполные или повторяющиеся ID радиального типа");
-        foreach (var p in new[] { Near, Middle, Far }) p.Validate(Modifiers.Length);
+        foreach (var p in new[] { Near, Middle, Far })
+        { p.Validate(Modifiers.Length); rewards.AtPrice(p.ModifierPrice); }
         if (outside && (!Enabled || !RadiiAccepted || double.IsNaN(NearRadius) ||
             double.IsNaN(MiddleRadius) || double.IsInfinity(MiddleRadius) ||
             NearRadius <= 0 || MiddleRadius <= NearRadius))
@@ -106,7 +112,10 @@ public sealed class RadialTypeRules
         foreach (int depth in Enumerable.Range(profile.MinimumDepth,
                      profile.MaximumDepth - profile.MinimumDepth + 1))
         {
-            decimal budget = priced.Budget(Modifiers.Take(profile.Count(depth)), 0, false).Value;
+            var loadout = OrdinaryModifiers.Length == 0 ?
+                new RadialLoadout { Modifiers = Modifiers.Take(profile.Count(depth)).ToArray() } :
+                EmpoweredRules.Allocate(profile, depth, OrdinaryModifiers);
+            decimal budget = priced.Budget(loadout.Modifiers, 0, false, loadout.Empowered).Value;
             var reward = RewardModel.Plan(budget, priced, () => 0);
             if (reward.Groups.Any(g => g.Quality >= profile.TargetQuality)) return depth;
         }
@@ -128,10 +137,11 @@ public sealed class RadialTypeRules
             category = target ? "target" : "ordinary";
             if (target) low = targetStart; else high = targetStart - 1;
         }
-        return new RadialSelection { Type = Type, Revision = Revision, Seed = seed, OutsideX = x, OutsideZ = z,
+        return new RadialSelection { Schema = OrdinaryModifiers.Length > 0 ? 2 : 1,
+            Type = Type, Revision = Revision, Seed = seed, OutsideX = x, OutsideZ = z,
             Radius = Radius(x, z), Category = category, MaximumDepth = low + random.Next(high - low + 1),
             Profile = p.Copy(), Modifiers = (string[])Modifiers.Clone(), ForcedProbe = forced,
-            RewardRevision = rewards.Revision };
+            OrdinaryModifiers = (string[])OrdinaryModifiers.Clone(), RewardRevision = rewards.Revision };
     }
 }
 
@@ -143,7 +153,16 @@ public sealed class RadialSelection
     public bool ForcedProbe;
     public RadialProfile Profile = new RadialProfile();
     public string[] Modifiers = Array.Empty<string>();
-    public string[] AtDepth(int depth) => Modifiers.Take(Profile.Count(depth)).ToArray();
+    public string[] OrdinaryModifiers = Array.Empty<string>();
+    public RadialLoadout Loadout(int depth, RadialRole role = RadialRole.Guard)
+    {
+        if (Schema == 1) return new RadialLoadout { Requested = Profile.Count(depth),
+            Modifiers = Modifiers.Take(Profile.Count(depth)).ToArray() };
+        if (Schema != 2 || !Enum.IsDefined(typeof(RadialRole), role))
+            throw new InvalidOperationException("Неизвестная схема/роль радиального снимка");
+        return EmpoweredRules.Allocate(Profile, depth, role == RadialRole.Guard ? OrdinaryModifiers : Modifiers);
+    }
+    public string[] AtDepth(int depth) => Loadout(depth).Modifiers;
     public (float Health, float Damage) Factors(bool boss) => boss ?
         (Profile.BossHealth, Profile.BossDamage) : (Profile.GuardHealth, Profile.GuardDamage);
 }

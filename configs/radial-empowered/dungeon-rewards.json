@@ -1,0 +1,122 @@
+{
+  "Schema": 4,
+  "Revision": "forest-empowered-0160-1",
+  "Weights": {
+    "swift": 6,
+    "furious": 5,
+    "armored": 14,
+    "warded": 4,
+    "hardy": 7,
+    "greedy": 8,
+    "keen": 3,
+    "steadfast": 7,
+    "piercing": 22,
+    "unbreakable": 26,
+    "burning": 8,
+    "runecarver": 8,
+    "headsman": 3,
+    "blast": 4,
+    "rotten": 7,
+    "reeking": 10,
+    "bound": 12,
+    "leader": 6,
+    "charger": 5,
+    "mirror": 2
+  },
+  "Synergies": [
+    {
+      "Id": "armor-leech",
+      "Requires": [
+        "armored",
+        "greedy"
+      ],
+      "Factor": 1.05
+    },
+    {
+      "Id": "attack-leech",
+      "Requires": [
+        "furious",
+        "greedy"
+      ],
+      "Factor": 1.03
+    },
+    {
+      "Id": "attack-penetration",
+      "Requires": [
+        "furious",
+        "piercing"
+      ],
+      "Factor": 1.04
+    },
+    {
+      "Id": "armor-bound",
+      "Requires": [
+        "armored",
+        "bound"
+      ],
+      "Factor": 1.1
+    }
+  ],
+  "MaxGeneratedItems": 256,
+  "ModifierPrice": 10,
+  "GrowthDivisor": 200,
+  "Bands": [
+    {
+      "Upper": 10,
+      "Coins": 50,
+      "Quality": 0,
+      "MinGuards": 2,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 20,
+      "Coins": 100,
+      "Quality": 0,
+      "MinGuards": 3,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 40,
+      "Coins": 0,
+      "Quality": 1,
+      "MinGuards": 3,
+      "MaxGuards": 5
+    },
+    {
+      "Upper": 55,
+      "Coins": 0,
+      "Quality": 2,
+      "MinGuards": 3,
+      "MaxGuards": 6
+    },
+    {
+      "Upper": 110,
+      "Coins": 0,
+      "Quality": 3,
+      "MinGuards": 4,
+      "MaxGuards": 7
+    },
+    {
+      "Upper": 160,
+      "Coins": 0,
+      "Quality": 4,
+      "MinGuards": 4,
+      "MaxGuards": 8
+    },
+    {
+      "Upper": 230,
+      "Coins": 0,
+      "Quality": 5,
+      "MinGuards": 5,
+      "MaxGuards": 9
+    },
+    {
+      "Upper": 260,
+      "Coins": 0,
+      "Quality": 6,
+      "MinGuards": 5,
+      "MaxGuards": 10
+    }
+  ],
+  "MaxModifiers": 20
+}

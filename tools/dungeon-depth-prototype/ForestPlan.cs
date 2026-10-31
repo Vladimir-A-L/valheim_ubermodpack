@@ -143,7 +143,7 @@ public static class ForestPlan
                 Position = from.SocketPosition(socket) - template.Sockets[entry].Position.Rotate(turn),
                 Parent = parent, ParentSocket = socket, InSocket = entry,
                 Depth = from.Depth + (template.Endcap ? 0 : 1),
-                Modifiers = Radial?.Profile.Count(from.Depth + (template.Endcap ? 0 : 1)) ?? -1 };
+                Modifiers = Radial?.Loadout(from.Depth + (template.Endcap ? 0 : 1)).Requested ?? -1 };
         }
 
         internal bool Fits(Placement candidate)
@@ -254,7 +254,7 @@ public static class ForestPlan
             int turn = (entranceTurn + 4 - start.Sockets[entry].Turn) % 4;
             var first = new Placement { Template = start, Turn = turn, InSocket = entry,
                 Position = entrance - start.Sockets[entry].Position.Rotate(turn),
-                Modifiers = radial?.Profile.Count(0) ?? -1 };
+                Modifiers = radial?.Loadout(0).Requested ?? -1 };
             if (!search.Fits(first)) { totalSteps += search.Steps; continue; }
             search.Rooms.Add(first);
             int bossDepth = search.Random.Next(PlacementThreshold(routeLength, 80), routeLength + 1);
@@ -271,7 +271,7 @@ public static class ForestPlan
             }
             if (boss == null) { totalSteps += search.Steps; continue; }
             boss.MiniBoss = true; boss.CombatDepth = bossDepth; boss.Branch = 2; boss.Attachment = bossParent;
-            boss.Modifiers = radial?.Profile.Count(bossDepth) ?? -1;
+            boss.Modifiers = radial?.Loadout(bossDepth, RadialRole.Boss).Requested ?? -1;
             search.Rooms.Add(boss);
             if (!search.Extend(bossParent, routeLength, 0)) { totalSteps += search.Steps; continue; }
             int routeEnd = search.Rooms.FindIndex(r => r.Branch == 0 && r.Depth == routeLength);

@@ -6,6 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="../dungeon-depth-prototype/GuardShapeKey.cs" Link="GuardShapeKey.cs" />
+    <Compile Include="../dungeon-depth-prototype/EmpoweredRules.cs" Link="EmpoweredRules.cs" />
     <Compile Include="../dungeon-depth-prototype/GuardRecoveryState.cs" Link="GuardRecoveryState.cs" />
     <Compile Include="../dungeon-depth-prototype/InteriorCoverage.cs" Link="InteriorCoverage.cs" />
     <Compile Include="../dungeon-depth-prototype/RewardModel.cs" Link="RewardModel.cs" />

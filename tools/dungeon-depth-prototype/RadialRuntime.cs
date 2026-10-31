@@ -25,7 +25,14 @@ internal sealed class RadialSnapshot
     {
         Rewards.Validate(); Selection.Profile.Validate(Selection.Modifiers.Length);
         double measured = Math.Sqrt(Selection.OutsideX * Selection.OutsideX + Selection.OutsideZ * Selection.OutsideZ);
-        if (Schema != 1 || Selection.Schema != 1 || Rewards.Schema != 3 ||
+        Rewards.AtPrice(Selection.Profile.ModifierPrice);
+        bool legacy = Schema == 1 && Selection.Schema == 1 && Rewards.Schema == 3 &&
+            Selection.OrdinaryModifiers.Length == 0;
+        bool empowered = Schema == 2 && Selection.Schema == 2 && Rewards.Schema == 4 &&
+            Selection.OrdinaryModifiers.Length > 0 &&
+            Selection.OrdinaryModifiers.Distinct().Count() == Selection.OrdinaryModifiers.Length &&
+            Selection.OrdinaryModifiers.All(Selection.Modifiers.Contains);
+        if ((!legacy && !empowered) ||
             string.IsNullOrWhiteSpace(Selection.Type) || string.IsNullOrWhiteSpace(Selection.Revision) ||
             double.IsNaN(Selection.Radius) || double.IsInfinity(Selection.Radius) || Selection.Radius < 0 ||
             double.IsNaN(measured) || double.IsInfinity(measured) || Math.Abs(Selection.Radius - measured) > .001 ||
@@ -43,6 +50,7 @@ internal static class RadialRuntime
     internal const string Key = "uberdungeon.radial.v1";
     internal const string HealthKey = Key + ".health", DamageKey = Key + ".damage";
     internal const string ProfileKey = Key + ".profile", RevisionKey = Key + ".revision";
+    internal const string EmpoweredKey = "uberdungeon.empowered.v1";
     internal static RadialConfiguration? Configuration;
     internal static void Load()
     {
@@ -50,7 +58,10 @@ internal static class RadialRuntime
         Configuration = File.Exists(file) ? JsonConvert.DeserializeObject<RadialConfiguration>(
             File.ReadAllText(file))! : null;
         if (Configuration == null) return;
-        if (Configuration.Schema != 1 || Configuration.Types.Select(t => t.Type).Distinct().Count() !=
+        if ((Configuration.Schema != 1 && Configuration.Schema != 2) ||
+            Configuration.Schema == 1 && Configuration.Rewards.Schema != 3 ||
+            Configuration.Schema == 2 && Configuration.Rewards.Schema != 4 ||
+            Configuration.Types.Select(t => t.Type).Distinct().Count() !=
             Configuration.Types.Length) throw new InvalidOperationException("Неверный список радиальных типов");
         foreach (var type in Configuration.Types)
         {
@@ -76,7 +87,8 @@ internal static class RadialRuntime
         if (existing != null) return existing;
         if (data.GetString(ForestRuntime.LayoutKey).Length > 0)
             throw new InvalidOperationException("Посещённый данж не получает новый профиль");
-        var saved = new RadialSnapshot { Selection = selection, Rewards = Configuration!.Rewards };
+        var saved = new RadialSnapshot { Schema = selection.Schema, Selection = selection,
+            Rewards = Configuration!.Rewards };
         saved.Validate();
         string json = JsonConvert.SerializeObject(saved); data.Set(Key, json);
         return JsonConvert.DeserializeObject<RadialSnapshot>(json)!;
@@ -91,7 +103,8 @@ internal static class RadialRuntime
         return Save(data, type.Probe(profile, seed, Configuration!.Rewards));
     }
 
-    internal static void Mark(Character creature, RadialSelection? selection, bool boss)
+    internal static void Mark(Character creature, RadialSelection? selection, bool boss, int depth = 0,
+        RadialRole? role = null)
     {
         if (selection == null) return;
         var data = MiniBossRuntime.Data(creature)!;
@@ -99,7 +112,9 @@ internal static class RadialRuntime
             !creature.GetComponent<ZNetView>().IsOwner())
             throw new InvalidOperationException("Множитель требует своей новой охраны");
         var factors = selection.Factors(boss);
-        data.Set(HealthKey, factors.Health); data.Set(DamageKey, factors.Damage);
+        int stacks = selection.Loadout(depth, role ?? (boss ? RadialRole.Boss : RadialRole.Guard)).Empowered;
+        data.Set(HealthKey, factors.Health * EmpoweredRules.Health(stacks)); data.Set(DamageKey, factors.Damage);
+        if (selection.Schema >= 2) data.Set(EmpoweredKey, stacks);
         data.Set(ProfileKey, selection.Profile.Id); data.Set(RevisionKey, selection.Revision);
         // Как при штатной загрузке: исходная база prefab и уровень, затем сохранённый коэффициент.
         // Mark вызывается только при создании: посещённые/раненые существа сюда не попадают.
@@ -116,6 +131,7 @@ internal static class RadialRuntime
         float factor = data.GetFloat(hp ? HealthKey : DamageKey, 1);
         if (float.IsNaN(factor) || float.IsInfinity(factor) || factor <= 0)
             throw new InvalidOperationException("Повреждён сохранённый множитель");
-        return factor;
+        return hp || EmpoweredDamage.Suppress(creature) ? factor :
+            factor * EmpoweredRules.Damage(data.GetInt(EmpoweredKey));
     }
 }

@@ -31,7 +31,7 @@ internal static class MiniBossArenaSection
         gate.GetZDO().Set(MiniBossArena.Key, true); gate.GetZDO().Set(ZDOVars.s_state, 0);
         string prefab = encounter.Prefab;
         var boss = Spawn(prefab, MiniBossArena.Center(Vector3.zero)).GetComponent<Character>();
-        RadialRuntime.Mark(boss, encounter.Radial, true);
+        RadialRuntime.Mark(boss, encounter.Radial, true, encounter.Depth, RadialRole.Boss);
         if (archer) MiniBossRuntime.Data(boss)!.Set(MiniBossArenaFixtures.WeaponKey, "skeleton_bow");
         MiniBossRuntime.Mark(boss, name, seed);
         string[] modifiers = encounter.Modifiers;
@@ -62,7 +62,7 @@ internal static class MiniBossArenaSection
         for (int i = 0; i < assistants.Length; i++)
         {
             var helper = Spawn(assistants[i], new Vector3(23, .08f, 19 + i * 4)).GetComponent<Character>();
-            helper.SetLevel(1); RadialRuntime.Mark(helper, encounter.Radial, false);
+            helper.SetLevel(1); RadialRuntime.Mark(helper, encounter.Radial, false, encounter.Depth, RadialRole.Helper);
             PovBridge.AssignIds(helper, modifiers);
             MiniBossTrial.Tag(helper, token, room, "helper", encounter.Depth);
             ForestGuardRecovery.MarkSpawn(helper);

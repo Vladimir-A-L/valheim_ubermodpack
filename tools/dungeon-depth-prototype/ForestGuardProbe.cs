@@ -186,6 +186,12 @@ internal static class ForestGuardProbe
             return new { hp = guard.GetHealth(), ward = ward == null ? null :
                 AccessTools.Field(ward.GetType(), "Current").GetValue(ward) };
         }
+        if (phase == "death")
+        {
+            string token = zdo.GetString(CombatRecorder.EntityKey);
+            guard.SetHealth(0); guard.OnDeath();
+            return new { entity = token, death_called = true };
+        }
         if (phase == "owner")
         {
             zdo.SetOwner(0); guard.GetComponent<ForestGuardRecovery>().Tick(.5f);

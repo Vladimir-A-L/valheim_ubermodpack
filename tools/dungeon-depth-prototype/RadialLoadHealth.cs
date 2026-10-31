@@ -10,9 +10,10 @@ internal static class RadialLoadHealth
 {
     internal sealed class Saved
     {
-        internal float Maximum, Current, Factor;
+        internal float Maximum, Current, Factor, WardMaximum, WardCurrent;
+        internal int Stacks;
     }
-    internal static int Loads, Wounded, Failures;
+    internal static int Loads, Wounded, Failures, WardLoads, WardFailures, StackFailures;
     internal static void Install(Harmony harmony) => harmony.Patch(
         AccessTools.Method(typeof(Character), "Awake"),
         prefix: new HarmonyMethod(typeof(RadialLoadHealth), nameof(Before)) { priority = Priority.First },
@@ -30,7 +31,9 @@ internal static class RadialLoadHealth
         if (maximum <= 0 || current <= 0 || float.IsNaN(maximum) || float.IsInfinity(maximum) ||
             float.IsNaN(current) || float.IsInfinity(current)) return;
         __state = new Saved { Maximum = maximum, Current = current,
-            Factor = data.GetFloat("PT_EnemyHealthFactor", 1) };
+            Factor = data.GetFloat("PT_EnemyHealthFactor", 1),
+            WardMaximum = data.GetFloat("pt.ward.max"), WardCurrent = data.GetFloat("pt.ward.cur"),
+            Stacks = data.GetInt(RadialRuntime.EmpoweredKey) };
     }
 
     private static void After(Character __instance, Saved? __state)
@@ -48,6 +51,11 @@ internal static class RadialLoadHealth
         {
             Loads++;
             if (__state.Current < __state.Maximum) Wounded++;
+            var data = MiniBossRuntime.Data(__instance)!;
+            if (__state.WardMaximum > 0) WardLoads++;
+            if (Math.Abs(data.GetFloat("pt.ward.max") - __state.WardMaximum) > .001f ||
+                Math.Abs(data.GetFloat("pt.ward.cur") - __state.WardCurrent) > .001f) WardFailures++;
+            if (data.GetInt(RadialRuntime.EmpoweredKey) != __state.Stacks) StackFailures++;
             if (Math.Abs(__instance.GetMaxHealth() - __state.Maximum) > .001f ||
                 Math.Abs(__instance.GetHealth() - __state.Current) > .001f) Failures++;
         }

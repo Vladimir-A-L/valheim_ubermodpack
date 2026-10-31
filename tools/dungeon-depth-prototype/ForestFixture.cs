@@ -51,6 +51,7 @@ internal sealed class ForestFixture : MonoBehaviour
         if (action == "guard-probe") return ForestGuardProbe.Run(command);
         if (action == "radial-world-probe") return RadialWorldProbe.Run(command);
         if (action == "radial-affix-probe") return RadialAffixProbe.Run();
+        if (action == "empowered-probe") return EmpoweredProbe.Run();
         if (action == "radial-dungeon-probe") return RadialDungeonProbe.Run(command);
         if (action == "atmosphere-probe") return ForestAtmosphereProbe.Run(command);
         if (action == "connection-probe") return MiniBossConnectionProbe.Run(command);

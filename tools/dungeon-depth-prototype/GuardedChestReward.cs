@@ -24,6 +24,7 @@ public sealed class ChestRewardState
     public string GuardZdoAtBinding = "", GuardToken = "", ChestToken = "";
     public string GuardPrefab = "", Source = "", RulesHash = "";
     public int GuardMask, GuardLevel, Seed;
+    public int GuardEmpowered;
     public string[] GuardModifiers = Array.Empty<string>();
     public float[] GuardOrigin = Array.Empty<float>();
     public RoomRewardContext Room = new RoomRewardContext();
@@ -96,7 +97,8 @@ public static class GuardedChestReward
         string value = view.GetZDO().GetString(StateKey, "");
         if (value.Length == 0) return null;
         var state = JsonConvert.DeserializeObject<ChestRewardState>(value)!;
-        if (state.Schema != 2) throw new InvalidOperationException("Неизвестная схема награды");
+        if (state.Schema != 2 && state.Schema != 3)
+            throw new InvalidOperationException("Неизвестная схема награды");
         return state;
     }
 
@@ -142,6 +144,7 @@ public static class GuardedChestReward
         string rulesJson = JsonConvert.SerializeObject(rules);
         var state = new ChestRewardState
         {
+            Schema = rules.Schema == 4 ? 3 : 2,
             GuardToken = guardId, ChestToken = chestId, GuardZdoAtBinding = guardView.GetZDO().m_uid.ToString(),
             GuardPrefab = Utils.GetPrefabName(guard.gameObject),
             GuardMask = mask, GuardLevel = guard.GetLevel(), GuardModifiers = ids,
@@ -149,7 +152,9 @@ public static class GuardedChestReward
             Source = Utils.GetPrefabName(chest.gameObject), Seed = context.Seed,
             Room = context, Rules = JsonConvert.DeserializeObject<RewardRules>(rulesJson)!,
             RulesHash = EpicLootBridge.Hash(Encoding.UTF8.GetBytes(rulesJson)),
-            Budget = rules.Budget(ids, context.LocationBonus, context.ProtectedProgressionZone),
+            GuardEmpowered = guardView.GetZDO().GetInt(RadialRuntime.EmpoweredKey),
+            Budget = rules.Budget(ids, context.LocationBonus, context.ProtectedProgressionZone,
+                guardView.GetZDO().GetInt(RadialRuntime.EmpoweredKey)),
             BoundAtUtc = DateTime.UtcNow.ToString("O")
         };
         RewardModel.Plan(state.Budget.Value, state.Rules, () => 0);

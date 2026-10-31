@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace DungeonDepthPrototype;
 
-[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.15.1")]
+[BepInPlugin(Guid, "Dungeon Depth Prototype", "0.16.0")]
 [BepInDependency("sighsorry.ServerManager", BepInDependency.DependencyFlags.SoftDependency)]
 [BepInDependency(PovBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
 [BepInDependency(EpicLootBridge.Guid, BepInDependency.DependencyFlags.HardDependency)]
@@ -70,7 +70,10 @@ public sealed class Plugin : BaseUnityPlugin
                 PovBridge.Install(harmony!);
                 RadialRuntime.Load();
                 RadialMetrics.Install(gameObject, harmony!);
+                if (gameObject.GetComponent<RadialPerformanceProbe.Plugin>() == null)
+                    gameObject.AddComponent<RadialPerformanceProbe.Plugin>();
                 MiniBossRuntime.Install(gameObject, harmony!);
+                EmpoweredDamage.Install(harmony!);
                 RadialLoadHealth.Install(harmony!);
                 MiniBossConnection.InstallMap(harmony!);
                 CombatRecorder.Install(gameObject, harmony!, expectedWorld);

@@ -34,14 +34,15 @@ public sealed class RewardRules
 
     public void Validate()
     {
-        if ((Schema < 1 || Schema > 3) || string.IsNullOrWhiteSpace(Revision) || Weights.Count == 0 ||
+        if ((Schema < 1 || Schema > 4) || string.IsNullOrWhiteSpace(Revision) || Weights.Count == 0 ||
             Weights.Any(p => string.IsNullOrWhiteSpace(p.Key) || p.Value <= 0) ||
             MaxGeneratedItems < 1 || MaxGeneratedItems > 4096 || MaxModifiers < 1 || MaxModifiers > 26)
             throw new ArgumentException("Некорректная глобальная таблица наград");
         if (Schema == 1 && (QualityKnots.Length != 7 || QualityKnots[0] <= 0 ||
             QualityKnots.Zip(QualityKnots.Skip(1), (a, b) => a < b).Any(ok => !ok)))
             throw new ArgumentException("Некорректная прежняя шкала качества");
-        if (Schema >= 2 && ((Schema == 2 ? ModifierPrice != 10 : ModifierPrice != 10 && ModifierPrice != 5) ||
+        if (Schema >= 2 && ((Schema == 2 ? ModifierPrice != 10 :
+                ModifierPrice != 10 && ModifierPrice != 5 && !(Schema == 4 && ModifierPrice == 7)) ||
             GrowthDivisor <= 0 || Bands.Length != 8 ||
             Bands.Any(b => b.Upper <= 0 || b.Coins < 0 || b.MinGuards < 2 || b.MaxGuards < b.MinGuards ||
                 (b.Coins > 0 ? b.Quality != RewardQuality.Common : b.Quality == RewardQuality.Common)) ||
@@ -56,15 +57,17 @@ public sealed class RewardRules
             throw new ArgumentException("Некорректные правила сочетаний");
     }
 
-    public BudgetResult Budget(IEnumerable<string> modifiers, decimal locationBonus, bool protectedZone)
+    public BudgetResult Budget(IEnumerable<string> modifiers, decimal locationBonus, bool protectedZone,
+        int empowered = 0)
     {
         Validate();
         var ids = modifiers.ToArray();
-        if (locationBonus < 0 || ids.Length != ids.Distinct().Count() ||
+        if (locationBonus < 0 || empowered < 0 || empowered > 1000 || Schema < 4 && empowered != 0 ||
+            ids.Length != ids.Distinct().Count() ||
             ids.Length > (Schema < 3 ? 10 : MaxModifiers) ||
             ids.Any(id => !Weights.ContainsKey(id)))
             throw new ArgumentException("Неподдержанный набор охраны или надбавка");
-        if (protectedZone && ids.Length > 0)
+        if (protectedZone && (ids.Length > 0 || empowered > 0))
             throw new ArgumentException("В гарантированной части усиленная охрана запрещена");
         var matches = Synergies.Where(s => s.Requires.All(ids.Contains)).OrderBy(s => s.Id).ToArray();
         decimal sum = ids.Sum(id => Weights[id]);
@@ -83,7 +86,8 @@ public sealed class RewardRules
         decimal combat = protectedZone ? 0 : locationBonus + (Schema >= 3 ? ids.Length * 10 : sum) * factor;
         return new BudgetResult { Points = sum, Factor = factor,
             Growth = growth, CombatValue = combat, LootFactor = lootFactor,
-            Rules = matches.Select(s => s.Id).ToArray(), Value = combat * lootFactor };
+            Rules = matches.Select(s => s.Id).ToArray(), Empowered = empowered,
+            EmpoweredPoints = ModifierPrice * empowered, Value = combat * lootFactor + ModifierPrice * empowered };
     }
 
     public RewardBand Band(decimal budget)
@@ -95,7 +99,7 @@ public sealed class RewardRules
 
     public RewardRules AtPrice(decimal price)
     {
-        if (Schema != 3) throw new InvalidOperationException("Радиальные цены требуют schema 3");
+        if (Schema < 3) throw new InvalidOperationException("Радиальные цены требуют schema 3 или 4");
         var copy = (RewardRules)MemberwiseClone();
         copy.ModifierPrice = price;
         copy.Validate();
@@ -105,6 +109,8 @@ public sealed class RewardRules
 
 public sealed class BudgetResult
 {
+    public int Empowered;
+    public decimal EmpoweredPoints;
     public decimal Points, Factor, Value, CombatValue;
     public decimal LootFactor = 1;
     public decimal Growth = 1;
