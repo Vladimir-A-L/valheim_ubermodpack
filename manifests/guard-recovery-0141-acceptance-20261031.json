@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "recorded_at_utc": "2026-10-31T07:24:10.607152+00:00",
+  "artifact_lock": "guard-recovery-0141-20261031.lock.json",
+  "version": "0.14.1",
+  "scenario": "R2",
+  "status": "accepted",
+  "evidence_source": "user-report",
+  "user_message": "R2 пройден",
+  "accepted_scope": [
+    "resource-arena-archer-accessible",
+    "pursuit-through-open-adjacent-passage"
+  ],
+  "agent_client_run": false,
+  "remaining_client_checks": [
+    "R3",
+    "R4",
+    "U9"
+  ],
+  "ordinary_generation_accepted": false
+}
